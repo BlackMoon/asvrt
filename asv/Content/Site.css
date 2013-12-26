@@ -1,0 +1,151 @@
+﻿.icon-add {
+    background-image: url("/Content/ext-theme-classic/images/dd/drop-add.gif");
+}
+
+.icon-admin {
+    background-image: url("/Content/admin16.png");
+}
+
+.icon-alphabet {
+    background-image: url("/Content/alphabet16.png");
+}
+
+.icon-cancel {
+    background-image: url("/Content/cancel.png");
+}
+
+.icon-chain {
+    background-image: url("/Content/chain16.png");
+}
+
+.icon-delete {
+    background-image: url("/Content/delete.png");
+}
+
+.icon-db, .x-tree-icon.icon-db {
+    background-image: url("/Content/db.png") !important;
+}
+
+.icon-dbs {
+    background-image: url("/Content/dbs.png");
+}
+
+.icon-edit {
+    background-image: url("/Content/pencil.png");
+}
+
+.icon-field, .x-tree-icon.icon-field {
+    background-image: url("/Content/field16.png") !important;
+}
+
+.icon-func {
+    background-image: url("/Content/stockf.png");
+}
+
+.icon-gears {
+    background-image: url("/Content/gears16.png");
+}
+
+.icon-go {
+    background-image: url("/Content/table_go.png");
+}
+
+.icon-help {
+    background-image: url("/Content/help16.png");
+}
+
+.icon-join {
+    background-image: url("/Content/sql_join.png");
+}
+
+.icon-ljoin {
+    background-image: url("/Content/sql_left.png");
+}
+
+.icon-lock {
+    background-image: url("/Content/ext-theme-classic/images/grid/hmenu-lock.gif");
+}
+
+.icon-report {
+    background-image: url("/Content/report16.png");
+}
+
+.icon-save {
+    background-image: url("/Content/disk.png");
+}
+
+.icon-table, .x-tree-icon.icon-table {
+    background-image: url("/Content/table16.png") !important;
+}
+
+.icon-tableadd {
+    background-image: url("/Content/table_add.png");
+}
+
+.icon-tools {
+    background-image: url("/Content/tools16.png");
+}
+
+.icon-users {
+    background-image: url("/Content/users16.png");
+}
+
+.icon-xls {
+    background-image: url("/Content/bullet_xls.png") !important;
+}
+
+.icon-xml {
+    background-image: url("/Content/bullet_xml.png") !important;
+}
+
+.psw .x-fieldset-header-text, .x-red .x-form-display-field {
+    color: #DD4B39;
+}
+
+.remark {
+    color: #04468C;
+    font-size: 11px;
+    white-space: nowrap;     
+}
+
+.rowfk .x-grid-cell {    
+    color: blue;
+}
+
+.rowpk .x-grid-cell {
+    font-weight: bold;          
+}
+
+.x-form-itemselector-add {
+    background-image: url("/Content/1leftarrow.png");
+}
+
+.x-form-itemselector-addall {
+    background-image: url("/Content/2leftarrow.png");
+}
+
+.x-grid-row-red .x-grid-cell, .x-grid-row-selected .x-grid-rowwrap-div {
+    background-color: #ffcccc !important;    
+}
+
+.x-toggle .x-mask{
+    opacity: 0;
+}
+
+.x-tree-icon.icon-key {
+    background-image: url("/Content/key16.png") !important;
+}
+
+.x-tree-icon.icon-pkey {
+    background-image: url("/Content/pkey16.png") !important;
+}
+
+.ux-gridfilter-text-icon {
+    background-image: url(/Content/find.png) !important;
+} 
+
+.ux-rangemenu-icon {
+    display: block;
+    height: 16px;
+    background: no-repeat 5px center;
+}
