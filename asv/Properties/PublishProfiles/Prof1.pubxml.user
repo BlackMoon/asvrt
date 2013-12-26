@@ -6,20 +6,34 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
+<<<<<<< HEAD
     <_PublishTargetUrl>D:\pb</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/asv.dll">
       <publishTime>12/01/2013 13:37:51</publishTime>
+=======
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/asv.dll">
+      <publishTime>10/29/2013 18:10:13</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="bin/ICSharpCode.SharpZipLib.dll">
       <publishTime>03/06/2013 06:13:52</publishTime>
     </File>
     <File Include="bin/Ionic.Zip.dll">
+<<<<<<< HEAD
       <publishTime>09/14/2013 19:42:16</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>10/31/2013 00:27:21</publishTime>
+=======
+      <publishTime>09/14/2013 19:42:18</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>07/29/2013 22:36:00</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="bin/NPOI.dll">
       <publishTime>03/06/2013 06:17:46</publishTime>
@@ -34,6 +48,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/06/2013 06:17:48</publishTime>
     </File>
     <File Include="bin/System.Data.SQLite.dll">
+<<<<<<< HEAD
       <publishTime>09/01/2013 14:00:13</publishTime>
     </File>
     <File Include="bin/System.Data.SQLite.Linq.dll">
@@ -50,6 +65,18 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Content/2leftarrow.png">
       <publishTime>01/26/2013 00:03:04</publishTime>
+=======
+      <publishTime>09/01/2013 14:00:14</publishTime>
+    </File>
+    <File Include="bin/System.Data.SQLite.Linq.dll">
+      <publishTime>09/01/2013 14:00:14</publishTime>
+    </File>
+    <File Include="bin/x64/SQLite.Interop.dll">
+      <publishTime>08/22/2013 17:24:11</publishTime>
+    </File>
+    <File Include="bin/x86/SQLite.Interop.dll">
+      <publishTime>08/22/2013 17:24:10</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Content/admin16.png">
       <publishTime>07/29/2013 12:21:44</publishTime>
@@ -70,7 +97,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/07/2013 23:38:10</publishTime>
     </File>
     <File Include="Content/chain16.png">
+<<<<<<< HEAD
       <publishTime>10/29/2013 10:54:40</publishTime>
+=======
+      <publishTime>10/29/2013 10:54:38</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Content/db.png">
       <publishTime>07/30/2013 15:13:40</publishTime>
@@ -114,14 +145,21 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/pkey16.png">
       <publishTime>08/06/2013 17:43:44</publishTime>
     </File>
+<<<<<<< HEAD
     <File Include="Content/play.png">
       <publishTime>08/11/2013 16:02:12</publishTime>
     </File>
+=======
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     <File Include="Content/report16.png">
       <publishTime>09/19/2013 12:17:46</publishTime>
     </File>
     <File Include="Content/site.css">
+<<<<<<< HEAD
       <publishTime>11/29/2013 17:52:38</publishTime>
+=======
+      <publishTime>10/29/2013 14:11:03</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Content/sql_join.png">
       <publishTime>08/08/2013 18:39:52</publishTime>
@@ -151,6 +189,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/23/2013 14:02:00</publishTime>
     </File>
     <File Include="packages.config">
+<<<<<<< HEAD
       <publishTime>10/31/2013 00:27:26</publishTime>
     </File>
     <File Include="Scripts/app/common/Bargrid.js">
@@ -158,6 +197,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Scripts/app/common/Bartree.js">
       <publishTime>12/01/2013 12:20:52</publishTime>
+=======
+      <publishTime>09/20/2013 16:05:16</publishTime>
+    </File>
+    <File Include="Scripts/app/common/Bargrid.js">
+      <publishTime>10/25/2013 18:55:00</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/common/Imagecolumn.js">
       <publishTime>10/04/2013 16:38:14</publishTime>
@@ -181,25 +226,40 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/15/2013 17:38:54</publishTime>
     </File>
     <File Include="Scripts/app/controller/Admin.js">
+<<<<<<< HEAD
       <publishTime>11/30/2013 17:34:40</publishTime>
+=======
+      <publishTime>10/29/2013 17:09:55</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/controller/Base.js">
       <publishTime>08/12/2013 15:38:56</publishTime>
     </File>
     <File Include="Scripts/app/controller/Main.js">
+<<<<<<< HEAD
       <publishTime>11/30/2013 18:44:47</publishTime>
     </File>
     <File Include="Scripts/app/controller/Query.js">
       <publishTime>12/01/2013 13:28:23</publishTime>
+=======
+      <publishTime>10/23/2013 17:55:28</publishTime>
+    </File>
+    <File Include="Scripts/app/controller/Query.js">
+      <publishTime>10/29/2013 16:22:41</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/controller/Template.js">
       <publishTime>10/17/2013 14:38:38</publishTime>
     </File>
     <File Include="Scripts/app/model/Alias.js">
+<<<<<<< HEAD
       <publishTime>10/29/2013 17:06:22</publishTime>
     </File>
     <File Include="Scripts/app/model/Catalog.js">
       <publishTime>11/30/2013 17:36:16</publishTime>
+=======
+      <publishTime>10/29/2013 17:06:21</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/model/Connection.js">
       <publishTime>10/05/2013 14:10:44</publishTime>
@@ -208,22 +268,43 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/20/2013 15:22:12</publishTime>
     </File>
     <File Include="Scripts/app/model/Fparam.js">
+<<<<<<< HEAD
       <publishTime>11/01/2013 13:11:32</publishTime>
+=======
+      <publishTime>10/28/2013 16:13:32</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/model/Func.js">
       <publishTime>10/23/2013 17:49:22</publishTime>
     </File>
     <File Include="Scripts/app/model/Param.js">
+<<<<<<< HEAD
       <publishTime>11/05/2013 18:18:26</publishTime>
+=======
+      <publishTime>10/21/2013 16:51:00</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/model/Query.js">
       <publishTime>09/11/2013 10:58:38</publishTime>
     </File>
     <File Include="Scripts/app/model/Rel.js">
+<<<<<<< HEAD
       <publishTime>11/05/2013 18:52:32</publishTime>
     </File>
     <File Include="Scripts/app/model/Table.js">
       <publishTime>11/30/2013 17:30:38</publishTime>
+=======
+      <publishTime>10/29/2013 13:35:00</publishTime>
+    </File>
+    <File Include="Scripts/app/model/Schema.js">
+      <publishTime>08/08/2013 11:16:02</publishTime>
+    </File>
+    <File Include="Scripts/app/model/Section.js">
+      <publishTime>10/24/2013 11:46:32</publishTime>
+    </File>
+    <File Include="Scripts/app/model/Table.js">
+      <publishTime>10/24/2013 14:43:02</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/model/Template.js">
       <publishTime>07/29/2013 15:42:14</publishTime>
@@ -232,7 +313,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/09/2013 12:41:34</publishTime>
     </File>
     <File Include="Scripts/app/model/Ufunc.js">
+<<<<<<< HEAD
       <publishTime>11/07/2013 23:24:08</publishTime>
+=======
+      <publishTime>10/22/2013 14:30:58</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/model/Uparam.js">
       <publishTime>10/11/2013 16:25:40</publishTime>
@@ -241,17 +326,27 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/29/2013 12:27:22</publishTime>
     </File>
     <File Include="Scripts/app/SQLQuery.js">
+<<<<<<< HEAD
       <publishTime>11/07/2013 23:22:40</publishTime>
     </File>
     <File Include="Scripts/app/SQLTable.js">
       <publishTime>11/05/2013 18:02:44</publishTime>
+=======
+      <publishTime>10/29/2013 15:42:37</publishTime>
+    </File>
+    <File Include="Scripts/app/SQLTable.js">
+      <publishTime>10/07/2013 21:10:56</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/store/Aliases.js">
       <publishTime>10/07/2013 12:38:32</publishTime>
     </File>
+<<<<<<< HEAD
     <File Include="Scripts/app/store/Catalogs.js">
       <publishTime>11/30/2013 17:37:24</publishTime>
     </File>
+=======
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     <File Include="Scripts/app/store/Conns.js">
       <publishTime>08/06/2013 12:14:44</publishTime>
     </File>
@@ -262,16 +357,37 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/23/2013 17:49:44</publishTime>
     </File>
     <File Include="Scripts/app/store/Lstore.js">
+<<<<<<< HEAD
       <publishTime>11/06/2013 14:03:38</publishTime>
+=======
+      <publishTime>10/23/2013 16:23:18</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/store/Qdbs.js">
       <publishTime>08/23/2013 12:59:24</publishTime>
     </File>
+<<<<<<< HEAD
     <File Include="Scripts/app/store/Queries.js">
       <publishTime>11/01/2013 14:13:22</publishTime>
     </File>
     <File Include="Scripts/app/store/Tables.js">
       <publishTime>11/30/2013 17:31:55</publishTime>
+=======
+    <File Include="Scripts/app/store/Qschemas.js">
+      <publishTime>08/14/2013 13:50:56</publishTime>
+    </File>
+    <File Include="Scripts/app/store/Queries.js">
+      <publishTime>09/10/2013 16:39:20</publishTime>
+    </File>
+    <File Include="Scripts/app/store/Schemas.js">
+      <publishTime>08/13/2013 17:21:47</publishTime>
+    </File>
+    <File Include="Scripts/app/store/Sections.js">
+      <publishTime>10/24/2013 11:46:50</publishTime>
+    </File>
+    <File Include="Scripts/app/store/Tables.js">
+      <publishTime>10/25/2013 11:54:54</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/store/Templates.js">
       <publishTime>09/14/2013 17:05:26</publishTime>
@@ -283,7 +399,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/26/2013 13:43:44</publishTime>
     </File>
     <File Include="Scripts/app/view/alias/Edit.js">
+<<<<<<< HEAD
       <publishTime>10/29/2013 17:08:50</publishTime>
+=======
+      <publishTime>10/29/2013 17:08:48</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/view/alias/List.js">
       <publishTime>10/18/2013 16:24:08</publishTime>
@@ -291,6 +411,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/app/view/base/Add.js">
       <publishTime>08/23/2013 12:24:48</publishTime>
     </File>
+<<<<<<< HEAD
     <File Include="Scripts/app/view/catalog/Edit.js">
       <publishTime>12/01/2013 13:32:27</publishTime>
     </File>
@@ -302,20 +423,32 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Scripts/app/view/conn/Edit.js">
       <publishTime>11/30/2013 19:51:07</publishTime>
+=======
+    <File Include="Scripts/app/view/conn/Edit.js">
+      <publishTime>10/27/2013 15:59:14</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/view/conn/List.js">
       <publishTime>10/21/2013 12:41:30</publishTime>
     </File>
     <File Include="Scripts/app/view/Explorer.js">
+<<<<<<< HEAD
       <publishTime>11/30/2013 16:57:12</publishTime>
     </File>
     <File Include="Scripts/app/view/func/Edit.js">
       <publishTime>11/01/2013 13:09:50</publishTime>
+=======
+      <publishTime>09/28/2013 13:11:34</publishTime>
+    </File>
+    <File Include="Scripts/app/view/func/Edit.js">
+      <publishTime>10/29/2013 17:00:34</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/view/func/List.js">
       <publishTime>10/21/2013 13:17:58</publishTime>
     </File>
     <File Include="Scripts/app/view/query/Add.js">
+<<<<<<< HEAD
       <publishTime>12/01/2013 12:09:42</publishTime>
     </File>
     <File Include="Scripts/app/view/query/Edit.js">
@@ -335,12 +468,50 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Scripts/app/view/query/Rlist.js">
       <publishTime>11/05/2013 18:57:10</publishTime>
+=======
+      <publishTime>10/25/2013 18:54:12</publishTime>
+    </File>
+    <File Include="Scripts/app/view/query/Edit.js">
+      <publishTime>10/29/2013 11:12:07</publishTime>
+    </File>
+    <File Include="Scripts/app/view/query/Fnedit.js">
+      <publishTime>10/29/2013 15:58:45</publishTime>
+    </File>
+    <File Include="Scripts/app/view/query/Fnlist.js">
+      <publishTime>10/28/2013 17:31:48</publishTime>
+    </File>
+    <File Include="Scripts/app/view/query/Form.js">
+      <publishTime>10/21/2013 16:57:00</publishTime>
+    </File>
+    <File Include="Scripts/app/view/query/List.js">
+      <publishTime>10/24/2013 12:08:18</publishTime>
+    </File>
+    <File Include="Scripts/app/view/query/Rlist.js">
+      <publishTime>10/29/2013 15:32:51</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/view/report/List.js">
       <publishTime>09/14/2013 17:17:40</publishTime>
     </File>
+<<<<<<< HEAD
     <File Include="Scripts/app/view/table/Edit.js">
       <publishTime>11/05/2013 18:03:48</publishTime>
+=======
+    <File Include="Scripts/app/view/schema/Add.js">
+      <publishTime>08/14/2013 12:54:56</publishTime>
+    </File>
+    <File Include="Scripts/app/view/section/Edit.js">
+      <publishTime>10/24/2013 15:02:48</publishTime>
+    </File>
+    <File Include="Scripts/app/view/section/List.js">
+      <publishTime>10/24/2013 11:46:56</publishTime>
+    </File>
+    <File Include="Scripts/app/view/section/Tlist.js">
+      <publishTime>10/24/2013 14:47:10</publishTime>
+    </File>
+    <File Include="Scripts/app/view/table/Edit.js">
+      <publishTime>10/29/2013 16:00:54</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/view/table/List.js">
       <publishTime>08/12/2013 15:18:54</publishTime>
@@ -358,7 +529,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/30/2013 14:35:24</publishTime>
     </File>
     <File Include="Scripts/app/view/user/Edit.js">
+<<<<<<< HEAD
       <publishTime>11/06/2013 14:05:12</publishTime>
+=======
+      <publishTime>10/22/2013 11:15:34</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Scripts/app/view/user/Import.js">
       <publishTime>10/24/2013 16:52:58</publishTime>
@@ -378,6 +553,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/ext-lang-ru.js">
       <publishTime>05/16/2013 14:55:30</publishTime>
     </File>
+<<<<<<< HEAD
     <File Include="Scripts/ux/grid/filter/BooleanFilter.js">
       <publishTime>05/16/2013 14:55:28</publishTime>
     </File>
@@ -411,6 +587,8 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/ux/tree/Filter.js">
       <publishTime>12/01/2013 12:25:58</publishTime>
     </File>
+=======
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     <File Include="Views/Account/ChangePassword.cshtml">
       <publishTime>07/23/2013 14:02:00</publishTime>
     </File>
@@ -430,12 +608,17 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/23/2013 14:02:00</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
+<<<<<<< HEAD
       <publishTime>11/29/2013 17:37:40</publishTime>
+=======
+      <publishTime>10/23/2013 17:44:16</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
     <File Include="Views/Web.config">
       <publishTime>07/23/2013 14:02:00</publishTime>
     </File>
     <File Include="Web.config">
+<<<<<<< HEAD
       <publishTime>12/01/2013 13:25:10</publishTime>
     </File>
     <File Include="x64/SQLite.Interop.dll">
@@ -443,6 +626,15 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="x86/SQLite.Interop.dll">
       <publishTime>08/04/2013 12:20:14</publishTime>
+=======
+      <publishTime>10/29/2013 17:45:36</publishTime>
+    </File>
+    <File Include="x64/SQLite.Interop.dll">
+      <publishTime>08/22/2013 17:24:11</publishTime>
+    </File>
+    <File Include="x86/SQLite.Interop.dll">
+      <publishTime>08/22/2013 17:24:10</publishTime>
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     </File>
   </ItemGroup>
 </Project>

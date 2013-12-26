@@ -4,7 +4,11 @@
     alias: 'widget.connedit',
 
     title: 'Соединение',
+<<<<<<< HEAD
     height: 480,
+=======
+    height: 500,
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     width: 480,
 
     initComponent: function () {
@@ -89,10 +93,23 @@
                 }]
             },
             {
+<<<<<<< HEAD
                 xtype: 'checkboxfield',
                 name: 'hidesys',
                 boxLabel: '&nbsp;Не показывать таблицы вне разделов'
             }, me.constring,
+=======
+                xtype: 'textfield',
+                name: 'wsdl',
+                fieldLabel: 'Веб-служба авторизации'
+            },
+            {
+                xtype: 'checkboxfield',
+                name: 'hidesys',
+                boxLabel: '&nbsp;Не показывать таблицы вне разделов'
+            },            
+            me.constring,
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
             {
                 xtype: 'fieldcontainer',
                 layout: 'hbox',

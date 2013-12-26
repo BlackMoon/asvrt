@@ -18,11 +18,20 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+<<<<<<< HEAD
 		BuildVersion_AssemblyInfoFilename = asv\Properties\AssemblyInfo.cs
 		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
 		BuildVersion_StartDate = 2013/7/23
 		BuildVersion_UseGlobalSettings = False
 		BuildVersion_UpdateAssemblyVersion = True
 		BuildVersion_UpdateFileVersion = True
+=======
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UseGlobalSettings = False
+		BuildVersion_StartDate = 2013/7/23
+		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
+		BuildVersion_AssemblyInfoFilename = asv\Properties\AssemblyInfo.cs
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
 	EndGlobalSection
 EndGlobal

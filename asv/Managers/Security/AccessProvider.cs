@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+<<<<<<< HEAD
 using System.Web.Security;
 using asv.Models;
 using asv.Helpers;
@@ -9,6 +10,17 @@ using System.Web.Helpers;
 using System.Configuration;
 using System.Web.Caching;
 using System.Web;
+=======
+using System.Configuration;
+using System.Web;
+using System.Web.Caching;
+using System.Web.Helpers;
+using System.Web.Security;
+using asv.ASVServiceReference;
+using asv.Helpers;
+using asv.Models;
+using PetaPoco;
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
 
 namespace asv.Managers.Security
 {
@@ -144,15 +156,25 @@ namespace asv.Managers.Security
         // для principal
         public override MembershipUser GetUser(string username, bool userIsOnline)
         {  
+<<<<<<< HEAD
             var person = _db.Single<dynamic>("SELECT u.id, u.login, u.lastname, u.firstname, u.middlename, u.isapproved, u.isadmin, u.comment, u.serverlogin, u.theme FROM qb_users u WHERE u.login = @0", username);
+=======
+            var person = _db.Single<dynamic>("SELECT u.id, u.login, u.lastname, u.firstname, u.middlename, u.isapproved, u.isadmin, u.comment, u.serverlogin, u.dept, u.theme FROM qb_users u WHERE u.login = @0", username);
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
 
             MembershipPerson mp = new MembershipPerson(this.Name, (int)person.id, username, person.lastname, person.firstname, person.middlename, person.isapproved, person.isadmin, person.serverlogin, person.comment);
 
             if (mp.ServerLogin == 1)            
                 mp.Bases = _db.Fetch<Userdb>("SELECT b.conn, b.auth FROM qb_bases b WHERE b.usercreate = @0 AND b.auth = 1", mp.Id);
 
+<<<<<<< HEAD
             mp.Theme = person.theme;
 
+=======
+            mp.Dept = person.dept;
+            mp.Theme = person.theme;
+            
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
             return mp;
         }
 
@@ -262,7 +284,13 @@ namespace asv.Managers.Security
 
             try
             {
+<<<<<<< HEAD
                 var q = _db.Single<dynamic>("SELECT u.password, u.salt, u.serverlogin, b.conn FROM qb_users u LEFT JOIN qb_bases b ON b.usercreate = u.id AND b.auth = 1 WHERE u.login = @0", username);
+=======
+                var q = _db.Single<dynamic>(@"SELECT u.password, u.salt, u.serverlogin, b.conn, c.wsdl FROM qb_users u 
+                    LEFT JOIN qb_bases b ON b.usercreate = u.id AND b.auth = 1 
+                    LEFT JOIN qb_connections c ON c.name = b.conn WHERE u.login = @0", username);
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
                 
                 // авторизация на сервере
                 if (q.serverlogin)
@@ -280,6 +308,15 @@ namespace asv.Managers.Security
                             result = true;
                         }
                     }
+<<<<<<< HEAD
+=======
+
+                    // код района
+                    /*AuthenticationServiceSoapClient assc = new AuthenticationServiceSoapClient();
+                    CSPCHD cspchd = new CSPCHD();
+                    UserInfo ui = assc.Login(ref cspchd, username, password, null);                                        
+                    _db.Update<MembershipPerson>("SET dept = @1 WHERE username = @0", username, ui.UserDepartamentCode);*/
+>>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
                 }
                 else
                     result = (q.password == Crypto.Hash(password + "{" + q.salt + "}", Membership.HashAlgorithmType));
