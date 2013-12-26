@@ -1,0 +1,315 @@
+﻿@using asv.Managers.Security;
+@{  
+    bool logged = Request.IsAuthenticated;         
+    
+    int isAdmin = 0;
+    int serverLogin = 0;
+    string schema = string.Empty, theme = "classic";
+    
+    MemberPrincipal user = null;
+    
+    if (logged) {
+        user = (MemberPrincipal)User;
+        isAdmin = user.IsAdmin;
+        serverLogin = user.ServerLogin ? 1 : 0;
+        schema = user.Schema;
+        
+        if (!string.IsNullOrEmpty(user.Theme)) {
+            theme = user.Theme;
+        }
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />    
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/site.css")" rel="stylesheet" type="text/css" />        
+    @if (Request.IsLocal)
+    {    
+        <script src="@Url.Content("~/scripts/ext-all-debug.js")"></script>    
+    }
+    else
+    {
+        <script src="@Url.Content("~/scripts/ext-all.js")"></script>
+    }
+    <script src="@Url.Content("~/scripts/ext-lang-ru.js")"></script>    
+    @RenderSection("scripts", false)
+    <script type="text/javascript">        
+        String.prototype.trimLeft = function () { return this.replace(/^\s+/, ""); };
+
+        if (!Array.prototype.forEach ) {
+            Array.prototype.forEach = function(fn, scope) {
+                for(var i = 0, len = this.length; i < len; ++i) {
+                    fn.call(scope, this[i], i, this);
+                }
+            }
+        }
+
+        if (!Array.indexOf) {
+            Array.prototype.indexOf = function (obj, start) {
+                var i = start || 0;
+                for (i; i < this.length; ++i) {
+                    if (this[i] == obj) 
+                        return i;			
+                }
+                return -1;
+            };
+        }
+
+        if (Ext.form.Panel)
+            Ext.apply(Ext.form.Panel.prototype, { frame: true });
+
+        if (Ext.form.field.Checkbox)
+            Ext.apply(Ext.form.field.Checkbox.prototype, { inputValue: 1 });
+
+        if (Ext.form.field.TextArea)
+            Ext.apply(Ext.form.field.TextArea.prototype, { height: 60 });
+        
+        var comboRenderer = function(combo){
+            return function(v){
+                if (v) {
+                    var rec = combo.findRecord(combo.valueField, v);
+                    if (rec) 
+                        return rec.get(combo.displayField);
+                }
+            }
+        }
+
+        Ext.Loader.setPath('Ext.ux', 'scripts/ux');
+
+        Ext.application({
+            requires: ['Ext.container.Viewport'],
+            name: 'QB',
+            appFolder: 'scripts/app',
+            controllers: ['Admin', 'Main', 'Query', 'Template'],
+            stores: ['Dbs'],
+            views: ['Explorer'],                        
+            @if (logged)
+            {
+                <text>logged: true,</text>
+            }
+            auth: function () {
+                this.maincontroller[this.logged ? 'logoff' : 'auth']();
+            },
+
+            init: function() {
+                var stateProvider = Ext.supports.LocalStorage ? new Ext.state.LocalStorageProvider() : new Ext.state.CookieProvider({ expires: new Date(new Date().getTime() + 2.592e9) }); // 30 days in msec
+                Ext.state.Manager.setProvider(stateProvider);
+              
+                Ext.define('Auser', { serverlogin: @serverLogin, schema: '@schema', singleton: true });                
+            },
+
+            launch: function () {
+                var me = this;
+
+                me.maincontroller = me.getController('Main');
+                if (me.logged){ 
+                    var store = me.getDbsStore()
+                    store.loaded = false;
+                    store.load();
+                }
+                else {                    
+                    me.maincontroller.auth(); 
+                }
+
+                me.viewport = Ext.create('Ext.container.Viewport', {
+                    layout: 'border',
+                    items: [{
+                        region: 'north',
+                        xtype: 'toolbar',
+                        itemId: 'menubar',
+                        defaults: { arrowCls: '' },
+                        items: [{ 
+                            text: 'Запросы', 
+                            menu: {
+                                xtype: 'menu',
+                                items: [{ 
+                                    text: 'Новый запрос',                                     
+                                    iconCls: 'icon-ljoin',
+                                    action: 'query'
+                                },
+                                {
+                                    text: 'Список',                                     
+                                    iconCls: 'icon-join',
+                                    action: 'queries'
+                                }]
+                            }
+                        },
+                        { 
+                            text: 'Шаблоны',
+                            action: 'templates' 
+                        },                            
+                        {
+                            text: 'Администрирование',                            
+                            itemId: 'mnuadmin',
+                            @if (isAdmin == 0)
+                            {
+                                <text>hidden: true,</text>
+                            }
+                            menu: {
+                                xtype: 'menu',
+                                items: [{ 
+                                    text: 'Соединения', 
+                                    action: 'conns',
+                                    iconCls: 'icon-dbs'
+                                },
+                                {
+                                    text: 'Пользователи',
+                                    action: 'users',
+                                    iconCls: 'icon-users'
+                                },
+                                { 
+                                    text: 'Псевдонимы', 
+                                    action: 'aliases',
+                                    iconCls: 'icon-alphabet'
+                                },
+                                { 
+                                    text: 'Каталоги', 
+                                    action: 'catalogs',
+                                    iconCls: 'x-tree-icon-parent'
+                                },
+                                { 
+                                    text: 'Функции', 
+                                    action: 'funcs',
+                                    iconCls: 'icon-func'
+                                },
+                                '-',
+                                { 
+                                    text: 'Настройки', 
+                                    action: 'settings',
+                                    iconCls: 'icon-tools'
+                                }]                                    
+                            }
+                        },                            
+                        { text: 'Справка' },
+                        '->',
+                        {
+                            xtype: 'tbtext',
+                            itemId: 'lbfio'
+                            @if (logged) 
+                            { 
+                                <text>, text: '@user.Fio'</text>
+                            }
+                        },
+                        {
+                            text:  @if (logged) { <text>'Выход'</text> } else { <text>'Вход'</text> },
+                            itemId: 'btnauth',
+                            cls: 'x-btn-default-small',
+                            margin: '0 4 0 0',
+                            handler: me.auth,
+                            scope: me
+                        }]                        
+                    },
+                    {
+                        region: 'north',
+                        xtype: 'toolbar',
+                        itemId: 'toolbar',
+                        items: [{   
+                            iconCls: 'icon-ljoin',
+                            tooltip: 'Новый запрос',
+                            action: 'query'
+                        },
+                        {   
+                            iconCls: 'icon-join',
+                            tooltip: 'Список',
+                            action: 'queries'
+                        },
+                        '-',
+                        { 
+                            iconCls: 'icon-dbs', 
+                            itemId: 'conns',
+                            action: 'conns',
+                            tooltip: 'Соединения'
+                            @if (isAdmin == 0)
+                            {
+                                <text>, hidden: true</text>
+                            }
+                        },
+                        { 
+                            iconCls: 'icon-users', 
+                            itemId: 'users',
+                            action: 'users',
+                            tooltip: 'Пользователи'
+                            @if (isAdmin == 0)
+                            {
+                                <text>, hidden: true</text>
+                            }
+                        },
+                        { 
+                            iconCls: 'icon-alphabet', 
+                            itemId: 'aliases',
+                            action: 'aliases',
+                            tooltip: 'Псевдонимы'
+                            @if (isAdmin == 0)
+                            {
+                                <text>, hidden: true</text>
+                            }
+                        },
+                        { 
+                            iconCls: 'x-tree-icon-parent', 
+                            itemId: 'catalogs',
+                            action: 'catalogs',
+                            tooltip: 'Каталоги'
+                            @if (isAdmin == 0)
+                            {
+                                <text>, hidden: true</text>
+                            }
+                        },
+                        { 
+                            iconCls: 'icon-func', 
+                            itemId: 'funcs',
+                            action: 'funcs',
+                            tooltip: 'Функции'
+                            @if (isAdmin == 0)
+                            {
+                                <text>, hidden: true</text>
+                            }
+                        },
+                        { 
+                            iconCls: 'icon-tools',
+                            itemId: 'settings',
+                            action: 'settings',
+                            tooltip: 'Настройки'
+                            @if (isAdmin == 0)
+                            {
+                                <text>, hidden: true</text>
+                            }
+                        },                        
+                        {
+                            iconCls: 'icon-help',                            
+                            action: 'help',
+                            tooltip: 'Справка'
+                        }]                                                    
+                    },
+                    {
+                        xtype: 'explorer',
+                        region: 'west',                        
+                        collapsible: true,
+                        split: true,                      
+                        width: 200                        
+                    },
+                    {
+                        xtype: 'tabpanel',
+                        region: 'center',
+                        itemId: 'centerPanel',
+                        layout: 'fit',
+                        defaults: { closable: true }                       
+                    },
+                    {
+                        region: 'south',
+                        xtype: 'toolbar',
+                        height: 22,
+                        items: [{
+                            xtype: 'tbtext', 
+                            itemId: 'status'                            
+                        }]
+                    }]
+                });            
+            }
+        });
+    </script>
+    <style>@@import '@Url.Content("~/Content/ext-theme-" + theme + "/ext-theme-" + theme + "-all.css")';</style>
+</head>
+<body>@RenderBody()</body>
+</html>
