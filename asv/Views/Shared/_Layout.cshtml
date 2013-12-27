@@ -65,6 +65,9 @@
 
         if (Ext.form.field.TextArea)
             Ext.apply(Ext.form.field.TextArea.prototype, { height: 60 });
+
+        if (Ext.MessageBox)
+            Ext.apply(Ext.MessageBox.prototype, { ok : "OK", cancel : "Отмена", yes : "Да", no : "Нет" });            
         
         var comboRenderer = function(combo){
             return function(v){
