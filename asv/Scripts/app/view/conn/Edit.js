@@ -2,13 +2,8 @@
     extend: 'QB.Common.Updwnd',
     requires: ['QB.Common.Labelcombo', 'QB.Common.Updwnd'],
     alias: 'widget.connedit',
-
     title: 'Соединение',
-<<<<<<< HEAD
     height: 480,
-=======
-    height: 500,
->>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
     width: 480,
 
     initComponent: function () {
