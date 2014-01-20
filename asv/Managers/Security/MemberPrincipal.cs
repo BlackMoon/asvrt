@@ -14,10 +14,7 @@ namespace asv.Managers.Security
         public string Firstname { get; set; }
         public string Middlename { get; set; }
         public string Fio { get; set; }
-<<<<<<< HEAD
-=======
         public string Dept { get; set; }                
->>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
         public string Schema { get; set; }
         public string Theme { get; set; }                
 

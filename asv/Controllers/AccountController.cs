@@ -6,10 +6,7 @@ using asv.Managers.Security;
 using asv.Models;
 using asv.Helpers;
 using asv.Managers;
-<<<<<<< HEAD
-=======
-using asv.ASVServiceReference;
->>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
+//using asv.ASVServiceReference;
 
 namespace asv.Controllers
 {
@@ -31,11 +28,7 @@ namespace asv.Controllers
             {
                 MembershipPerson mp = (MembershipPerson)Membership.GetUser(model.Login);
                 if (mp.IsApproved)
-<<<<<<< HEAD
                 {
-=======
-                {                    
->>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
                     HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                     FormsAuthentication.SetAuthCookie(model.Login + ":" + model.Password, model.RememberMe);
 
