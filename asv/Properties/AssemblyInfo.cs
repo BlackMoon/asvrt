@@ -30,9 +30,14 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 <<<<<<< HEAD
+<<<<<<< HEAD
 [assembly: AssemblyVersion("1.1.910.1337")]
 [assembly: AssemblyFileVersion("1.1.910.1337")]
 =======
 [assembly: AssemblyVersion("1.2.2485.1625")]
 [assembly: AssemblyFileVersion("1.2.2485.1625")]
 >>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
+=======
+[assembly: AssemblyVersion("1.2.2486.1110")]
+[assembly: AssemblyFileVersion("1.2.2486.1110")]
+>>>>>>> b9f000f946060a9566c78dd2893f86a6bb042742
