@@ -332,28 +332,31 @@ namespace asv.Controllers
                 int i = 0, ix;
                 string key = null;
                 Node node = null;
-                IDictionary<string, object> t;                
+                IDictionary<string, object> t;
+                IList<Node> tmps;
                 
                 while (i < tables.Count)
                 {
                     t = tables[i];
-                    key = t["name"].ToString();                    
+                    key = t["name"].ToString();
 
-                    node = leafs.Find(nd => nd.Name == key);
-                    if (node != null)
+                    tmps = leafs.FindAll(nd => nd.Name == key);
+                    if (tmps.Count > 0)
                     {
-                        switch (drv)
+                        foreach (Node nd in tmps)
                         {
-                            case eDriverType.DriverCaché:
-                                node.Od = t["od"].ToString();
-                                break;
-                            case eDriverType.DriverDB2:
-                                node.Schema = t["schema"].ToString();
-                                break;
+                            switch (drv)
+                            {
+                                case eDriverType.DriverCaché:
+                                    nd.Od = t["od"].ToString();
+                                    break;
+                                case eDriverType.DriverDB2:
+                                    nd.Schema = t["schema"].ToString();
+                                    break;
+                            }
                         }
-                                                
                         tables.RemoveAt(i);
-                    }
+                    }                    
                     else
                         i++;
                 }  

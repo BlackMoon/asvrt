@@ -323,7 +323,7 @@
             '-',
             me.funcbtn = Ext.widget('button', {            
                 iconCls: 'icon-func',
-                text: 'Вставить',                
+                text: 'Функция',                
                 action: 'ufunc'
             }),            
             me.ljoin = Ext.widget('checkboxfield', {

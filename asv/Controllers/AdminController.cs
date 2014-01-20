@@ -602,15 +602,14 @@ namespace asv.Controllers
 
             try
             {
-                int id, n = 0;
+                int n = 0;
                 string fio = null;
 
                 AccessProvider ap = (AccessProvider)Membership.Provider;
                 XDocument xd = XDocument.Load(file.InputStream);
                 
                 foreach (var u in xd.Descendants("Users"))
-                {
-                    id = 0;
+                {                    
                     mp = new MembershipPerson();
                     mp.Bases = new List<Userdb>();
                     // isApproved = 1
@@ -649,17 +648,20 @@ namespace asv.Controllers
                         mp.Password = "123456";
 
                     if (db.Exists<MembershipPerson>("login = @0", mp.Login))
-                        id = db.ExecuteScalar<int>("SELECT IFNULL(u.id, 0) FROM qb_users u WHERE u.login = @0", mp.Login);
+                        mp.Id = db.ExecuteScalar<int>("SELECT IFNULL(u.id, 0) FROM qb_users u WHERE u.login = @0", mp.Login);
                     
-                    if (id != 0)
+                    if (mp.Id != 0)
                         ap.UpdateUser(mp);
                     else
                         ap.CreateUser(mp);
 
                     n++;
-                    System.Diagnostics.Debug.WriteLine(n);                   
+                    System.Diagnostics.Debug.WriteLine(n);                    
                 }
                 msg = n.ToString();
+
+                Response.RemoveOutputCacheItem("/Admin/GetUser");
+                Response.RemoveOutputCacheItem("/Admin/GetUsers"); 
             }
             catch (Exception e)
             {
