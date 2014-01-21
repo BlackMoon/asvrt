@@ -1,4 +1,10 @@
-﻿.icon-add {
+﻿#footer {
+    color: #DD4B39;
+    font-size: 11px;
+    padding: 2px 0 2px 2px; 
+}
+
+.icon-add {
     background-image: url("/Content/ext-theme-classic/images/dd/drop-add.gif");
 }
 

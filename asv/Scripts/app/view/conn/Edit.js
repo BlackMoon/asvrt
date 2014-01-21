@@ -88,12 +88,11 @@
                 }]
             },
             {
-<<<<<<< HEAD
                 xtype: 'checkboxfield',
                 name: 'hidesys',
                 boxLabel: '&nbsp;Не показывать таблицы вне разделов'
             }, me.constring,
-=======
+            {
                 xtype: 'textfield',
                 name: 'wsdl',
                 fieldLabel: 'Веб-служба авторизации'
@@ -104,7 +103,6 @@
                 boxLabel: '&nbsp;Не показывать таблицы вне разделов'
             },            
             me.constring,
->>>>>>> 4c1b310c125b24e32aff61490787cac0feb17dd8
             {
                 xtype: 'fieldcontainer',
                 layout: 'hbox',
