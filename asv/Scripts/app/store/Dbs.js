@@ -4,7 +4,16 @@
     defaultRootId: '',
     defaultRootProperty: 'data',
     nodeParam: '',
-    proxy: { timeout: connTimeout * 1000, type: 'ajax', url: '/main/getobjs' },
+    proxy: {        
+        listeners: {
+            exception: function (proxy, response) {                
+                showStatus(response.status + ' ' + response.statusText);
+            }
+        },
+        timeout: connTimeout * 1000,
+        type: 'ajax',
+        url: '/main/getobjs'
+    },
 
     listeners: {
         beforeexpand: function (nd) {                         
