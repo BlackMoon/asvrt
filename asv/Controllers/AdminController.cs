@@ -647,8 +647,7 @@ namespace asv.Controllers
                     else
                         mp.Password = "123456";
 
-                    if (db.Exists<MembershipPerson>("login = @0", mp.Login))
-                        mp.Id = db.ExecuteScalar<int>("SELECT IFNULL(u.id, 0) FROM qb_users u WHERE u.login = @0", mp.Login);
+                    mp.Id = db.SingleOrDefault<int>("SELECT u.id FROM qb_users u WHERE u.login = @0", mp.Login);
                     
                     if (mp.Id != 0)
                         ap.UpdateUser(mp);
