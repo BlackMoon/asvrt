@@ -7,9 +7,10 @@ using System.Web.Routing;
 using asv.Helpers;
 using asv.Managers;
 using asv.Models;
+using asv.Managers.Security;
 
 namespace asv.Controllers
-{
+{    
     public class MainController : BaseController
     {
         private DataManager dm = new DataManager();
@@ -28,28 +29,9 @@ namespace asv.Controllers
             ViewBag.ItemsPerPage = dm.ItemsPerPage;            
             
             return View();
-        }        
+        }       
 
-        public JsonNetResult DeleteBase(string conn)
-        {
-            byte result = 1;
-            string msg = null;
-
-            try
-            {
-                db.Execute("DELETE FROM qb_bases WHERE conn = @0 AND usercreate = @1", conn, User.Id);
-            }
-            catch (Exception e)
-            {
-                msg = e.Message;
-                result = 0;
-            }
-
-            JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg };
-            return jr;
-        }
-
+        [Authorize]
         public JsonNetResult DeleteQuery(int id)
         {
             byte result = 1;
@@ -88,6 +70,7 @@ namespace asv.Controllers
         /// <param name="limit">Кол-во записей на странице</param>
         /// <returns>JSON</returns>
         //[OutputCache(Duration = 120, VaryByParam = "name;drv;sql;args;page;limit")]
+        [Authorize]
         public JsonNetResult Execute(string name, eDriverType drv, string sql, object [] args, int page, int limit)
         {
             byte result = 1;
@@ -109,32 +92,9 @@ namespace asv.Controllers
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, data = rows, total = total };
             return jr;
-        }       
-       
-        // список доступных соединений пользователя
-        [OutputCache(Duration = 120, VaryByParam = "none")]
-        public JsonNetResult GetConns()
-        {
-            byte result = 1;
-            string msg = null;
+        }           
 
-            List<dynamic> conns = new List<dynamic>();
-            try
-            {
-                conns = db.Fetch<dynamic>("SELECT c.name, c.driver, IFNULL(c.schema, '') schema FROM qb_connections c ORDER BY c.name");
-                // TODO +проверка на видимость у пользователя
-            }
-            catch (Exception e)
-            {
-                msg = e.Message;
-                result = 0;
-            }
-
-            JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg, data = conns };
-            return jr;
-        }
-
+        [Authorize]
         public JsonNetResult GetObjs(eNodeType? nt, eDriverType? drv, string name, string schema)
         {
             byte result = 1;
@@ -177,6 +137,7 @@ namespace asv.Controllers
             return jr;
         }
 
+        [Authorize]
         [OutputCache(Duration = 120, VaryByParam = "id")]
         public JsonNetResult GetQuery(int id)
         {
@@ -214,6 +175,7 @@ namespace asv.Controllers
             return jr;
         }
 
+        [Authorize]
         [OutputCache(Duration = 120, VaryByParam="none")]
         public JsonNetResult GetQueries()
         {
@@ -236,6 +198,7 @@ namespace asv.Controllers
             return jr;
         }
 
+        [Authorize]
         [OutputCache(Duration = 120, VaryByParam = "name;drv;table;od")]
         public JsonNetResult GetTable(string name, eDriverType drv, string table, string od)
         {
@@ -310,6 +273,7 @@ namespace asv.Controllers
             return jr;
         }
 
+        [Authorize]
         [OutputCache(Duration = 120, VaryByParam="name;drv")]
         public JsonNetResult GetTables(string name, eDriverType drv)
         {
@@ -333,17 +297,17 @@ namespace asv.Controllers
                 string key = null;
                 Node node = null;
                 IDictionary<string, object> t;
-                IList<Node> tmps;
+                IList<Node> nds;
                 
                 while (i < tables.Count)
                 {
                     t = tables[i];
                     key = t["name"].ToString();
 
-                    tmps = leafs.FindAll(nd => nd.Name == key);
-                    if (tmps.Count > 0)
+                    nds = leafs.FindAll(nd => nd.Name == key);
+                    if (nds.Count > 0)
                     {
-                        foreach (Node nd in tmps)
+                        foreach (Node nd in nds)
                         {
                             switch (drv)
                             {
@@ -361,11 +325,8 @@ namespace asv.Controllers
                         i++;
                 }  
 
-                if (nodes.Count > 0)
-                {
-                    List<Node> nds = nodes;
-                    nodes = Misc.GetNodes(nodes, "");
-                }
+                if (nodes.Count > 0)                    
+                    nodes = Misc.GetNodes(nodes, "");              
 
                 int hidesys = db.ExecuteScalar<int>("SELECT c.hidesys FROM qb_connections c WHERE c.name = @0", name);
                 if (hidesys == 0 || User.IsAdmin == 1)
@@ -413,6 +374,7 @@ namespace asv.Controllers
             return jr;
         }       
 
+        [Authorize]
         public JsonNetResult UpdateQuery(string json)
         {
             byte result = 1;

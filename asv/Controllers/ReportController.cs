@@ -10,12 +10,14 @@ using asv.Helpers;
 using asv.Managers;
 using asv.Models;
 using PetaPoco;
+using asv.Managers.Security;
 
 namespace asv.Controllers
 {
+    [Authorize]
     public class ReportController : BaseController
     {
-        private const string REPORTSPATH = "Reports";
+        private const string REPORTSPATH = "Reports";        
         
         public JsonNetResult DeleteTpl(int id)
         {
@@ -36,7 +38,7 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg };
             return jr;
         }
-
+       
         public JsonNetResult Export(string name, eDriverType drv, string sql, string json, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
@@ -68,7 +70,7 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, link = path };
             return jr;
         }
-
+       
         public JsonNetResult GetReport(string name, eDriverType drv, string sql, string json, int repId, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
@@ -100,7 +102,7 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, link = path };
             return jr;
         }
-
+       
         public JsonNetResult GetTpl(int id)
         {
             byte result = 1;
@@ -122,7 +124,7 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, link = path };
             return jr;       
         }
-
+      
         public JsonNetResult GetTemplates(int page, int limit, string query)
         {
             byte result = 1;
@@ -152,7 +154,7 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, data = tpls, total = total };
             return jr;
         }
-
+      
         [HttpPost]
         public ActionResult UpdateTpl(int? id, string name, HttpPostedFileBase file)
         {
@@ -198,6 +200,5 @@ namespace asv.Controllers
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(new { success = result, message = msg, id = id, sz = Math.Ceiling(sz / 1024.0) });            
             return Content(json);
         }
-
     }
 }

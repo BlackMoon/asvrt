@@ -9,5 +9,5 @@
             type: 'xml',
             record: 'role'            
         }
-    },
+    }
 });

@@ -198,7 +198,7 @@
                         text: 'Значение',
                         dataIndex: 'filter2',
                         menuDisabled: true,                        
-                        editor: {}                    
+                        editor: 'textarea'                    
                     },
                     {
                         xtype: 'checkcolumn',

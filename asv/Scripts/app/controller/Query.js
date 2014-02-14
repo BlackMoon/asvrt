@@ -929,10 +929,10 @@ Ext.define('QB.controller.Query', {
                         (f.ft == 1 && f.oper != 8) && (v = Ext.Date.format(v, 'd.m.Y'));
 
                         switch (f.oper) {
-                            case 7:
+                            case 8:
                                 v = '%' + v + '%';
                                 break;
-                            case 8:
+                            case 9:
                                 v += '%';
                                 break;
                             case 10:
@@ -1091,7 +1091,7 @@ Ext.define('QB.controller.Query', {
     },
 
     showTables: function (field, newv) {        
-        var me = this, conn = me.getQdbsStore().findRecord('name', newv),
+        var me = this, conn = me.getQdbsStore().findRecord('name', newv || me.curSQL.conn.name), 
             tree = field.up('window').tree,
             store = me.curSQL.panel.tablesstore;
 

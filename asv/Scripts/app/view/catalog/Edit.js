@@ -38,7 +38,7 @@
             root: {
                 data: [],
                 expanded: true                
-            },
+            }
         });        
 
         me.form = Ext.widget('form',
@@ -159,7 +159,7 @@
                 margins: '0 2 0 4',
                 width: 32,
                 layout: { type: 'hbox', align: 'middle' },
-                items: [{ xtype: 'container', items: buttons }],
+                items: [{ xtype: 'container', items: buttons }]
             },
             me.grid = Ext.widget('bargrid', {
                 store: 'Tables',

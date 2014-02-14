@@ -271,11 +271,31 @@ namespace asv.Managers
 
                 OdbcConnection con = new OdbcConnection(conStr);                
                 con.Open();
-               
-                parts.sqlCount = "SELECT COUNT(*) FROM (" + sql.TrimEnd(';') + ")";
-                
-                if (drv == eDriverType.DriverDB2)
-                    parts.sqlCount += ";";               
+
+                bool hasOrder = true;
+                parts.sqlCount = "SELECT COUNT(*) FROM (" + sql.TrimEnd(';') + ")"; 
+                switch (drv)
+                {
+                    case eDriverType.DriverCaché:
+                        int ix = sql.LastIndexOf("order by", StringComparison.CurrentCultureIgnoreCase);
+
+                        if (ix != -1)
+                        {
+                            parts.sqlOrderBy = sql.Substring(ix);
+
+                            if (sql.Last() == ')')
+                                parts.sqlOrderBy = parts.sqlOrderBy.Substring(0, parts.sqlOrderBy.Length - 1);
+
+                            parts.sqlCount = parts.sqlCount.Replace(parts.sqlOrderBy, string.Empty);
+                        }
+                        else
+                            hasOrder = false;                        
+
+                        break;
+                    case eDriverType.DriverDB2:
+                        parts.sqlCount += ";";  
+                        break;
+                }                
                 
                 OdbcCommand com = new OdbcCommand(parts.sqlCount, con);
                 com.CommandTimeout = ConnTimeout;
@@ -304,7 +324,8 @@ namespace asv.Managers
 
                                 if (!string.IsNullOrEmpty(parts.sqlOrderBy))
                                 {
-                                    parts.sqlSelectRemoved = parts.sqlSelectRemoved.Replace(parts.sqlOrderBy, string.Empty);
+                                    if (hasOrder)
+                                        parts.sqlSelectRemoved = parts.sqlSelectRemoved.Replace(parts.sqlOrderBy, string.Empty);
 
                                     //re = new Regex(@"(\w+\.)");
                                     //parts.sqlOrderBy = re.Replace(parts.sqlOrderBy, string.Empty);

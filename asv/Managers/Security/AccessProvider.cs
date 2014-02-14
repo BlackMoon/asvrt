@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web.Security;
+using asv.Models;
 using asv.Helpers;
 using PetaPoco;
 using System.Web.Helpers;
@@ -146,6 +147,7 @@ namespace asv.Managers.Security
             var person = _db.Single<dynamic>("SELECT u.id, u.login, u.lastname, u.firstname, u.middlename, u.isapproved, u.isadmin, u.comment, u.serverlogin, u.theme FROM qb_users u WHERE u.login = @0", username);
 
             MembershipPerson mp = new MembershipPerson(this.Name, (int)person.id, username, person.lastname, person.firstname, person.middlename, person.isapproved, person.isadmin, person.serverlogin, person.comment);
+
             if (mp.ServerLogin == 1)            
                 mp.Bases = _db.Fetch<Userdb>("SELECT b.conn, b.auth FROM qb_bases b WHERE b.usercreate = @0 AND b.auth = 1", mp.Id);
 
@@ -234,18 +236,17 @@ namespace asv.Managers.Security
                 mp.Password = Crypto.Hash(mp.Password + "{" + mp.Salt + "}", Membership.HashAlgorithmType);
             }
 
-            _db.Update<MembershipPerson>(@"SET login = @1, password = CASE WHEN @2 IS NULL THEN password WHEN @2 = '' THEN password ELSE @2 END, salt = IFNULL(@3, salt), 
+            _db.Update<MembershipPerson>(@"SET login = @1, password = (CASE WHEN @2 IS NULL THEN password WHEN @2 = '' THEN password ELSE @2 END), salt = IFNULL(@3, salt), 
                                            lastname = @4, firstname = @5, middlename = @6, isadmin = @7, isapproved = @8, comment = @9, serverlogin = @10, theme = @11 WHERE id = @0;
                                            DELETE FROM qb_bases WHERE usercreate = @0;",
                        mp.Id, mp.Login, mp.Password, mp.Salt, mp.Lastname, mp.Firstname, mp.Middlename, mp.IsAdmin, mp.Locked, mp.Comment, mp.ServerLogin, mp.Theme);
+            
+            System.Diagnostics.Debug.WriteLine(_db.LastSQL);
 
             foreach (Userdb udb in mp.Bases)
             {
                 _db.Execute("INSERT INTO qb_bases(conn, auth, usercreate) VALUES(@0, @1, @2)", udb.Conn, udb.Auth, mp.Id);                
-            }
-
-            HttpContext.Current.Cache.Remove(mp.Login);
-            HttpContext.Current.Cache.Add(mp.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);            
+            }            
         }
 
         public override void UpdateUser(MembershipUser user)
@@ -278,12 +279,6 @@ namespace asv.Managers.Security
                             result = true;
                         }
                     }
-                    // код района
-                    /*AuthenticationServiceSoapClient assc = new AuthenticationServiceSoapClient();
-                    CSPCHD cspchd = new CSPCHD();
-                    UserInfo ui = assc.Login(ref cspchd, username, password, null);                                        
-                    _db.Update<MembershipPerson>("SET dept = @1 WHERE username = @0", username, ui.UserDepartamentCode);*/
-
                 }
                 else
                     result = (q.password == Crypto.Hash(password + "{" + q.salt + "}", Membership.HashAlgorithmType));
