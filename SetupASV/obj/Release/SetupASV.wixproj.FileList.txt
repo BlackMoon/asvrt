@@ -1,0 +1,13 @@
+obj\Release\Files.wixobj
+obj\Release\Product.wixobj
+obj\Release\Web.wixobj
+obj\Release\Components.wixobj
+E:\dev\SetupASV\SetupASV\bin\Release\ru-RU\SetupASV.msi
+E:\dev\SetupASV\SetupASV\bin\Release\ru-RU\SetupASV.wixpdb
+obj\Release\SetupASV.wixproj.BindContentsFileListru-RU.txt
+obj\Release\SetupASV.wixproj.BindOutputsFileListru-RU.txt
+obj\Release\SetupASV.wixproj.BindBuiltOutputsFileListru-RU.txt
+E:\dev\asv\SetupASV\SetupASV\bin\Release\ru-RU\SetupASV.msi
+E:\dev\asv\SetupASV\SetupASV\bin\Release\ru-RU\SetupASV.wixpdb
+E:\dev\asv\SetupASV\bin\Release\ru-RU\SetupASV.msi
+E:\dev\asv\SetupASV\bin\Release\ru-RU\SetupASV.wixpdb

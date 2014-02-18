@@ -1,0 +1,2 @@
+E:\dev\asv\SetupASV\bin\Release\ru-RU\SetupASV.msi
+E:\dev\asv\SetupASV\bin\Release\ru-RU\SetupASV.wixpdb
