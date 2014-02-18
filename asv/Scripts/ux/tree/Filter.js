@@ -35,9 +35,8 @@
         // iterate over all nodes in the tree in order to evalute them against the search criteria
         root.cascadeBy(function (node) {
             props.forEach(function (p) {
-                if (node.get(p).match(re)) {                                // if the node matches the search criteria and is a leaf (could be  modified to searh non-leaf nodes)
-                    matches.push(node);                                     // add the node to the matches array
-                    return false;
+                if (node.get(p).match(re)) {                             // if the node matches the search criteria and is a leaf (could be  modified to searh non-leaf nodes)
+                    matches.push(node);                                         // add the node to the matches array
                 }
             })            
         });

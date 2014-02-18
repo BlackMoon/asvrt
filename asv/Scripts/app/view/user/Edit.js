@@ -130,7 +130,8 @@ Ext.define('QB.view.user.Edit', {
                     hideHeaders: true,
                     columns: [ { dataIndex: 'name', flex: 1, minWidth: 300 },
                                { xtype: 'checkcolumn', dataIndex: 'available', width: 120, align: 'center' }]                
-                }]
+                }],
+                hidden: true
             },
             {
                 title: 'Базы',

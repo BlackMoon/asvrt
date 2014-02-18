@@ -12,6 +12,7 @@
 
     onLaunch: function () {
         var me = this;
-        me.centerRegion = me.application.viewport.down('[region=center]');        
+        me.centerRegion = me.application.viewport.down('[region=center]');
+        me.status = me.application.viewport.down('[region=south]').getComponent('status');
     }
 })

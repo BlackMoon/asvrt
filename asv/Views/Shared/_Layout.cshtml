@@ -65,9 +65,6 @@
 
         if (Ext.form.field.TextArea)
             Ext.apply(Ext.form.field.TextArea.prototype, { height: 60 });
-
-        if (Ext.MessageBox)
-            Ext.apply(Ext.MessageBox.prototype, { ok : "OK", cancel : "Отмена", yes : "Да", no : "Нет" });            
         
         var comboRenderer = function(combo){
             return function(v){
@@ -78,15 +75,7 @@
                 }
             }
         }
-        
-        var status;
-        function showStatus(msg) {
-            if (status) {
-                status.innerHTML = msg;
-                setTimeout(function () { status.innerHTML = ''; }, 5000);
-            }
-        }      
-        Ext.define('Auser', { serverlogin: @serverLogin, schema: '@schema', singleton: true });           
+
         Ext.Loader.setPath('Ext.ux', 'scripts/ux');
 
         Ext.application({
@@ -107,6 +96,8 @@
             init: function() {
                 var stateProvider = Ext.supports.LocalStorage ? new Ext.state.LocalStorageProvider() : new Ext.state.CookieProvider({ expires: new Date(new Date().getTime() + 2.592e9) }); // 30 days in msec
                 Ext.state.Manager.setProvider(stateProvider);
+              
+                Ext.define('Auser', { serverlogin: @serverLogin, schema: '@schema', singleton: true });                
             },
 
             launch: function () {
@@ -118,8 +109,9 @@
                     store.loaded = false;
                     store.load();
                 }
-                else                     
-                    me.maincontroller.auth();                 
+                else {                    
+                    me.maincontroller.auth(); 
+                }
 
                 me.viewport = Ext.create('Ext.container.Viewport', {
                     layout: 'border',
@@ -306,13 +298,14 @@
                     },
                     {
                         region: 'south',
-                        xtype: 'component',
-                        id: 'footer',
-                        height: 20                        
+                        xtype: 'toolbar',
+                        height: 22,
+                        items: [{
+                            xtype: 'tbtext', 
+                            itemId: 'status'                            
+                        }]
                     }]
-                });
-                
-                status = window.document.getElementById('footer');                
+                });            
             }
         });
     </script>

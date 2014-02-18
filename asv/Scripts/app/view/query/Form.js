@@ -4,7 +4,8 @@
     alias: 'widget.queryform',
     autoShow: false,
     btnSave: false,
-    title: 'Параметры',    
+    maximizable: true,
+    title: 'Параметры',
     width: 400,
 
     initComponent: function () {

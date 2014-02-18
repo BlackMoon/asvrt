@@ -6,7 +6,6 @@ using asv.Managers.Security;
 using asv.Models;
 using asv.Helpers;
 using asv.Managers;
-//using asv.ASVServiceReference;
 
 namespace asv.Controllers
 {
@@ -52,6 +51,7 @@ namespace asv.Controllers
             return jr;
         }
 
+        [Authorize]
         public JsonNetResult LogOff()
         {
             Response.RemoveOutputCacheItem("/Main/GetTables"); 

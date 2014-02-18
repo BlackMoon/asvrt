@@ -5,11 +5,11 @@
     defaultRootProperty: 'data',
     nodeParam: '',
     proxy: {        
-        listeners: {
+        /*listeners: {
             exception: function (proxy, response) {                
                 showStatus(response.status + ' ' + response.statusText);
             }
-        },
+        },*/
         timeout: connTimeout * 1000,
         type: 'ajax',
         url: '/main/getobjs'

@@ -2,6 +2,7 @@
     extend: 'QB.Store.Lstore',
     model: 'QB.model.Query',
     groupField: 'grp',
+    pageSize: 500,
     proxy: { url: '/main/getqueries' },
     remoteFilter: false,
     sorters: ['rem'],

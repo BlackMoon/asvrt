@@ -48,6 +48,9 @@
       <HintPath>NPOI\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -73,11 +76,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Data.SQLite.1.0.88.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies\System.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -87,11 +92,27 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.Abstractions">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -2420,6 +2441,7 @@
     <Content Include="Content\tools16.png" />
     <Content Include="Content\users16.png" />
     <Content Include="Global.asax" />
+    <Content Include="roles.xml" />
     <Content Include="Scripts\app\common\Bargrid.js" />
     <Content Include="Scripts\app\common\Bartree.js" />
     <Content Include="Scripts\app\common\Imagecolumn.js" />
@@ -2434,12 +2456,12 @@
     <Content Include="Scripts\app\controller\Query.js" />
     <Content Include="Scripts\app\controller\Template.js" />
     <Content Include="Scripts\app\model\Alias.js" />
-    <Content Include="Scripts\app\model\Catalog.js" />
     <Content Include="Scripts\app\model\Fparam.js" />
     <Content Include="Scripts\app\model\Rel.js" />
+    <Content Include="Scripts\app\model\Catalog.js" />
+    <Content Include="Scripts\app\model\Func.js" />
     <Content Include="Scripts\app\model\Role.js" />
     <Content Include="Scripts\app\model\Section.js" />
-    <Content Include="Scripts\app\model\Func.js" />
     <Content Include="Scripts\app\model\Table.js" />
     <Content Include="Scripts\app\model\Udb.js" />
     <Content Include="Scripts\app\model\Param.js" />
@@ -2454,10 +2476,8 @@
     <Content Include="Scripts\app\SQLTable.js" />
     <Content Include="Scripts\app\store\Aliases.js" />
     <Content Include="Scripts\app\store\Catalogs.js" />
-    <Content Include="Scripts\app\store\Params.js" />
-    <Content Include="Scripts\app\store\Roles.js" />
-    <Content Include="Scripts\app\store\Sections.js" />
     <Content Include="Scripts\app\store\Funcs.js" />
+    <Content Include="Scripts\app\store\Params.js" />
     <Content Include="Scripts\app\store\Qdbs.js" />
     <Content Include="Scripts\app\store\Dbs.js" />
     <Content Include="Scripts\app\store\Lstore.js" />
@@ -2465,13 +2485,19 @@
     <Content Include="Scripts\app\model\User.js" />
     <Content Include="Scripts\app\store\Conns.js" />
     <Content Include="Scripts\app\store\Queries.js" />
+    <Content Include="Scripts\app\store\Roles.js" />
+    <Content Include="Scripts\app\store\Sections.js" />
     <Content Include="Scripts\app\store\Tables.js" />
     <Content Include="Scripts\app\store\Templates.js" />
     <Content Include="Scripts\app\store\Uconns.js" />
     <Content Include="Scripts\app\store\Users.js" />
+    <Content Include="Scripts\app\view\base\Add.js" />
     <Content Include="Scripts\app\view\catalog\Edit.js" />
     <Content Include="Scripts\app\view\catalog\List.js" />
     <Content Include="Scripts\app\view\catalog\Tlist.js" />
+    <Content Include="Scripts\app\view\section\Edit.js" />
+    <Content Include="Scripts\app\view\section\List.js" />
+    <Content Include="Scripts\app\view\section\Tlist.js" />
     <Content Include="Scripts\ux\grid\FiltersFeature.js" />
     <Content Include="Scripts\ux\grid\filter\BooleanFilter.js" />
     <Content Include="Scripts\ux\grid\filter\DateFilter.js" />
@@ -2529,6 +2555,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
@@ -2542,7 +2569,6 @@
     <Content Include="Content\ext-theme-classic\Readme.md" />
     <Content Include="Content\ext-theme-gray\Readme.md" />
     <Content Include="Content\ext-theme-neptune\Readme.md" />
-    <None Include="Properties\PublishProfiles\pb.pubxml" />
     <None Include="Properties\PublishProfiles\Prof1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

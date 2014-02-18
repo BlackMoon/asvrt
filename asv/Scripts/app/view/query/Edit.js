@@ -198,7 +198,7 @@
                         text: 'Значение',
                         dataIndex: 'filter2',
                         menuDisabled: true,                        
-                        editor: {}                    
+                        editor: 'textarea'                    
                     },
                     {
                         xtype: 'checkcolumn',
@@ -335,7 +335,8 @@
             me.db2mode = Ext.widget('checkboxfield', {
                 itemId: 'db2mode',
                 boxLabel: '&nbsp;Режим DB2',
-                margin: '0 0 0 2'
+                margin: '0 0 0 2',
+                hidden: true
             }),
             '->', 'Схема:',
             me.schema = Ext.widget('tbtext')]

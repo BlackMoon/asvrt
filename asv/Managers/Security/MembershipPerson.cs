@@ -31,7 +31,6 @@ namespace asv.Managers.Security
         public string Lastname { get; set; }        
         public string Firstname { get; set; }        
         public string Middlename { get; set; }
-        public string Dept { get; set; }                                        // код департамента АСВ
         public string Theme { get; set; }
         [ResultColumn]
         public IList<Userdb> Bases { get; set; }

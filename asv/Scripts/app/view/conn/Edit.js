@@ -2,6 +2,7 @@
     extend: 'QB.Common.Updwnd',
     requires: ['QB.Common.Labelcombo', 'QB.Common.Updwnd'],
     alias: 'widget.connedit',
+
     title: 'Соединение',
     height: 480,
     width: 480,
@@ -92,17 +93,6 @@
                 name: 'hidesys',
                 boxLabel: '&nbsp;Не показывать таблицы вне разделов'
             }, me.constring,
-            {
-                xtype: 'textfield',
-                name: 'wsdl',
-                fieldLabel: 'Веб-служба авторизации'
-            },
-            {
-                xtype: 'checkboxfield',
-                name: 'hidesys',
-                boxLabel: '&nbsp;Не показывать таблицы вне разделов'
-            },            
-            me.constring,
             {
                 xtype: 'fieldcontainer',
                 layout: 'hbox',
