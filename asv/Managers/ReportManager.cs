@@ -262,10 +262,18 @@ namespace asv.Managers
             simpleParams.Add("Пользователь.Фамилия", person.Lastname);
             simpleParams.Add("Пользователь.Имя", person.Firstname);
             simpleParams.Add("Пользователь.Отчество", person.Middlename);
-                        
+
+            int i;
+            string v;
             foreach (UParam p in userParams)
-            {  
-                simpleParams.Add("Параметр." + p.Field, p.Def);
+            {
+                i = 0;
+                v = "Параметр." + p.Field;
+                while (simpleParams.ContainsKey(v))
+                {
+                    v = "Параметр." + p.Field + i;
+                }
+                simpleParams.Add(v, p.Def);
             }
         }
 

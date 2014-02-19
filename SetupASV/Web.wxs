@@ -9,14 +9,14 @@
     <DirectoryRef Id="INSTALLLOCATION">
       
       <Component Id="AppPool" Guid="" KeyPath="yes">
-        <iis:WebAppPool Id="AppPool" Name="$(var.ProductName)" ManagedRuntimeVersion="v4.0" ManagedPipelineMode="integrated" />
+        <iis:WebAppPool Id="Pool" Name="$(var.ProductName)" ManagedRuntimeVersion="v4.0" ManagedPipelineMode="integrated" />
       </Component>
 
       <Component Id="WebSite" Guid="751DEB01-ECC1-48ff-869A-65BCEE9E0528" KeyPath="yes">        
         <iis:WebSite Id="Site" Description="$(var.ProductName)" Directory="INSTALLLOCATION" >
-          <iis:WebAddress Id="AllUnassigned" Port="8080" />
-          <iis:WebApplication Id="WebApp" Name="WebApp" WebAppPool="AppPool" />          
-          <iis:WebDirProperties Id="DirProp" AnonymousAccess="yes" WindowsAuthentication="no" />
+          <iis:WebAddress Id="AllUnassigned" Port="81" />
+          <iis:WebApplication Id="WebApp" Name="$(var.ProductName)" WebAppPool="Pool"/>          
+          <iis:WebDirProperties Id="DirProp" AnonymousAccess="yes" WindowsAuthentication="no" BasicAuthentication="no"/>
         </iis:WebSite>      
       </Component>
       

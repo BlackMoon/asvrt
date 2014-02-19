@@ -4,7 +4,7 @@
 
   <?include Var.wxi?>
 
-  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)" Language="1049" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+  <Product Id="$(var.ProductCode)" Name="Конструктор запросов" Language="1049" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
     <Package InstallerVersion="200" Compressed="yes" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -15,7 +15,7 @@
         <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
           <Component Id="SharedFolder" Guid="0388151B-8031-41C1-8725-A59579CABF0F">
             <CreateFolder Directory="INSTALLLOCATION">
-              <util:PermissionEx User="IIS_IUSRS" GenericWrite="yes" />
+              <util:PermissionEx User="IIS_IUSRS" GenericAll="yes" />
             </CreateFolder>
           </Component>
         </Directory>
@@ -23,12 +23,9 @@
     </Directory>
 
     <Feature Id="ProductFeature" Title="SetupASV" Level="1" >
-
-      <Feature Id="MainContent" Title="Gatineau Website" Description="The website content" Level="1">
-        <ComponentGroupRef Id="ProductComponent" />
-        <ComponentGroupRef Id="IssConfiguration" />
-        <ComponentRef Id="SharedFolder" />
-      </Feature>
+      <ComponentGroupRef Id="ProductComponent" />
+      <ComponentGroupRef Id="IssConfiguration" />
+      <ComponentRef Id="SharedFolder" />      
     </Feature>
 
     <UI Id="WixUI_SkipLicenseAgreement">
