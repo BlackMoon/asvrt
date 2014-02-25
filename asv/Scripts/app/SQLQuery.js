@@ -177,7 +177,7 @@
             sql = me.panel.text.getValue();
 
         if (me.userdefined) 
-            match = Ext.Array.unique(sql.match(/\?(\w+)|\@(\w+)/g) || []);        
+            match = Ext.Array.unique(sql.match(/\?([A-Za-z0-9]+)|\@([A-Za-z0-9]+)/g) || []);
 
         return match;
     },
