@@ -184,7 +184,7 @@ namespace asv.Controllers
 
             List<dynamic> queries = new List<dynamic>();
             try
-            {    
+            {   
                 queries = db.Fetch<dynamic>("SELECT q.id, q.name, q.conn, q.grp, q.drv FROM qb_vqueries q ORDER BY q.name");
             }
             catch (Exception e)

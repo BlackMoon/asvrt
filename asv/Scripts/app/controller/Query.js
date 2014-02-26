@@ -1265,6 +1265,17 @@ Ext.define('QB.controller.Query', {
                 id: query.id, name: qname, conn: query.conn.name, group: group, subgroup: subgroup, db2mode: query.db2mode, useleftjoin: query.useleftjoin, userdefined: query.userdefined,
                 funcs: funcs, params: params, relations: query.relations, reports: reports, tables: tables, uparams: udparams, sql: query.panel.text.getValue()
             };
+
+            var ft, tab = me.centerRegion.child('#querytab');
+            if (tab) {
+                var grid = tab.child('querylist');
+
+                if (grid) {
+                    ft = grid.view.getFeature('grouping');
+                    ft && ft.disable();
+                }
+            }
+
             panel.el.mask('Сохранение', 'x-mask-loading');
 
             Ext.Ajax.request({
@@ -1278,6 +1289,7 @@ Ext.define('QB.controller.Query', {
                         panel.ownerCt.setTitle(qname);
 
                         var store = me.getQueriesStore();
+                        
                         if (panel.upd) {
                             var rec = store.findRecord('id', query.id, 0, false, false, true);
                             if (rec) {
@@ -1291,7 +1303,8 @@ Ext.define('QB.controller.Query', {
                             store.add(new QB.model.Query({ id: query.id, name: qname, grp: group, conn: query.conn.name, drv: query.conn.drv }));
                             panel.upd = true;
                         }
-                        store.sort('name', 'asc');
+
+                        store.sort('name', 'asc');                                              
                     }
                     else {
                         icon = Ext.MessageBox.WARNING;
@@ -1301,9 +1314,10 @@ Ext.define('QB.controller.Query', {
 
                     Ext.MessageBox.show({ title: title, msg: msg, buttons: Ext.MessageBox.OK, icon: icon });
 
+                    ft && ft.enable();
                     panel.el.unmask();
                 },
-                failure: function (response) { panel.el.unmask(); }
+                failure: function (response) { ft && ft.enable(); panel.el.unmask(); }
             });
         }
         catch (e) {
