@@ -32,7 +32,6 @@ Global
 		{2D5441A3-6E7A-4AF1-A71C-FB2D842C60CE}.Debug|x86.Build.0 = Debug|x86
 		{2D5441A3-6E7A-4AF1-A71C-FB2D842C60CE}.Release|Any CPU.ActiveCfg = Release|x86
 		{2D5441A3-6E7A-4AF1-A71C-FB2D842C60CE}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{2D5441A3-6E7A-4AF1-A71C-FB2D842C60CE}.Release|Mixed Platforms.Build.0 = Release|x86
 		{2D5441A3-6E7A-4AF1-A71C-FB2D842C60CE}.Release|x86.ActiveCfg = Release|x86
 		{2D5441A3-6E7A-4AF1-A71C-FB2D842C60CE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
@@ -40,11 +39,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_AssemblyInfoFilename = asv\Properties\AssemblyInfo.cs
-		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
-		BuildVersion_StartDate = 2013/7/23
-		BuildVersion_UseGlobalSettings = False
-		BuildVersion_UpdateAssemblyVersion = True
 		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UseGlobalSettings = False
+		BuildVersion_StartDate = 2013/7/23
+		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
+		BuildVersion_AssemblyInfoFilename = asv\Properties\AssemblyInfo.cs
 	EndGlobalSection
 EndGlobal
