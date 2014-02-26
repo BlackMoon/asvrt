@@ -375,6 +375,7 @@ namespace asv.Controllers
         }       
 
         [Authorize]
+        [ValidateInput(false)]
         public JsonNetResult UpdateQuery(string json)
         {
             byte result = 1;
