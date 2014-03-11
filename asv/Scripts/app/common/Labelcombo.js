@@ -1,4 +1,4 @@
-﻿Ext.define('QB.Common.Labelcombo', {
+﻿Ext.define('QB.common.Labelcombo', {
     extend: 'Ext.form.ComboBox',
     alias: 'widget.labelcombo',
     queryMode: 'local',

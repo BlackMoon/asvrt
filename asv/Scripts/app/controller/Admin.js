@@ -5,13 +5,10 @@ Ext.define('QB.controller.Admin', {
 
     models: ['Alias', 'Connection', 'Fparam', 'Table', 'Udb', 'User' ],
     stores: ['Aliases', 'Catalogs', 'Conns', 'Funcs', 'Qdbs', 'Roles', 'Tables', 'Users'],
-    views: ['alias.Edit', 'alias.List', 'conn.Edit', 'conn.List', 'func.Edit', 'func.List', 'catalog.Edit', 'catalog.List', 'tool.Edit', 'user.Edit', 'user.Import', 'user.List'],
+    views: ['alias.Edit', 'alias.List', 'conn.Edit', 'conn.List', 'func.Edit', 'func.List', 'catalog.Edit', 'catalog.List', 'setting.Edit', 'user.Edit', 'user.Import', 'user.List'],
 
     init: function () {
         var me = this;
-
-        me.getConnsStore().on({ exception: me.onException, scope: me });
-        me.getUsersStore().on({ exception: me.onException, scope: me });
 
         me.control({                        
             'aliasedit button[action=save]': {
@@ -42,13 +39,13 @@ Ext.define('QB.controller.Admin', {
                 click: me.showFuncs
             },
             'toolbar [action=settings]': {
-                click: me.showSettings
+                click: me.showSetting
             },
             'toolbar [action=users]': {
                 click: me.showUsers
             },            
-            'tooledit button[action=save]': {
-                click: me.updateSettings
+            'setedit button[action=save]': {
+                click: me.updateSetting
             },
             'useredit': {
                 show: function () { me.getConnsStore().load(); }
@@ -443,11 +440,10 @@ Ext.define('QB.controller.Admin', {
         tab.show();
     },
 
-    showSettings: function () {
+    showSetting: function () {
         var me = this, tab = me.centerRegion.child('#settab');
         if (!tab) {
-            var view = Ext.widget('tooledit');
-            view.form.getForm().setValues({ conntimeout: connTimeout, itemsperpage: itemsPerPage });
+            var view = Ext.widget('setedit');            
             tab = me.centerRegion.add({ title: 'Настройки', itemId: 'settab', layout: 'fit', items: [view] });            
         }
         tab.show();
@@ -697,30 +693,30 @@ Ext.define('QB.controller.Admin', {
         }
     },    
       
-    updateSettings: function(btn){
-        var app = this.application,
-            form = btn.up('form'),
+    updateSetting: function(btn){
+        var form = btn.up('form'),
             panel = form.up('panel');
         
         try
         {
             if (!form.isValid()) throw 'Ошибка заполнения';
-            var settings = form.getValues();
+            var setting = form.getValues();
 
             panel.el.mask('Сохранение', 'x-mask-loading');
-
             Ext.Ajax.request({
                 url: '/admin/updatesettings',
-                params: settings,
+                params: setting,
                 success: function (response) {
                     var obj = Ext.decode(response.responseText),
                         icon = Ext.MessageBox.WARNING,
-                        msg = obj.msg,
+                        msg = obj.message,
                         title = 'Внимание';                        
 
                     if (obj.success) {
-                        connTimeout = settings.conntimeout;
-                        itemsPerPage = settings.itemsperpage;                        
+                        connTimeout = setting.conntimeout;
+                        itemsPerPage = setting.itemsperpage;
+                        minRequiredPasswordLength = setting.minrequiredpasswordlength;
+                        minRequiredUsernameLength = setting.minrequiredusernamelength;
 
                         icon = Ext.MessageBox.INFO;
                         msg = 'Настройки сохранены';

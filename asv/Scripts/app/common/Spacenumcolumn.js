@@ -1,4 +1,4 @@
-﻿Ext.define('QB.Common.Spacenumcolumn', {
+﻿Ext.define('QB.common.Spacenumcolumn', {
     extend: 'Ext.grid.NumberColumn',
     alias: ['widget.spacenumcolumn'],
     requires: ['Ext.util.Format'],

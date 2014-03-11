@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.query.Edit', {
     extend: 'Ext.tab.Panel',    
-    requires: ['QB.Common.Bargrid', 'QB.SQLQuery', 'QB.model.Param', 'QB.model.Uparam', 'QB.view.query.Add'],
+    requires: ['QB.common.Bargrid', 'QB.SQLQuery', 'QB.model.Param', 'QB.model.Uparam', 'QB.view.query.Add'],
     alias: 'widget.queryedit',
     tabPosition: 'bottom',
     upd: true, 
@@ -9,11 +9,11 @@
         
         var me = this,
             opers = ['Нет', 'Равно', 'Не равно', 'Больше', 'Меньше', 'Определено', 'Не определено', 'С .. по ..', 'Содержит', 'Начинается', 'В списке', 'Не в списке'],
-            aggrcombo = new QB.Common.Labelcombo({ labels: ['Нет', 'Среднее', 'Количество', 'Группировка', 'Макс.', 'Мин.', 'Сумма'] }),
-            ftcombo = new QB.Common.Labelcombo({ labels: ['Логический', 'Дата', 'Число', 'Строка'] }); 
-        opercombo = new QB.Common.Labelcombo({ labels: opers }),
-        opercombo1 = new QB.Common.Labelcombo({ labels: opers }),
-        ordcombo = new QB.Common.Labelcombo({ labels: ['Без сортировки', 'По возрастанию', 'По убыванию'] });
+            aggrcombo = new QB.common.Labelcombo({ labels: ['Нет', 'Среднее', 'Количество', 'Группировка', 'Макс.', 'Мин.', 'Сумма'] }),
+            ftcombo = new QB.common.Labelcombo({ labels: ['Логический', 'Дата', 'Число', 'Строка'] }); 
+        opercombo = new QB.common.Labelcombo({ labels: opers }),
+        opercombo1 = new QB.common.Labelcombo({ labels: opers }),
+        ordcombo = new QB.common.Labelcombo({ labels: ['Без сортировки', 'По возрастанию', 'По убыванию'] });
         
         me.funcsstore = Ext.create('Ext.data.Store', { model: 'QB.model.Ufunc' });
 
@@ -414,7 +414,7 @@
             switch (r.get('ft')) {
                 // bool
                 case 0:
-                    editor = Ext.create('Ext.grid.CellEditor', { field: Ext.create('QB.Common.Labelcombo', { labels: ['Нет', 'Да'] }) });
+                    editor = Ext.create('Ext.grid.CellEditor', { field: Ext.create('QB.common.Labelcombo', { labels: ['Нет', 'Да'] }) });
                     break;
                 // datetime
                 case 1:
@@ -436,7 +436,7 @@
         switch (r.get('ft')) {
             // bool
             case 0:
-                editor = Ext.create('Ext.grid.CellEditor', { field: Ext.create('QB.Common.Labelcombo', { labels: ['Нет', 'Да'] }) });
+                editor = Ext.create('Ext.grid.CellEditor', { field: Ext.create('QB.common.Labelcombo', { labels: ['Нет', 'Да'] }) });
                 break;
             // datetime
             case 1:

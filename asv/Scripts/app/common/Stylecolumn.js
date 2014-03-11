@@ -1,4 +1,4 @@
-﻿Ext.define('QB.Common.Stylecolumn', {
+﻿Ext.define('QB.common.Stylecolumn', {
     extend: 'Ext.grid.Column',
     alias: 'widget.stylecolumn',
     cellText: '',

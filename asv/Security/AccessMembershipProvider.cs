@@ -10,14 +10,29 @@ using System.Configuration;
 using System.Web.Caching;
 using System.Web;
 
-namespace asv.Managers.Security
+namespace asv.Security
 {
-    public class AccessProvider : MembershipProvider
+    public class AccessMembershipProvider : MembershipProvider
     {
+        private int         _maxInvalidPasswordAttempts;
         private int         _minRequiredPasswordLength;
+        private int         _minRequiredUsernameLength;
+        private int         _passwordAnswerAttemptLockoutDuration;
+        private int         _saltLength;
+
         private string      _connectionStringName;
         private string      _syslogin = "system";
+        
         private Database    _db;
+
+        public void InitConfig(NameValueCollection config)
+        {
+            _maxInvalidPasswordAttempts = Misc.GetConfigValue(config["maxInvalidPasswordAttempts"], 5);
+            _minRequiredPasswordLength = Misc.GetConfigValue(config["minRequiredPasswordLength"], 7);
+            _minRequiredUsernameLength = Misc.GetConfigValue(config["minRequiredUsernameLength"], 7);
+            _passwordAnswerAttemptLockoutDuration = Misc.GetConfigValue(config["passwordAnswerAttemptLockoutDuration"], 10);
+            _saltLength = Misc.GetConfigValue(config["saltLength"], 16);
+        }
 
         public override void Initialize(string name, NameValueCollection config)
         {
@@ -25,12 +40,12 @@ namespace asv.Managers.Security
                 throw new ArgumentNullException("config");
 
             if (String.IsNullOrEmpty(name))
-                name = "AccessProvider";
+                name = "AccessMembershipProvider";
             
             base.Initialize(name, config);
 
             _connectionStringName = Misc.GetConfigValue(config["connectionStringName"], "");
-            _minRequiredPasswordLength = Misc.GetConfigValue(config["minRequiredPasswordLength"], 6);
+            InitConfig(config);
             
             _db = new Database(_connectionStringName);
             _db.EnableAutoSelect = false;

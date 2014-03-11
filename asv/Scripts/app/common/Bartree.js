@@ -1,6 +1,6 @@
-﻿Ext.define('QB.Common.Bartree', {
+﻿Ext.define('QB.common.Bartree', {
     extend: 'Ext.tree.Panel', 
-    requires: [ 'QB.Common.Searchfield' ],   
+    requires: [ 'QB.common.Searchfield' ],   
     alias: 'widget.bartree',
     columnLines: true,
     rootVisible: false,

@@ -8,8 +8,8 @@
 });
 
 Ext.define('QB.view.template.Edit', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Updwnd'],
     alias: 'widget.templateedit',
 
     title: 'Шаблон',

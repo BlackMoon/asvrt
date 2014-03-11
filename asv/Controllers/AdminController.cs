@@ -8,9 +8,10 @@ using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml.Linq;
 using asv.Helpers;
-using asv.Managers.Security;
+using asv.Security;
 using asv.Models;
 using PetaPoco;
+using System.Collections.Specialized;
 
 namespace asv.Controllers
 {
@@ -128,7 +129,7 @@ namespace asv.Controllers
 
             try
             {
-                AccessProvider ap = (AccessProvider)Membership.Provider;
+                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
                 ap.DeleteUser(id);       
          
                 Response.RemoveOutputCacheItem("/Admin/GetUser");
@@ -412,15 +413,21 @@ namespace asv.Controllers
             AppSettingsSection ass = cfg.AppSettings;
             
             SettingsModel sm = new SettingsModel();
-            string key = "ConnTimeout";
 
-            if (ass.Settings[key] != null)
-                sm.ConnTimeout = Misc.GetConfigValue(ass.Settings[key].Value, 300);
+            MembershipSection ms = (MembershipSection)cfg.GetSection("system.web/membership");
+            ProviderSettings ps = ms.Providers["AccessMembershipProvider"];
 
-            key = "ItemsPerPage";
+            string key = "maxInvalidPasswordAttempts";
+            if (ps.Parameters[key] != null)
+                sm.MaxInvalidPasswordAttempts = Misc.GetConfigValue(ps.Parameters[key], 5);
 
-            if (ass.Settings[key] != null)
-                sm.ItemsPerPage = Misc.GetConfigValue(ass.Settings[key].Value, 50);
+            key = "passwordAnswerAttemptLockoutDuration";
+            if (ps.Parameters[key] != null)
+                sm.PasswordAnswerAttemptLockoutDuration = Misc.GetConfigValue(ps.Parameters[key], 10);
+
+            key = "saltLength";
+            if (ps.Parameters[key] != null)
+                sm.SaltLength = Misc.GetConfigValue(ps.Parameters[key], 16); 
 
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, settings = sm };
@@ -508,7 +515,7 @@ namespace asv.Controllers
             List<dynamic> users = new List<dynamic>();
             try
             {
-                AccessProvider ap = (AccessProvider)Membership.Provider;
+                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
                 users = ap.GetAllUsers(page, limit, query, out total);                
             }
             catch (Exception e)
@@ -530,7 +537,7 @@ namespace asv.Controllers
             try
             {
                 // approved = 1 - locked
-                AccessProvider ap = (AccessProvider)Membership.Provider;
+                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
                 ap.LockUser(id, 1 - locked);
                 Response.RemoveOutputCacheItem("/Admin/GetUser");
                 Response.RemoveOutputCacheItem("/Admin/GetUsers");
@@ -605,7 +612,7 @@ namespace asv.Controllers
                 int n = 0;
                 string fio = null;
 
-                AccessProvider ap = (AccessProvider)Membership.Provider;
+                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
                 XDocument xd = XDocument.Load(file.InputStream);
                 
                 foreach (var u in xd.Descendants("Users"))
@@ -920,6 +927,33 @@ namespace asv.Controllers
                 else
                     ass.Settings.Add(key, val);
 
+                MembershipSection ms = (MembershipSection)cfg.GetSection("system.web/membership");
+                ProviderSettings ps = ms.Providers["AccessMembershipProvider"];
+
+                key = "maxInvalidPasswordAttempts";
+                val = sm.MaxInvalidPasswordAttempts.ToString();
+                ps.Parameters[key] = val;
+
+                key = "minRequiredPasswordLength";
+                val = sm.MinRequiredPasswordLength.ToString();
+                ps.Parameters[key] = val;
+
+                key = "minRequiredUsernameLength";
+                val = sm.MinRequiredUsernameLength.ToString();
+                ps.Parameters[key] = val;
+
+                key = "passwordAnswerAttemptLockoutDuration";
+                val = sm.PasswordAnswerAttemptLockoutDuration.ToString();
+                ps.Parameters[key] = val;
+
+                key = "saltLength";
+                val = sm.SaltLength.ToString();
+                ps.Parameters[key] = val;
+
+                // update provider 
+                AccessMembershipProvider provider = (AccessMembershipProvider)Membership.Provider;
+                provider.InitConfig(ps.Parameters as NameValueCollection); 
+
                 cfg.Save(ConfigurationSaveMode.Modified);
             }
             catch (Exception e)
@@ -945,9 +979,9 @@ namespace asv.Controllers
             try
             {
                 // isApproved = 1 - locked
-                mp.Locked = 1 - mp.Locked;                
+                mp.Locked = 1 - mp.Locked;
 
-                AccessProvider ap = (AccessProvider)Membership.Provider;
+                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
                 if (mp.Id != 0)
                 {
                     ap.UpdateUser(mp);

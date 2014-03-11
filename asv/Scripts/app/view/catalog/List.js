@@ -1,5 +1,5 @@
 ﻿Ext.define('QB.view.catalog.List', {
-    extend: 'QB.Common.Bargrid',    
+    extend: 'QB.common.Bargrid',    
     alias: 'widget.cataloglist',
     columns: [{ xtype: 'rownumberer' },
               { text: 'Наименование', dataIndex: 'name', minWidth: 300, flex: 1 },

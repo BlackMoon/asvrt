@@ -1,4 +1,4 @@
-Ext.define('QB.Common.Searchfield', {
+Ext.define('QB.common.Searchfield', {
     extend: 'Ext.form.field.Trigger',
     alias: 'widget.searchfield',
     trigger1Cls: Ext.baseCSSPrefix + 'form-clear-trigger',

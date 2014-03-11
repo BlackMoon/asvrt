@@ -10,7 +10,7 @@ using asv.Helpers;
 using asv.Managers;
 using asv.Models;
 using PetaPoco;
-using asv.Managers.Security;
+using asv.Security;
 
 namespace asv.Controllers
 {

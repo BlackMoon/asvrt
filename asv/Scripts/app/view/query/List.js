@@ -1,5 +1,5 @@
 ﻿Ext.define('QB.view.query.List', {
-    extend: 'QB.Common.Bargrid',    
+    extend: 'QB.common.Bargrid',    
     alias: 'widget.querylist',
     columns: [{ xtype: 'rownumberer' },
               { text: 'Идентификатор', dataIndex: 'id', width: 200 },

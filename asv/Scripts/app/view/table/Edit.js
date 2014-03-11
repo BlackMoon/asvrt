@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.table.Edit', {
     extend: 'Ext.window.Window',
-    requires: ['Ext.ux.grid.FiltersFeature', 'QB.Common.Imagecolumn', 'QB.SQLTable', 'QB.Store.Lstore'],
+    requires: ['Ext.ux.grid.FiltersFeature', 'QB.common.Imagecolumn', 'QB.SQLTable', 'QB.store.Lstore'],
     alias: 'widget.tableedit',        
     collapsible: true,
     constrainHeader: true,
@@ -17,7 +17,7 @@
                 local: true
             };
 
-        me.store = Ext.create('QB.Store.Lstore', {
+        me.store = Ext.create('QB.store.Lstore', {
             fields: ['out', 'name', 'rem', 'ft', 'nt', 'joined'],
             sorters: ['rem']
         });

@@ -1,5 +1,5 @@
 ﻿Ext.define('QB.view.alias.List', {
-    extend: 'QB.Common.Bargrid',    
+    extend: 'QB.common.Bargrid',    
     alias: 'widget.aliaslist',    
     columns: [{ xtype: 'rownumberer', resizable: true, width: 28 },
                { text: 'Наименование', dataIndex: 'name', minWidth: 200, flex: 1 },

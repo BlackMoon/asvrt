@@ -1,4 +1,4 @@
-﻿Ext.define('QB.Common.Labelcolumn', {
+﻿Ext.define('QB.common.Labelcolumn', {
     extend: 'Ext.grid.Column',
     alias: 'widget.labelcolumn',
     labels: [],

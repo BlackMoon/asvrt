@@ -1,5 +1,5 @@
-﻿Ext.define('QB.Common.Imagecolumn', {
-    extend: 'QB.Common.Stylecolumn',
+﻿Ext.define('QB.common.Imagecolumn', {
+    extend: 'QB.common.Stylecolumn',
     alias: 'widget.imagecolumn',
     align: 'center',
     alter: true,    

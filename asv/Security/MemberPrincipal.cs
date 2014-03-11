@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Principal;
 
-namespace asv.Managers.Security
+namespace asv.Security
 {
     public class MemberPrincipal : GenericPrincipal
     {

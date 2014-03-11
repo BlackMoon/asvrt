@@ -5,7 +5,7 @@ using asv.Models;
 using Newtonsoft.Json;
 using PetaPoco;
 
-namespace asv.Managers.Security
+namespace asv.Security
 {
     [TableName("qb_bases")]
     public class Userdb

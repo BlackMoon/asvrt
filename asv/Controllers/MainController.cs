@@ -7,7 +7,7 @@ using System.Web.Routing;
 using asv.Helpers;
 using asv.Managers;
 using asv.Models;
-using asv.Managers.Security;
+using asv.Security;
 
 namespace asv.Controllers
 {    
@@ -26,7 +26,10 @@ namespace asv.Controllers
         public ActionResult Index()
         {
             ViewBag.ConnTimeout = dm.ConnTimeout;
-            ViewBag.ItemsPerPage = dm.ItemsPerPage;            
+            ViewBag.ItemsPerPage = dm.ItemsPerPage;
+
+            ViewData["minRequiredPasswordLength"] = System.Web.Security.Membership.MinRequiredPasswordLength;
+            ViewData["minRequiredUsernameLength"] = System.Web.Security.Membership.MinRequiredPasswordLength; 
             
             return View();
         }       

@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.conn.Edit', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Labelcombo', 'QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Labelcombo', 'QB.common.Updwnd'],
     alias: 'widget.connedit',
 
     title: 'Соединение',

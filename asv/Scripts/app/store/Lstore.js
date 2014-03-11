@@ -1,4 +1,4 @@
-﻿Ext.define('QB.Store.Lstore', {
+﻿Ext.define('QB.store.Lstore', {
     extend: 'Ext.data.Store',
     loaded: false,
     remoteFilter: true,
@@ -17,8 +17,7 @@
         }
         
         cfg.proxy = obj;
-
-        me.addEvents('exception');
+        
         me.callParent(arguments);
 
         (me.pageSize == 0) && (me.proxy.limitParam = me.proxy.pageParam = me.proxy.startParam = null);

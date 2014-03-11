@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.section.Edit', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Bargrid', 'QB.Common.Bartree', 'QB.Common.Updwnd' ],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Bargrid', 'QB.common.Bartree', 'QB.common.Updwnd' ],
     layout: { type: 'vbox', align: 'stretch' },
     alias: 'widget.sectionedit',
     btns: ['addall', 'add', 'remove', 'removeall'],

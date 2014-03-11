@@ -133,10 +133,10 @@
     <Compile Include="Managers\DataManager.cs" />
     <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Managers\ReportManager.cs" />
-    <Compile Include="Managers\Security\AccessProvider.cs" />
-    <Compile Include="Managers\Security\AdminAuthorize.cs" />
-    <Compile Include="Managers\Security\MemberPrincipal.cs" />
-    <Compile Include="Managers\Security\MembershipPerson.cs" />
+    <Compile Include="Security\AccessMembershipProvider.cs" />
+    <Compile Include="Security\AdminAuthorize.cs" />
+    <Compile Include="Security\MemberPrincipal.cs" />
+    <Compile Include="Security\MembershipPerson.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\DBCore.cs" />
     <Compile Include="Models\PetaPoco.cs" />
@@ -2444,6 +2444,7 @@
     <Content Include="roles.xml" />
     <Content Include="Scripts\app\common\Bargrid.js" />
     <Content Include="Scripts\app\common\Bartree.js" />
+    <Content Include="Scripts\app\common\Generalset.js" />
     <Content Include="Scripts\app\common\Imagecolumn.js" />
     <Content Include="Scripts\app\common\Labelcolumn.js" />
     <Content Include="Scripts\app\common\Labelcombo.js" />
@@ -2498,6 +2499,7 @@
     <Content Include="Scripts\app\view\section\Edit.js" />
     <Content Include="Scripts\app\view\section\List.js" />
     <Content Include="Scripts\app\view\section\Tlist.js" />
+    <Content Include="Scripts\app\view\setting\Edit.js" />
     <Content Include="Scripts\ux\grid\FiltersFeature.js" />
     <Content Include="Scripts\ux\grid\filter\BooleanFilter.js" />
     <Content Include="Scripts\ux\grid\filter\DateFilter.js" />
@@ -2525,7 +2527,6 @@
     <Content Include="Scripts\app\view\Explorer.js" />
     <Content Include="Scripts\app\view\template\Edit.js" />
     <Content Include="Scripts\app\view\template\List.js" />
-    <Content Include="Scripts\app\view\tool\Edit.js" />
     <Content Include="Scripts\app\view\user\Edit.js" />
     <Content Include="Scripts\app\view\user\Import.js" />
     <Content Include="Scripts\app\view\user\List.js" />
@@ -2536,6 +2537,7 @@
     <Content Include="Scripts\ux\grid\menu\ListMenu.js" />
     <Content Include="Scripts\ux\grid\menu\RangeMenu.js" />
     <Content Include="Scripts\ux\tree\Filter.js" />
+    <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

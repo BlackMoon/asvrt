@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.func.Edit', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Bargrid', 'QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Bargrid', 'QB.common.Updwnd'],
     alias: 'widget.funcedit',    
     title: 'Функция',
     height: 280,
@@ -8,7 +8,7 @@
 
     initComponent: function () {
         var me = this,
-            ftcombo = new QB.Common.Labelcombo({ labels: ['Логический', 'Дата', 'Число', 'Строка'] });
+            ftcombo = new QB.common.Labelcombo({ labels: ['Логический', 'Дата', 'Число', 'Строка'] });
 
         me.store = Ext.create('Ext.data.Store', { model: 'QB.model.Fparam' });
 

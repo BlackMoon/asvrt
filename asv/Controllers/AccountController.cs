@@ -2,7 +2,7 @@
 using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.Security;
-using asv.Managers.Security;
+using asv.Security;
 using asv.Models;
 using asv.Helpers;
 using asv.Managers;

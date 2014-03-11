@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.query.Fnedit', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Updwnd'],
     alias: 'widget.queryfnedit',        
     title: 'Функция',
     height: 520,
@@ -302,7 +302,7 @@
         switch (r.get('ft')) {
             // bool
             case 0:
-                editor = Ext.create('Ext.grid.CellEditor', { field: Ext.create('QB.Common.Labelcombo', { labels: ['Нет', 'Да'] }) });
+                editor = Ext.create('Ext.grid.CellEditor', { field: Ext.create('QB.common.Labelcombo', { labels: ['Нет', 'Да'] }) });
                 break;
             // datetime
             case 1:

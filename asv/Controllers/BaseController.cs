@@ -1,5 +1,5 @@
 ﻿using System.Web.Mvc;
-using asv.Managers.Security;
+using asv.Security;
 using PetaPoco;
 
 namespace asv.Controllers

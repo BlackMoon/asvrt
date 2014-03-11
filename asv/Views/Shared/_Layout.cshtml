@@ -1,4 +1,4 @@
-﻿@using asv.Managers.Security;
+﻿@using asv.Security;
 @{  
     bool logged = Request.IsAuthenticated;         
     
@@ -179,10 +179,18 @@
                                     text: 'Настройки', 
                                     action: 'settings',
                                     iconCls: 'icon-tools'
+                                },
+                                { 
+                                    text: 'Журнал', 
+                                    action: 'journal',
+                                    iconCls: 'icon-tools'
                                 }]                                    
                             }
                         },                            
-                        { text: 'Справка' },
+                        { 
+                            text: 'Справка',
+                            hidden: true
+                        },
                         '->',
                         {
                             xtype: 'tbtext',
@@ -279,7 +287,8 @@
                         {
                             iconCls: 'icon-help',                            
                             action: 'help',
-                            tooltip: 'Справка'
+                            tooltip: 'Справка',
+                            hidden: true
                         }]                                                    
                     },
                     {

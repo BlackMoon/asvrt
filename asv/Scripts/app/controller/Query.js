@@ -776,7 +776,7 @@ Ext.define('QB.controller.Query', {
         
         var cols = [];        
 
-        var store = Ext.create('QB.Store.Lstore', {
+        var store = Ext.create('QB.store.Lstore', {
             fields: [],
             pageSize: itemsPerPage,
             proxy: {

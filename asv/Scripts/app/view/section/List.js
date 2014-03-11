@@ -1,5 +1,5 @@
 ﻿Ext.define('QB.view.section.List', {
-    extend: 'QB.Common.Bargrid',    
+    extend: 'QB.common.Bargrid',    
     alias: 'widget.sectionlist',
     columns: [{ xtype: 'rownumberer' },
               { text: 'Наименование', dataIndex: 'name', minWidth: 300, flex: 1 },

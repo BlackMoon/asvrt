@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.conn.List', {
-    extend: 'QB.Common.Bargrid',
-    requires: ['QB.Common.Labelcolumn'],   
+    extend: 'QB.common.Bargrid',
+    requires: ['QB.common.Labelcolumn'],   
     alias: 'widget.connlist',
     columns: [{ xtype: 'rownumberer' },
               { text: 'Наименование', dataIndex: 'name', minWidth: 200, flex: 1 },

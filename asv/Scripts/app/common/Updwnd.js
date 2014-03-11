@@ -1,4 +1,4 @@
-﻿Ext.define('QB.Common.Updwnd', {
+﻿Ext.define('QB.common.Updwnd', {
     extend: 'Ext.window.Window',
     autoShow: true,
     layout: 'fit',

@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.query.Add', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Bartree', 'QB.Common.Updwnd', 'Ext.ux.tree.Filter'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Bartree', 'QB.common.Updwnd', 'Ext.ux.tree.Filter'],
     alias: 'widget.queryadd',    
     btnSave: false,
     checked: 0,

@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.section.Tlist', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Bargrid', 'QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Bargrid', 'QB.common.Updwnd'],
     alias: 'widget.sectiontlist',    
     btnSave: false,
     title: 'Добавить',

@@ -8,8 +8,8 @@
 });
 
 Ext.define('QB.view.user.Import', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Updwnd'],
     alias: 'widget.userimport',
     btnSave: false,
     title: 'Импорт пользователей',  

@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.query.Rlist', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Bargrid', 'QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Bargrid', 'QB.common.Updwnd'],
     alias: 'widget.queryrlist',    
     btnSave: false,
     title: 'Связи',

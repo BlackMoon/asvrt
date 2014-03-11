@@ -1,32 +1,63 @@
-﻿var themes = [{ text: 'classic' }, { text: 'gray' }];
+﻿var themes = [{ text: 'classic' }, { text: 'gray' }, { text: 'neptune' }];
+
+Ext.apply(Ext.form.field.VTypes, {
+    passwd: function (v, field) {
+        var login = field.loginField.getValue();
+        if (login)
+            return (v != login);
+
+        return true;
+    },
+    passwdText: 'Пароль не должен совпадать с логином.'
+});
 
 Ext.define('QB.view.user.Edit', {
-    extend: 'QB.Common.Updwnd',
-    requires: [ 'QB.Common.Updwnd' ],
+    extend: 'QB.common.Updwnd',
+    requires: [ 'QB.common.Generalset', 'QB.common.Updwnd' ],
     alias: 'widget.useredit',
 
     title: 'Пользователь',
-    height: 520,
+    height: 540,
     width: 460,
 
     initComponent: function () {
         var me = this,
             conncombo = new Ext.form.field.ComboBox({ editable: false, store: 'Conns', displayField: 'name', valueField: 'name' }),
+            login = Ext.form.TextField({ name: 'login', fieldLabel: 'Логин', anchor: '100%', labelWidth: 150, allowBlank: false }),
             themestore = Ext.create('Ext.data.Store', { fields: ['text'], data: themes });
 
         me.dbstore = Ext.create('Ext.data.Store', { model: 'QB.model.Udb' });
         me.rolestore = Ext.data.StoreManager.get('Roles');
 
-        me.psw = Ext.widget('textfield', { name: 'password', fieldLabel: 'Пароль', inputType: 'password', allowBlank: me.upd, anchor: '100%', labelWidth: 139 });        
-        me.form = Ext.widget('form', 
+        me.psw = Ext.widget('textfield', { name: 'password', fieldLabel: 'Пароль', inputType: 'password', anchor: '100%', allowBlank: me.upd, minLength: minRequiredPasswordLength, vtype: 'passwd', labelWidth: 140, loginField: login });        
+
+
+        var usrtabs = Ext.widget('tabpanel', {
+            items: [{
+                title: 'Основные'
+            },
+            {
+                title: 'Роли'
+            },
+            {
+                title: 'Базы'
+            },
+            {
+                title: 'Служебные',
+                xtype: 'generalset'
+            }]
+        });
+
+
+        /*me.form = Ext.widget('form',
         {   
             defaults: { anchor: '100%', labelWidth: 150, margin: '5' },
 			items: [{
 			    xtype: 'textfield',
 		    	name: 'id',	    		    
     			hidden: true
-    		},
-            {
+    		}, login, 
+            /*{
                 xtype: 'textfield',
                 name: 'login',
 				fieldLabel: 'Логин',
@@ -42,8 +73,8 @@ Ext.define('QB.view.user.Edit', {
 			{
 				xtype: 'fieldset',
                 itemId: 'psws',
-				title: me.upd ? 'Если вы не хотите менять пароль, оставьте поле пустым' : 'Минимальная длина пароля – 6 символов.',
-                defaults: { anchor: '100%', labelWidth: 139 },
+                title: me.upd ? 'Если вы не хотите менять пароль, оставьте поле пустым' : 'Минимальная длина пароля – ' + minRequiredPasswordLength + ' символов.',
+                defaults: { anchor: '100%', labelWidth: 140 },
                 cls: 'psw',
                 margin: '0 5 12 5',
 				items: [ me.psw,                    
@@ -130,8 +161,7 @@ Ext.define('QB.view.user.Edit', {
                     hideHeaders: true,
                     columns: [ { dataIndex: 'name', flex: 1, minWidth: 300 },
                                { xtype: 'checkcolumn', dataIndex: 'available', width: 120, align: 'center' }]                
-                }],
-                hidden: true
+                }]                
             },
             {
                 title: 'Базы',
@@ -190,8 +220,9 @@ Ext.define('QB.view.user.Edit', {
                     store: me.dbstore
                 }]
             }]
-        }];
+        }];*/
 
+        me.items = [me.form = Ext.widget('form', { layout: 'fit', border: 0, frame: false, items: [usrtabs] })];
         me.callParent(arguments);        
         me.rolestore.load();        
     },

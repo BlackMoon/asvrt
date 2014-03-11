@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.query.Form', {
-    extend: 'QB.Common.Updwnd',
-    requires: ['QB.Common.Updwnd'],
+    extend: 'QB.common.Updwnd',
+    requires: ['QB.common.Updwnd'],
     alias: 'widget.queryform',
     autoShow: false,
     btnSave: false,

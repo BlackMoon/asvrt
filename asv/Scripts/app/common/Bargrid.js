@@ -15,9 +15,9 @@
     }
 });
 
-Ext.define('QB.Common.Bargrid', {
+Ext.define('QB.common.Bargrid', {
     extend: 'Ext.grid.Panel', 
-    requires: [ 'QB.Common.Searchfield' ],   
+    requires: [ 'QB.common.Searchfield' ],   
     alias: 'widget.bargrid',
     columnLines: true,    
     selected: [],

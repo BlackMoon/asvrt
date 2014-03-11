@@ -1,5 +1,5 @@
 ﻿Ext.define('QB.store.Sections', {
-    extend: 'QB.Store.Lstore',
+    extend: 'QB.store.Lstore',
     model: 'QB.model.Section',
     proxy: { url: '/admin/getcatalogs' }
 });

@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.user.List', {
-    extend: 'QB.Common.Bargrid',
-    requires: ['QB.Common.Imagecolumn'],
+    extend: 'QB.common.Bargrid',
+    requires: ['QB.common.Imagecolumn'],
     alias: 'widget.userlist',
     columns: [{ xtype: 'rownumberer', resizable: true, width: 28 },
                { text: 'Логин', dataIndex: 'login', width: 200 },

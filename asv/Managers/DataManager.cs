@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Configuration;
 using asv.Helpers;
-using asv.Managers.Security;
+using asv.Security;
 using asv.Models;
 using PetaPoco.Internal;
 

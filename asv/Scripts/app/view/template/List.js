@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.template.List', {
-    extend: 'QB.Common.Bargrid',
-    requires: ['QB.Common.Spacenumcolumn', 'QB.Common.Stylecolumn'],
+    extend: 'QB.common.Bargrid',
+    requires: ['QB.common.Spacenumcolumn', 'QB.common.Stylecolumn'],
     alias: 'widget.templatelist',
     columns: [{ xtype: 'rownumberer' },
                { text: 'Наименование', dataIndex: 'name', width: 300 },
