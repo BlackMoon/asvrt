@@ -955,6 +955,8 @@ namespace asv.Controllers
                 provider.InitConfig(ps.Parameters as NameValueCollection); 
 
                 cfg.Save(ConfigurationSaveMode.Modified);
+
+                Response.RemoveOutputCacheItem("/Admin/GetSettings");
             }
             catch (Exception e)
             {

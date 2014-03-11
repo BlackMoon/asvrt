@@ -4,10 +4,10 @@ using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Security;
 using asv.Helpers;
 using asv.Managers;
 using asv.Models;
-using asv.Security;
 
 namespace asv.Controllers
 {    
@@ -28,8 +28,8 @@ namespace asv.Controllers
             ViewBag.ConnTimeout = dm.ConnTimeout;
             ViewBag.ItemsPerPage = dm.ItemsPerPage;
 
-            ViewData["minRequiredPasswordLength"] = System.Web.Security.Membership.MinRequiredPasswordLength;
-            ViewData["minRequiredUsernameLength"] = System.Web.Security.Membership.MinRequiredPasswordLength; 
+            ViewData["minRequiredPasswordLength"] = Membership.MinRequiredPasswordLength;
+            ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
             
             return View();
         }       

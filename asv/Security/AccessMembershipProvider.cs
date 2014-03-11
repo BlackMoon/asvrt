@@ -208,6 +208,11 @@ namespace asv.Security
             get { return _minRequiredPasswordLength; }
         }
 
+        public int MinRequiredUsernameLength
+        {
+            get { return _minRequiredUsernameLength; }
+        }
+
         public override int PasswordAttemptWindow
         {
             get { throw new NotImplementedException(); }

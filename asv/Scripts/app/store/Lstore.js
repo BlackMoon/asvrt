@@ -5,8 +5,13 @@
     pageSize: 50,    
 
     constructor: function (cfg) {
-        var me = this, obj = { };
-                
+        var me = this, obj = {},
+            baseproxy = {
+                headers: { accept: 'application/json' },
+                reader: { root: 'data', type: 'json' },
+                type: 'ajax'
+            };
+/*                
         Ext.apply(obj, { type: 'ajax', reader: { root: 'data', type: 'json' } }, me.proxy);        
         if (cfg.proxy) {
             (cfg.proxy.actionMethods) && (obj.actionMethods = cfg.proxy.actionMethods);
@@ -16,11 +21,13 @@
             (cfg.proxy.url) && (obj.url = cfg.proxy.url);
         }
         
-        cfg.proxy = obj;
+        cfg.proxy = obj;*/
         
+        cfg = cfg || {};
+        cfg.proxy = cfg.proxy ? Ext.applyIf(cfg.proxy, baseproxy) : Ext.applyIf(me.proxy, baseproxy);
         me.callParent(arguments);
 
-        (me.pageSize == 0) && (me.proxy.limitParam = me.proxy.pageParam = me.proxy.startParam = null);
+        //(me.pageSize == 0) && (me.proxy.limitParam = me.proxy.pageParam = me.proxy.startParam = null);
         
         me.on({
             load: function () {
@@ -46,23 +53,8 @@
 
     load: function (options) {
         var me = this;
-        if (!me.loaded) {
-            /*options = options || {};
-            options.callback = function (recs, op, success) {
-                try {
-                    if (!success) throw op.error;
-
-                    if (op.response) {
-                        var obj = Ext.decode(op.response.responseText);
-                        if (!obj.success) throw obj.message;
-                    }
-                }
-                catch (e) {
-                    me.fireEvent('exception', e, success);
-                };
-            };*/
-            return me.callParent([options]);
-        }
+        if (!me.loaded)             
+            return me.callParent([options]);        
     },
 
     loadPage: function (page, options) {

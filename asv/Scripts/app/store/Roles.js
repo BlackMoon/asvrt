@@ -1,10 +1,8 @@
 ﻿Ext.define('QB.store.Roles', {
-    extend: 'Ext.data.Store',
+    extend: 'QB.store.Lstore',
     model: 'QB.model.Role',
-    proxy: {
-        type: 'ajax',
-        url: '/roles.xml',
-        actionMethods: { read: 'get' },
+    proxy: {        
+        url: '/roles.xml',        
         reader: {
             type: 'xml',
             record: 'role'            
