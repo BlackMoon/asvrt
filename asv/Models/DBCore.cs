@@ -3,6 +3,7 @@
 * ************************************************************** */
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using PetaPoco;
 using System.Text.RegularExpressions;
@@ -391,4 +392,46 @@ namespace asv.Models
         public T1 Key { get; set; }        
         public T2 Value { get; set; }
     }
+
+    [TableName("qb_bases")]
+    public class Userdb
+    {
+        public int Auth { get; set; }
+        public string Conn { get; set; }
+    }
+
+    #region Пользователь
+    [TableName("qb_users")]
+    [PrimaryKey("id")]
+    public class Person : Key
+    {
+        public int IsAdmin { get; set; }
+        public int IsApproved { get; set; }
+        public int ServerLogin { get; set; }
+
+        [Required]
+        public string Login { get; set; }
+        public string Password { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+        
+        [DefaultValue("")]
+        public string MiddleName { get; set; }
+
+        public string Comment { get; set; }
+
+        [DefaultValue("")]
+        public string Theme { get; set; }
+
+        [ResultColumn]
+        public List<Userdb> Bases { get; set; }
+
+        [ResultColumn]
+        public List<string> Roles { get; set; }
+    }
+    #endregion
 }

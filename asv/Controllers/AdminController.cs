@@ -489,10 +489,10 @@ namespace asv.Controllers
             byte result = 1;
             string msg = null;
 
-            MembershipPerson mp = null;
+            Person user = null;            
             try
             {
-                mp = (MembershipPerson)Membership.GetUser(id);
+                user = Membership.Provider.GetUser(id);
             }
             catch (Exception e)
             {
@@ -501,7 +501,7 @@ namespace asv.Controllers
             }
 
             JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg, user = mp };
+            jr.Data = new { success = result, message = msg, user = user };
             return jr;
         }
 
@@ -970,27 +970,26 @@ namespace asv.Controllers
             return jr;
         }
 
-        public JsonNetResult UpdateUser(string json)
+        public JsonNetResult UpdateUser(Person value)
         {
             byte result = 1;
             string msg = null;
 
-            MembershipPerson mp = Newtonsoft.Json.JsonConvert.DeserializeObject<MembershipPerson>(json);
-
-            long id = 0;
+            int id = 0;
             try
             {
-                // isApproved = 1 - locked
-                mp.Locked = 1 - mp.Locked;
+                if (!ModelState.IsValid)
+                    throw new Exception(string.Join(", ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
 
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                if (mp.Id != 0)
+                // isApproved = 1 - locked
+                value.IsApproved = 1 - value.IsApproved;
+                if (value.Id != 0)
                 {
-                    ap.UpdateUser(mp);
-                    Response.RemoveOutputCacheItem("/Admin/GetUser");                    
+                    Membership.Provider.UpdateUser(value.Id, value);
+                    Response.RemoveOutputCacheItem("/Admin/GetUser");        
                 }
                 else
-                    id = ap.CreateUser(mp);
+                    id = (int)Membership.Provider.CreateUserAndAccount(value);
 
                 Response.RemoveOutputCacheItem("/Admin/GetUsers");
             }

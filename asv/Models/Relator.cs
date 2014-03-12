@@ -63,7 +63,7 @@ namespace asv.Models
         }
     }
 
-    // Псевдоним -> Поля
+    // Функция -> Параметры
     class FuncRelator
     {
         private Func prev;
@@ -118,6 +118,33 @@ namespace asv.Models
             }
 
             return q;
+        }
+    }
+
+    // Пользователь -> Базы
+    class PersonRelator
+    {
+        private Person prev;
+        public Person Map(Person p, Userdb b)
+        {
+            if (p != null)
+            {
+                if (prev != null && prev.Id.Equals(p.Id))
+                {
+                    if (p.Id != 0)
+                        prev.Bases.Add(b);
+
+                    return null;
+                }
+
+                prev = p;
+                if (p.Id != 0)
+                {
+                    prev.Bases = new List<Userdb>();
+                    prev.Bases.Add(b);
+                }
+            }
+            return p;
         }
     }
 }

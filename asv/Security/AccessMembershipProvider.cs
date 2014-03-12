@@ -9,6 +9,7 @@ using System.Web.Helpers;
 using System.Configuration;
 using System.Web.Caching;
 using System.Web;
+using System.Text.RegularExpressions;
 
 namespace asv.Security
 {
@@ -218,6 +219,11 @@ namespace asv.Security
             get { throw new NotImplementedException(); }
         }
 
+        public int SaltLength
+        {
+            get { return _saltLength; }
+        }
+
         public override MembershipPasswordFormat PasswordFormat
         {
             get { throw new NotImplementedException(); }
@@ -309,6 +315,27 @@ namespace asv.Security
             }
 
             return result;
+        }
+
+        public void OnValidateUsername(ValidatePasswordEventArgs args)
+        {
+            try
+            {
+                if (args.UserName.Length < _minRequiredUsernameLength)
+                    throw new ArgumentException("Слишком короткий логин! Минимальная длина логина - " + _minRequiredUsernameLength + " символов.");
+
+                Regex rx = new Regex(@"^\w+$");
+                if (!rx.IsMatch(args.UserName))
+                    throw new ArgumentException("Логин. Можно использовать только буквы латинского алфавита (a–z), цифры и знак подчеркивания(\'_\').");
+
+                if (args.UserName[0] == '_')
+                    throw new ArgumentException("Логин. Первый символ должен быть латинской буквой (a–z) или цифрой.");
+            }
+            catch (ArgumentException e)
+            {
+                args.FailureInformation = e;
+                args.Cancel = true;
+            }
         }
     }
 }

@@ -40,7 +40,6 @@ Ext.define('QB.view.user.Edit', {
         me.rolestore = Ext.getStore('Roles');
 
         me.psw = Ext.widget('textfield', { name: 'password', fieldLabel: 'Пароль', inputType: 'password', anchor: '100%', allowBlank: me.upd, minLength: minRequiredPasswordLength, vtype: 'passwd', labelWidth: 140, loginField: login });        
-
         var usrtabs = Ext.widget('tabpanel', {
             items: [{
                 title: 'Основные',

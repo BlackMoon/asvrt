@@ -318,7 +318,7 @@ Ext.define('QB.controller.Admin', {
     },
     
     editUser: function (grid, rec) {
-        var view = Ext.widget('useredit');
+        var wnd = Ext.widget('useredit');
 
         Ext.Ajax.request({
             method: 'get',
@@ -327,21 +327,18 @@ Ext.define('QB.controller.Admin', {
             success: function (response) {
                 var obj = Ext.decode(response.responseText);
                 if (obj.success) {
-                    var roles = obj.user.roles || [];
+                    var form = wnd.form,
+                        store = wnd.rolestore,
+                        usr = obj.user;
 
-                    view.form.loadRecord(rec);
-                    view.form.getForm().setValues(obj.user);
+                    store.actives = usr.roles || [];
+                    store.loaded && store.setActives();
 
-                    roles.forEach(function (r) {
-                        var rec = view.rolestore.findRecord('authority', r);
-                        if (rec) {
-                            rec.set('available', 1);
-                            rec.commit();
-                        }
-                    })
+                    form.loadRecord(rec);
+                    form.getForm().setValues(obj.user);
 
-                    obj.user.bases.forEach(function (b) {
-                        view.dbstore.add(new QB.model.Udb(b));
+                    usr.bases.forEach(function (b) {
+                        wnd.dbstore.add(new QB.model.Udb(b));
                     })
                 }
                 else
@@ -772,7 +769,7 @@ Ext.define('QB.controller.Admin', {
 
             Ext.Ajax.request({
                 url: '/admin/updateuser',
-                params: { json: Ext.encode(usr) },                
+                jsonData: usr,                
                 success: function (response) {
                     var obj = Ext.decode(response.responseText);
                     wnd.el.unmask();

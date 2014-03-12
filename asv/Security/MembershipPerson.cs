@@ -7,13 +7,6 @@ using PetaPoco;
 
 namespace asv.Security
 {
-    [TableName("qb_bases")]
-    public class Userdb
-    {
-        public int Auth { get; set; }        
-        public string Conn { get; set; }        
-    }
-
     [Serializable]
     [TableName("qb_users")]
     [PrimaryKey("id")]    
