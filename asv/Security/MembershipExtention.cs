@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Security;
 using asv.Models;
@@ -50,6 +51,12 @@ namespace asv.Security
             return new DBContext().CreateUser(person, user.Id);
         }
 
+        public static bool DeleteUser(this MembershipProvider provider, object providerUserKey)
+        {
+            int retv = new DBContext().DeleteUser((int)providerUserKey);
+            return (retv != -1);
+        }
+
         public static Person GetUser(this MembershipProvider provider, object providerUserKey, bool userIsOnline = false)
         {
             return new DBContext().GetUser((int)providerUserKey);
@@ -80,7 +87,12 @@ namespace asv.Security
             MemberPrincipal user = (MemberPrincipal)HttpContext.Current.User;
             int retv = new DBContext().UpdateUser((int)providerUserKey, person, user.Fio);
             return (retv != -1);
-        }        
- 
+        }
+
+        public static IEnumerable<Person> FindUsersByName(this MembershipProvider provider, string queryToMatch, int pageIndex, int pageSize, out long totalRecords)
+        {
+            totalRecords = 0;
+            return new DBContext().GetUsers(pageIndex, pageSize, queryToMatch, out totalRecords);
+        }
     }
 }

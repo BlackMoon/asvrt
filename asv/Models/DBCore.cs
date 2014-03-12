@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using PetaPoco;
 using System.Text.RegularExpressions;
+using System;
 
 namespace asv.Models
 {
@@ -408,6 +409,9 @@ namespace asv.Models
         public int IsAdmin { get; set; }
         public int IsApproved { get; set; }
         public int ServerLogin { get; set; }
+
+        [JsonConverter(typeof(asv.Helpers.TimeConverter))]
+        public DateTime DateCreate { get; set; }
 
         [Required]
         public string Login { get; set; }

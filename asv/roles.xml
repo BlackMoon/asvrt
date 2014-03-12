@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <roles>
-  <role authority="ROLE_AUTHOR">
+  <role authority="AUTHOR">
     <name>Автор</name>
   </role>
-  <role authority="ROLE_EDITOR">
+  <role authority="EDITOR">
     <name>Редактор</name>
   </role>
-  <role authority="ROLE_ERASER">
+  <role authority="ERASER">
     <name>Стиратель</name>
   </role>
-  <role authority="ROLE_READER">
+  <role authority="READER">
     <name>Читатель</name>
   </role>      
 </roles>

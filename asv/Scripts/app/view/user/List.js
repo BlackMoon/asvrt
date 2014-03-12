@@ -7,7 +7,7 @@
                { text: 'Фамилия', dataIndex: 'lastname', width: 200 },
                { text: 'Имя', dataIndex: 'firstname', width: 200 },
                { text: 'Отчество', dataIndex: 'middlename', width: 200 },
-               { xtype: 'checkcolumn', text: 'Блокировка', dataIndex: 'locked', align: 'center' },
+               { xtype: 'imagecolumn', text: 'Блокировка', dataIndex: 'isapproved', img: '/content/ext-theme-classic/images/grid/hmenu-lock.gif' },
                { xtype: 'imagecolumn', text: 'Администратор', dataIndex: 'isadmin', img: '/content/admin16.png' }],
     stateId: 'usrgrid',
     store: 'Users',

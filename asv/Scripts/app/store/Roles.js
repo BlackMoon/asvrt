@@ -28,7 +28,7 @@
 
         me.each(function (rec) {
             var a = Ext.Array.findBy(me.actives, function (a) {
-                return (a.id == rec.get('id'));
+                return (a == rec.get('authority'));
             })
 
             rec.set('active', a ? 1 : 0);

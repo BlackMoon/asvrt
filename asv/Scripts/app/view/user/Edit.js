@@ -24,11 +24,11 @@ Ext.define('QB.view.user.Edit', {
     alias: 'widget.useredit',
     title: 'Пользователь',
     height: 460,
-    width: 460,
+    width: 480,
 
     initComponent: function () {
         var me = this,
-            conncombo = Ext.widget('combo', { editable: false, store: 'Conns', displayField: 'name', valueField: 'name' }),
+            conncombo = Ext.widget('combo', { editable: false, store: 'Conns', displayField: 'name', valueField: 'name', submitValue: false }),
             login = Ext.widget('textfield', { name: 'login', fieldLabel: 'Логин', anchor: '100%', minLength: minRequiredUsernameLength, vtype: 'login', labelWidth: 140, allowBlank: false,
                 validator: function (v) {
                     return (v[0] !== '_') || 'Первый символ должен быть латинской буквой (a–z) или цифрой.';
@@ -37,7 +37,7 @@ Ext.define('QB.view.user.Edit', {
             themestore = Ext.create('Ext.data.Store', { fields: ['text'], data: themes });
 
         me.dbstore = Ext.create('Ext.data.Store', { model: 'QB.model.Udb' });
-        me.rolestore = Ext.getStore('Roles');
+        me.rolesstore = Ext.getStore('Roles');
 
         me.psw = Ext.widget('textfield', { name: 'password', fieldLabel: 'Пароль', inputType: 'password', anchor: '100%', allowBlank: me.upd, minLength: minRequiredPasswordLength, vtype: 'passwd', labelWidth: 140, loginField: login });        
         var usrtabs = Ext.widget('tabpanel', {
@@ -110,10 +110,25 @@ Ext.define('QB.view.user.Edit', {
                 items: [
                 {
                     xtype: 'grid',
-                    store: me.rolestore,
+                    store: me.rolesstore,
                     hideHeaders: true,
                     columns: [{ dataIndex: 'name', flex: 1, minWidth: 300 },
-                              { xtype: 'checkcolumn', dataIndex: 'active', width: 120, align: 'center' }],
+                              {
+                                  xtype: 'checkcolumn',
+                                  dataIndex: 'active',
+                                  width: 120,
+                                  align: 'center',
+                                  listeners: {
+                                      checkchange: function (column, rowIx) {
+                                          var me = this,
+                                              view = column.up('grid').view,
+                                              rowNode = view.getNode(rowIx),
+                                              rec = view.getRecord(rowNode);
+
+                                          rec && rec.commit();
+                                      }
+                                  }
+                              }],
                     flex: 1
                 },
                 {
@@ -166,7 +181,7 @@ Ext.define('QB.view.user.Edit', {
                                 var me = this, rec,
                                     view = column.up('grid').view,
                                     rowNode = view.getNode(rowIx);
-
+                                // find prev checked rec
                                 if (checked && me.dbstore.getCount() > 1) {
                                     var ix = me.dbstore.findBy(function (r) {
                                         return (!r.dirty && r.get('auth'));
@@ -179,7 +194,7 @@ Ext.define('QB.view.user.Edit', {
                                     }
                                 }
 
-                                rec = view.getRecord(rowNode);
+                                rec = view.getRecord(rowNode);                                
                                 rec.commit();
                             },
                             scope: me
@@ -225,7 +240,7 @@ Ext.define('QB.view.user.Edit', {
 
         me.items = [me.form = Ext.widget('form', { layout: 'fit', border: 0, frame: false, items: [usrtabs] })];
         me.callParent(arguments);        
-        me.rolestore.load();        
+        me.rolesstore.load();        
     },
 
     addRow: function (view) {

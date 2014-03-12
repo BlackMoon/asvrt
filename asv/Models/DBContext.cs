@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web.Helpers;
 using System.Web.Security;
+using asv.Helpers;
 using asv.Security;
 using PetaPoco;
 
@@ -11,6 +12,7 @@ namespace asv.Models
     public class DBContext : IDBContext, IDisposable
     {
         private const string    _connectionStringName = "adminDB";
+        private const string    _syslogin = "system";
 
         private Database _database;
 
@@ -31,9 +33,12 @@ namespace asv.Models
         }
 
         public int CreateUser(Person person, int authorId)
-        {   
-            string roles = string.Join(",", person.Roles);
-            int id = _database.Execute("INSERT INTO qb_users(login, lastname, firstname, middlename, isadmin, isapproved, comment, roles, serverlogin, theme) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9); \nSELECT last_insert_rowid();", 
+        {
+            string roles = null;
+            if (person.Roles != null)
+                roles = string.Join(",", person.Roles);
+
+            int id = _database.ExecuteScalar<int>("INSERT INTO qb_users(login, lastname, firstname, middlename, isadmin, isapproved, comment, roles, serverlogin, theme) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9);\nSELECT last_insert_rowid();",
                 person.Login, person.LastName, person.FirstName, person.MiddleName, person.IsAdmin, person.IsApproved, person.Comment, roles, person.ServerLogin, person.Theme);
 
             Debug.WriteLine(_database.LastSQL);
@@ -44,37 +49,71 @@ namespace asv.Models
             string password = Crypto.Hash(person.Password + "{" + salt + "}");
 
             _database.Execute("INSERT INTO membership(userid, password, salt) VALUES(@0, @1, @2)", id, password, salt);
-            Debug.WriteLine(_database.LastSQL);            
+            Debug.WriteLine(_database.LastSQL);
 
             // user bases
-            int ix = 0;
-            List<string> keys = new List<string>();
-            List<object> vals = new List<object>();
-
-            foreach (Userdb udb in person.Bases)
+            if (person.Bases != null)
             {
-                keys.Add("@" + string.Join(", @", new int[] { ix, ix + 1, ix + 2 }));
-                vals.AddRange(new object[] { udb.Conn, udb.Auth, person.Id });
-                ix += 3;
-            }
+                int ix = 0;
+                List<string> keys = new List<string>();
+                List<object> vals = new List<object>();
 
-            string sql = "INSERT INTO qb_bases(conn, auth, usercreate) VALUES (" + string.Join(")", keys);
-            _database.Execute(sql, vals);
-            Debug.WriteLine(_database.LastSQL);
-            
+                foreach (Userdb udb in person.Bases)
+                {
+                    keys.Add("@" + string.Join(", @", new int[] { ix, ix + 1, ix + 2 }));
+                    vals.AddRange(new object[] { udb.Conn, udb.Auth, id });
+                    ix += 3;
+                }
+
+                string sql = "INSERT INTO qb_bases(conn, auth, usercreate) VALUES (" + string.Join("), (", keys) + ")";
+                _database.Execute(sql, vals.ToArray());
+
+                Debug.WriteLine(_database.LastSQL);
+            }
+         
             return id;
+        }
+
+        public int DeleteUser(int id)
+        {
+            _database.Execute("DELETE FROM membership WHERE userid = @0", id);
+            _database.Delete<Userdb>("WHERE usercreate = @0", id);
+
+            return _database.Delete<Person>("WHERE id = @0", id);
         }
 
         public Person GetUser(int id)
         {
             Person user = null;
 
-            List<Person> users = _database.Fetch<Person, Userdb, Person>(new PersonRelator().Map, @"SELECT u.id, u.comment, u.serverlogin, u.theme, b.conn, b.auth FROM qb_users u 
+            List<Person> users = _database.Fetch<Person, Userdb, Person>(new PersonRelator().Map, @"SELECT u.id, u.comment, u.serverlogin, u.theme, u.datecreate, b.conn, b.auth FROM qb_users u 
                                                                                                     LEFT JOIN qb_bases b ON b.usercreate = u.id WHERE u.id = @0", id);
-            if (users.Count > 0)            
+            if (users.Count > 0)
+            {
                 user = users[0];
+                
+                string roles = _database.SingleOrDefault<string>("SELECT u.roles from qb_users u WHERE u.id = @0", id);
+                if (!string.IsNullOrEmpty(roles))
+                    user.Roles = new List<string>(roles.Split(new char[] { ',' }));
+            }
 
             return user;            
+        }
+
+        public IEnumerable<Person> GetUsers(long page, long itemsPerPage, string query, out long total)
+        {
+            // locked = 1 - approved
+            string sql = "SELECT u.id, u.login, u.lastname, u.firstname, u.middlename, CAST(1 - u.isapproved AS int) isapproved, CAST(u.isadmin AS int) isadmin FROM qb_users u WHERE u.login <> '" + _syslogin + "'";
+            if (!string.IsNullOrEmpty(query))
+                sql += " AND (" + Misc.FilterField("u.login", query) + " OR " + Misc.FilterField1("u.lastname", query) + " OR " + Misc.FilterField1("u.firstname", query) + " OR " + Misc.FilterField1("u.middlename", query) + ")";
+
+            sql += " ORDER BY u.login";
+
+            Page<Person> p = _database.Page<Person>(page, itemsPerPage, sql);
+            Debug.WriteLine(_database.LastSQL);
+
+            total = p.TotalItems;
+            return p.Items;          
         }
 
         public int UpdateUser(int id, Person person, string editor)
@@ -102,21 +141,24 @@ namespace asv.Models
             Debug.WriteLine(_database.LastSQL);
 
             // user bases
-            int ix = 0;            
-            List<string> keys = new List<string>();            
-            List<object> vals = new List<object>();
-
-            foreach (Userdb udb in person.Bases)
+            if (person.Bases != null)
             {
-                keys.Add("@" + string.Join(", @", new int[]{ ix, ix + 1, ix + 2 }));
-                vals.AddRange(new object[] { udb.Conn, udb.Auth, person.Id });
-                ix += 3;
+                int ix = 0;
+                List<string> keys = new List<string>();
+                List<object> vals = new List<object>();
+
+                foreach (Userdb udb in person.Bases)
+                {
+                    keys.Add("@" + string.Join(", @", new int[] { ix, ix + 1, ix + 2 }));
+                    vals.AddRange(new object[] { udb.Conn, udb.Auth, id });
+                    ix += 3;
+                }
+
+                string sql = "INSERT INTO qb_bases(conn, auth, usercreate) VALUES (" + string.Join("), (", keys) + ")";
+                _database.Execute(sql, vals.ToArray());
+
+                Debug.WriteLine(_database.LastSQL);
             }
-
-            string sql = "INSERT INTO qb_bases(conn, auth, usercreate) VALUES (" + string.Join("), (", keys) + ")";
-            _database.Execute(sql, vals.ToArray());
-
-            Debug.WriteLine(_database.LastSQL);
             
             return 1;
         }

@@ -129,8 +129,7 @@ namespace asv.Controllers
 
             try
             {
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                ap.DeleteUser(id);       
+                Membership.Provider.DeleteUser(id);
          
                 Response.RemoveOutputCacheItem("/Admin/GetUser");
                 Response.RemoveOutputCacheItem("/Admin/GetUsers");
@@ -512,11 +511,10 @@ namespace asv.Controllers
             string msg = null;
 
             long total = 0;
-            List<dynamic> users = new List<dynamic>();
+            IEnumerable<Person> users = new List<Person>();
             try
             {
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                users = ap.GetAllUsers(page, limit, query, out total);                
+                users = Membership.Provider.FindUsersByName(query, page, limit, out total);
             }
             catch (Exception e)
             {

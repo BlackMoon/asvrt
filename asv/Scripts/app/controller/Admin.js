@@ -121,7 +121,11 @@ Ext.define('QB.controller.Admin', {
     },
 
     createUser: function () {
-        Ext.widget('useredit', { upd: false });
+        var wnd = Ext.widget('useredit', { upd: false }),
+            store = wnd.rolesstore;
+        
+        store.actives = [];
+        store.loaded && store.setActives();
     },
 
     deleteAlias: function(view, rec, ix){
@@ -328,7 +332,7 @@ Ext.define('QB.controller.Admin', {
                 var obj = Ext.decode(response.responseText);
                 if (obj.success) {
                     var form = wnd.form,
-                        store = wnd.rolestore,
+                        store = wnd.rolesstore,
                         usr = obj.user;
 
                     store.actives = usr.roles || [];
@@ -750,14 +754,11 @@ Ext.define('QB.controller.Admin', {
                     return (b.get('auth') && b.get('conn'));
                 })
                 if (ix == -1) throw 'Выберите базу для авторизации!';
-            }
-            else {
-                if (usr.password.length > 0 && usr.password.length < 6) throw 'Минимальная длина пароля - 6 символов!';
-            }
+            }            
 
             usr.roles = [];
-            wnd.rolestore.each(function (r) {
-                r.get('available') && usr.roles.push(r.get('authority'));
+            wnd.rolesstore.each(function (r) {
+                r.get('active') && usr.roles.push(r.get('authority'));
             })
 
             usr.bases = [];
