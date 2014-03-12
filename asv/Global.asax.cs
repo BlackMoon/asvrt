@@ -66,18 +66,17 @@ namespace asv
                         // valid user
                         if (mp != null)
                         {
-                            user = new MemberPrincipal(HttpContext.Current.User.Identity, null);
-                            user.Id = mp.Id;
+                            user = new MemberPrincipal(login);
+                            user.Id = (int)mp.ProviderUserKey;
                             user.IsAdmin = mp.IsAdmin;
-                            user.ServerLogin = mp.ServerLogin == 1 ? true : false;
-                            user.Login = mp.UserName;
                             user.Lastname = mp.Lastname;
                             user.Firstname = mp.Firstname;
                             user.Middlename = mp.Middlename;                            
                             user.Fio = mp.Fio;
+                            user.ServerLogin = mp.ServerLogin;
                             user.Theme = mp.Theme;
 
-                            if (user.ServerLogin)                            
+                            if (user.ServerLogin == 1)                            
                                 user.Schema = mp.Schema;
                         }
                         HttpContext.Current.User = user;

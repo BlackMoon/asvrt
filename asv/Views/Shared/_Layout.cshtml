@@ -2,8 +2,7 @@
 @{  
     bool logged = Request.IsAuthenticated;         
     
-    int isAdmin = 0;
-    int serverLogin = 0;
+    int isAdmin = 0, serverLogin = 0;
     string schema = string.Empty, theme = "classic";
     
     MemberPrincipal user = null;
@@ -11,7 +10,7 @@
     if (logged) {
         user = (MemberPrincipal)User;
         isAdmin = user.IsAdmin;
-        serverLogin = user.ServerLogin ? 1 : 0;
+        serverLogin = user.ServerLogin;
         schema = user.Schema;
         
         if (!string.IsNullOrEmpty(user.Theme)) {

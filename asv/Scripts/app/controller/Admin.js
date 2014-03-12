@@ -59,12 +59,14 @@ Ext.define('QB.controller.Admin', {
             'userimport button[action=importusers]': {
                 click: me.importUsers
             },
-            'userlist button[action=import]': {
-                click: function () { Ext.widget('userimport'); }
+            'userlist': {
+                additem: me.createUser,
+                edititem: me.editUser,
+                removeitem: me.deleteUser
             },
-            'userlist gridcolumn[dataIndex=locked]': {
-                checkchange: me.lockChange
-            }
+            'userlist button[action=import]': {                
+                click: function () { Ext.widget('userimport'); }
+            }            
         });
     },
 
@@ -452,10 +454,7 @@ Ext.define('QB.controller.Admin', {
 
     showUsers: function () {
         var me = this, tab = me.centerRegion.child('#usertab');
-        if (!tab) {
-            var grid = Ext.widget('userlist', { listeners: { additem: me.createUser, edititem: me.editUser, removeitem: me.deleteUser } });            
-            tab = me.centerRegion.add({ title: 'Пользователи', itemId: 'usertab', layout: 'fit', items: [grid] });
-        }
+        !tab && (tab = me.centerRegion.add({ title: 'Пользователи', itemId: 'usertab', layout: 'fit', items: [Ext.widget('userlist')] }));        
         tab.show();
     },
 
@@ -756,6 +755,9 @@ Ext.define('QB.controller.Admin', {
                 if (ix == -1) throw 'Выберите базу для авторизации!';
             }            
 
+            usr.isadmin = usr.isadmin || 0;
+            usr.isapproved = usr.isapproved || 0;
+
             usr.roles = [];
             wnd.rolesstore.each(function (r) {
                 r.get('active') && usr.roles.push(r.get('authority'));
@@ -767,7 +769,6 @@ Ext.define('QB.controller.Admin', {
             })
 
             wnd.el.mask('Сохранение', 'x-mask-loading');
-
             Ext.Ajax.request({
                 url: '/admin/updateuser',
                 jsonData: usr,                

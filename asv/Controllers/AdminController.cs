@@ -525,30 +525,7 @@ namespace asv.Controllers
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, data = users, total = total };
             return jr;
-        }
-
-        public JsonNetResult LockUser(int id, int locked)
-        {
-            byte result = 1;
-            string msg = null;
-
-            try
-            {
-                // approved = 1 - locked
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                ap.LockUser(id, 1 - locked);
-                Response.RemoveOutputCacheItem("/Admin/GetUser");
-                Response.RemoveOutputCacheItem("/Admin/GetUsers");
-            }
-            catch (Exception e)
-            {
-                msg = e.Message;
-                result = 0;
-            }
-            JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg };
-            return jr;
-        }
+        }       
 
         [HttpPost]
         public ActionResult ImportAliases(HttpPostedFileBase file)
@@ -618,7 +595,7 @@ namespace asv.Controllers
                     mp = new MembershipPerson();
                     mp.Bases = new List<Userdb>();
                     // isApproved = 1
-                    mp.Locked = 1; 
+                    //mp.Locked = 1; 
 
                     mp.Login = u.Element("Name").Value;
                     System.Diagnostics.Debug.WriteLine(mp.Login);
@@ -650,14 +627,14 @@ namespace asv.Controllers
                         mp.Bases.Add(udb);
                     }
                     else
-                        mp.Password = "123456";
+                        //mp.Password = "123456";
 
                     mp.Id = db.SingleOrDefault<int>("SELECT u.id FROM qb_users u WHERE u.login = @0", mp.Login);
                     
                     if (mp.Id != 0)
                         ap.UpdateUser(mp);
-                    else
-                        ap.CreateUser(mp);
+                    //else
+                        //ap.CreateUser(mp);
 
                     n++;
                     System.Diagnostics.Debug.WriteLine(n);                    

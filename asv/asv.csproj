@@ -135,6 +135,7 @@
     <Compile Include="Managers\ReportManager.cs" />
     <Compile Include="Models\IDBContext.cs" />
     <Compile Include="Security\AccessMembershipProvider.cs" />
+    <Compile Include="Security\AccessRoleProvider.cs" />
     <Compile Include="Security\AdminAuthorize.cs" />
     <Compile Include="Models\DBContext.cs" />
     <Compile Include="Security\MemberPrincipal.cs" />

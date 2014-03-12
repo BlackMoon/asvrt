@@ -258,7 +258,7 @@ namespace asv.Managers
                 string conStr = css.ConnectionString;
                 
                 // авторизация на сервере
-                if (Person.ServerLogin)
+                if (Person.ServerLogin == 1)
                 {                    
                     string passw = null;
                     
@@ -266,7 +266,7 @@ namespace asv.Managers
                     if (tokens.Length == 2)                    
                         passw = tokens[1];
 
-                    conStr = Misc.ConnCredentials(css.ConnectionString, Person.Login, passw);
+                    conStr = Misc.ConnCredentials(css.ConnectionString, Person.Identity.Name, passw);
                 };
 
                 OdbcConnection con = new OdbcConnection(conStr);                

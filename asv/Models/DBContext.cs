@@ -102,12 +102,12 @@ namespace asv.Models
 
         public IEnumerable<Person> GetUsers(long page, long itemsPerPage, string query, out long total)
         {
-            // locked = 1 - approved
-            string sql = "SELECT u.id, u.login, u.lastname, u.firstname, u.middlename, CAST(1 - u.isapproved AS int) isapproved, CAST(u.isadmin AS int) isadmin FROM qb_users u WHERE u.login <> '" + _syslogin + "'";
+            // from view without alias (locked = 1 - approved)
+            string sql = "SELECT id, login, lastname, firstname, middlename, isapproved, isadmin FROM qb_vusers WHERE login <> '" + _syslogin + "'";
             if (!string.IsNullOrEmpty(query))
-                sql += " AND (" + Misc.FilterField("u.login", query) + " OR " + Misc.FilterField1("u.lastname", query) + " OR " + Misc.FilterField1("u.firstname", query) + " OR " + Misc.FilterField1("u.middlename", query) + ")";
+                sql += " AND (" + Misc.FilterField("login", query) + " OR " + Misc.FilterField1("lastname", query) + " OR " + Misc.FilterField1("firstname", query) + " OR " + Misc.FilterField1("middlename", query) + ")";
 
-            sql += " ORDER BY u.login";
+            sql += " ORDER BY login";
 
             Page<Person> p = _database.Page<Person>(page, itemsPerPage, sql);
             Debug.WriteLine(_database.LastSQL);

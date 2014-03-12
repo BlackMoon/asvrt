@@ -412,6 +412,7 @@ namespace asv.Models
 
         [JsonConverter(typeof(asv.Helpers.TimeConverter))]
         public DateTime DateCreate { get; set; }
+        public DateTime LastLoginDate { get; set; }
 
         [Required]
         public string Login { get; set; }
