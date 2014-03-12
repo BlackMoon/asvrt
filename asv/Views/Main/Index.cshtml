@@ -2,9 +2,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Конструктор запросов";    
 }
+
 @section scripts{
     <script type="text/javascript">
         var connTimeout = @ViewBag.ConnTimeout, 
-            itemsPerPage = @ViewBag.ItemsPerPage;             
+            itemsPerPage = @ViewBag.ItemsPerPage,
+            minRequiredPasswordLength = @ViewData["minRequiredPasswordLength"],
+            minRequiredUsernameLength = @ViewData["minRequiredUsernameLength"];
     </script>
 }
