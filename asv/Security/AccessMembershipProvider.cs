@@ -289,23 +289,34 @@ namespace asv.Security
                     if (q.islockedout && q.lockoutduration <= _passwordAnswerAttemptLockoutDuration)
                         throw new Exception(q.comment + ".<br>Повторите попытку позднее");
 
+                    bool verificationSucceeded = false;
                     // авторизация на сервере                    
-                    if (q.serverLogin)
+                    if (q.serverlogin)
                     {
-                        ConnectionStringSettings css = ConfigurationManager.ConnectionStrings[q.conn];
-                        if (css != null)
+                        try
                         {
-                            string conStr = Misc.ConnCredentials(css.ConnectionString, username, password);
-
-                            using (System.Data.Odbc.OdbcConnection con = new System.Data.Odbc.OdbcConnection(conStr))
+                            ConnectionStringSettings css = ConfigurationManager.ConnectionStrings[q.conn];
+                            if (css != null)
                             {
-                                con.Open();
-                                con.Close();
+                                string conStr = Misc.ConnCredentials(css.ConnectionString, username, password);
+
+                                using (System.Data.Odbc.OdbcConnection con = new System.Data.Odbc.OdbcConnection(conStr))
+                                {
+                                    con.Open();
+                                    con.Close();
+                                    verificationSucceeded = true;
+                                }
                             }
                         }
+                        catch
+                        {
+                        }
                     }
+                    else
+                        verificationSucceeded = (q.hash != null && q.hash == Crypto.Hash(password + "{" + q.salt + "}"));
 
-                    return CheckPassword(db, q.serverlogin, (int)q.id, q.hash, password, q.salt);
+
+                    return verificationSucceeded;
                 }
                 else
                     return false;

@@ -16,7 +16,7 @@ namespace asv.Controllers
         public JsonNetResult LogOn(LogOnModel model)
         {
             byte result = 0;
-            string msg = "Неверные логин или пароль!";
+            string msg = null;
 
             int isAdmin = 0;
             int serverLogin = 0;
@@ -39,12 +39,13 @@ namespace asv.Controllers
                         serverLogin = mp.ServerLogin;
                         fio = mp.Fio;
                         schema = mp.Schema;
-
-                        msg = null;
+                       
                         result = 1;
 
                         LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
                     }
+                    else
+                        msg = "Неверные логин или пароль!";
 
                 }
                 catch (Exception e)

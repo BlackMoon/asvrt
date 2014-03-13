@@ -1,24 +1,22 @@
 ﻿Ext.define('QB.view.user.Login', {
     extend: 'Ext.window.Window',
     alias: 'widget.userlogin',
-
     title: 'Авторизация',
     autoShow: true,
     closable: false,
     modal: true,    
-    width: 288,
+    width: 300,
 
-    listeners: { show: function () { this.form.getComponent('login').focus(); } },
+    listeners: { show: function () { this.form.getForm().findField('login').focus(); } },
 
     initComponent: function () {
         var me = this;
 
-        me.form = Ext.widget('form',
+        me.items = [me.form = Ext.widget('form',
         {            
             defaults: { xtype: 'textfield', anchor: '100%', allowBlank: false, margin: '5' },
             items: [{
-                name: 'login',
-                itemId: 'login',
+                name: 'login',                
                 fieldLabel: 'Пользователь',                
                 listeners: {
                     afterrender: function (cmp) {
@@ -32,7 +30,10 @@
 			    name: 'password',
 			    fieldLabel: 'Пароль',
 			    inputType: 'password',
-                listeners: { specialkey: me.submitOnEnter, scope: me }                			    
+			    listeners: {
+			        specialkey: me.submitOnEnter,
+			        scope: me
+			    }
 			},
             {
                 xtype: 'checkbox',
@@ -50,12 +51,9 @@
             listeners: {
                 validitychange: function (f, v) { me.loginbtn.setDisabled(!v); }
             }
-        });
-
-        me.items = [me.form];
-
-        me.loginbtn = Ext.widget('button', { text: 'Вход', iconCls: 'icon-lock', action: 'login', disabled: true });
-        me.buttons = [me.loginbtn,
+        })];
+        
+        me.buttons = [me.loginbtn = Ext.widget('button', { text: 'Вход', iconCls: 'icon-lock', action: 'login', disabled: true }),
 		{
 		    text: 'Отмена',
 		    iconCls: 'icon-cancel',
