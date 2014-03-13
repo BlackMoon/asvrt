@@ -6,6 +6,7 @@ using System.Web.Security;
 using asv.Security;
 using System.Web.Caching;
 using System.IO;
+using asv.Managers;
 
 namespace asv
 {   
@@ -53,7 +54,7 @@ namespace asv
                                     HttpContext.Current.Cache.Add(login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                                     FormsAuthentication.SetAuthCookie(login + ":" + passwd, ticket.IsPersistent);
 
-                                    asv.Managers.LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
+                                    LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
                                 }
                                 else
                                     FormsAuthentication.SignOut();

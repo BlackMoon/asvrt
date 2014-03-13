@@ -4,8 +4,8 @@ Ext.define('QB.controller.Admin', {
     extend: 'QB.controller.Base',    
 
     models: ['Alias', 'Connection', 'Fparam', 'Table', 'Udb', 'User' ],
-    stores: ['Aliases', 'Catalogs', 'Conns', 'Funcs', 'Qdbs', 'Roles', 'Tables', 'Users'],
-    views: ['alias.Edit', 'alias.List', 'conn.Edit', 'conn.List', 'func.Edit', 'func.List', 'catalog.Edit', 'catalog.List', 'setting.Edit', 'user.Edit', 'user.Import', 'user.List'],
+    stores: ['Aliases', 'Catalogs', 'Conns', 'Funcs', 'Logs', 'Qdbs', 'Roles', 'Tables', 'Users'],
+    views: ['Eventlog', 'alias.Edit', 'alias.List', 'conn.Edit', 'conn.List', 'func.Edit', 'func.List', 'catalog.Edit', 'catalog.List', 'setting.Edit', 'user.Edit', 'user.Import', 'user.List'],
 
     init: function () {
         var me = this;
@@ -14,6 +14,9 @@ Ext.define('QB.controller.Admin', {
             'aliasedit button[action=save]': {
                 click: me.updateAlias
             },            
+            'catalogedit button[action=save]': {
+                click: me.updateCatalog
+            },
             'connedit button[action=save]': {
                 click: me.updateConn
             },
@@ -22,10 +25,15 @@ Ext.define('QB.controller.Admin', {
             },
             'funcedit button[action=save]': {
                 click: me.updateFunc
-            },            
-            'catalogedit button[action=save]': {
-                click: me.updateCatalog
-            },                                    
+            },
+            'funclist': {
+                additem: me.createFunc,
+                edititem: me.editFunc,
+                removeitem: me.deleteFunc
+            },
+            'eventlog button[action=export]': {
+                click: function () { window.open('/admin/exportlogs', '_self'); }
+            },
             'toolbar [action=aliases]': {
                 click: me.showAliases
             },
@@ -37,6 +45,9 @@ Ext.define('QB.controller.Admin', {
             },
             'toolbar [action=funcs]': {
                 click: me.showFuncs
+            },
+            'toolbar [action=eventlog]': {
+                click: me.showEventlog
             },
             'toolbar [action=settings]': {
                 click: me.showSetting
@@ -436,19 +447,19 @@ Ext.define('QB.controller.Admin', {
 
     showFuncs: function () {
         var me = this, tab = me.centerRegion.child('#functab');
-        if (!tab) {
-            var grid = Ext.widget('funclist', { listeners: { additem: me.createFunc, edititem: me.editFunc, removeitem: me.deleteFunc } });
-            tab = me.centerRegion.add({ title: 'Функции', itemId: 'functab', layout: 'fit', items: [grid] });
-        }
+        !tab && (tab = me.centerRegion.add({ title: 'Функции', itemId: 'functab', layout: 'fit', items: [Ext.widget('funclist')] }));        
+        tab.show();
+    },
+
+    showEventlog: function () {
+        var me = this, tab = me.centerRegion.child('#logtab');
+        !tab && (tab = me.centerRegion.add({ title: 'События', itemId: 'logtab', layout: 'fit', items: [Ext.widget('eventlog')] }));        
         tab.show();
     },
 
     showSetting: function () {
         var me = this, tab = me.centerRegion.child('#settab');
-        if (!tab) {
-            var view = Ext.widget('setedit');            
-            tab = me.centerRegion.add({ title: 'Настройки', itemId: 'settab', layout: 'fit', items: [view] });            
-        }
+        !tab && (tab = me.centerRegion.add({ title: 'Настройки', itemId: 'settab', layout: 'fit', items: [Ext.widget('setedit')] }));        
         tab.show();
     },
 

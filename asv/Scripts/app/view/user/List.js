@@ -11,22 +11,20 @@
                { xtype: 'imagecolumn', text: 'Администратор', dataIndex: 'isadmin', img: '/content/admin16.png' }],
     stateId: 'usrgrid',
     store: 'Users',
+    tbarConfig: {            
+        enableSearch: true,
+        kind: 'default',
+        minChars: 3,
+        items: ['-', 
+        {
+            text: 'Импорт',
+            iconCls: 'icon-xml',
+            action: 'import'
+        }]
+    },
 
     initComponent: function () {
         var me = this;
-
-        me.tbarConfig = {
-            enable: true,
-            enableSearch: true,
-            kind: 'default',
-            minChars: 3,
-            items: ['-', 
-            {
-                text: 'Импорт',
-                iconCls: 'icon-xml',
-                action: 'import'
-            }]
-        }
 
         me.callParent(arguments);
         me.store.load();

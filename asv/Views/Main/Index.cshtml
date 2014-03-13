@@ -3,11 +3,9 @@
     ViewBag.Title = "Конструктор запросов";    
 }
 
-@section scripts{
-    <script type="text/javascript">
-        var connTimeout = @ViewBag.ConnTimeout, 
-            itemsPerPage = @ViewBag.ItemsPerPage,
-            minRequiredPasswordLength = @ViewData["minRequiredPasswordLength"],
-            minRequiredUsernameLength = @ViewData["minRequiredUsernameLength"];
-    </script>
+@section scripts{    
+    var connTimeout = @ViewBag.ConnTimeout, 
+        itemsPerPage = @ViewBag.ItemsPerPage,
+        minRequiredPasswordLength = @ViewData["minRequiredPasswordLength"],
+        minRequiredUsernameLength = @ViewData["minRequiredUsernameLength"];    
 }

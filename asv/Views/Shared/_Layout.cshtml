@@ -32,8 +32,7 @@
     {
         <script src="@Url.Content("~/scripts/ext-all.js")"></script>
     }
-    <script src="@Url.Content("~/scripts/ext-lang-ru.js")"></script>    
-    @RenderSection("scripts", false)
+    <script src="@Url.Content("~/scripts/ext-lang-ru.js")"></script>        
     <script type="text/javascript">        
         String.prototype.trimLeft = function () { return this.replace(/^\s+/, ""); };
 
@@ -74,7 +73,8 @@
                 }
             }
         }
-
+        @RenderSection("scripts", required: false)
+        Ext.define('Auser', { serverlogin: @serverLogin, schema: '@schema', singleton: true });                
         Ext.Loader.setPath('Ext.ux', 'scripts/ux');
 
         Ext.application({
@@ -95,8 +95,6 @@
             init: function() {
                 var stateProvider = Ext.supports.LocalStorage ? new Ext.state.LocalStorageProvider() : new Ext.state.CookieProvider({ expires: new Date(new Date().getTime() + 2.592e9) }); // 30 days in msec
                 Ext.state.Manager.setProvider(stateProvider);
-              
-                Ext.define('Auser', { serverlogin: @serverLogin, schema: '@schema', singleton: true });                
             },
 
             launch: function () {
@@ -181,8 +179,8 @@
                                 },
                                 { 
                                     text: 'Журнал', 
-                                    action: 'journal',
-                                    iconCls: 'icon-tools'
+                                    action: 'eventlog',
+                                    iconCls: 'icon-journal'
                                 }]                                    
                             }
                         },                            

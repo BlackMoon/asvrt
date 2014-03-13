@@ -42,6 +42,10 @@
     background-image: url("/Content/stockf.png");
 }
 
+.icon-journal {
+    background-image: url("/Content/journal16.png");
+}
+
 .icon-gears {
     background-image: url("/Content/gears16.png");
 }
@@ -88,6 +92,10 @@
 
 .icon-users {
     background-image: url("/Content/users16.png");
+}
+
+.icon-txt {
+    background-image: url("/Content/bullet_txt.png") !important;
 }
 
 .icon-xls {

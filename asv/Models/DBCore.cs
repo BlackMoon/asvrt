@@ -439,4 +439,11 @@ namespace asv.Models
         public List<string> Roles { get; set; }
     }
     #endregion
+
+    #region Журнал
+    public class LogModel
+    {
+        public string Event { get; set; }
+    }
+    #endregion
 }

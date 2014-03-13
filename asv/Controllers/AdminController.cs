@@ -12,12 +12,15 @@ using asv.Security;
 using asv.Models;
 using PetaPoco;
 using System.Collections.Specialized;
+using System.IO;
 
 namespace asv.Controllers
 {
     //[AdminAuthorize]
     public class AdminController : BaseController
-    {
+    {   
+        private const string _logfile = "user.log";
+
         public JsonNetResult DeleteAlias(int id)
         {
             byte result = 1;
@@ -143,7 +146,38 @@ namespace asv.Controllers
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg };
             return jr;
-        }        
+        }
+
+        public FileResult ExportLogs()
+        {
+            Response.AddHeader("Content-Disposition", "attachment; filename=\"" + _logfile + "\"");
+            return File(Server.MapPath(@"~\" + _logfile), "text/plain");
+        }
+
+        [OutputCache(Duration = 120, VaryByParam = "id")]
+        public JsonNetResult GetAlias(int id)
+        {
+            byte result = 1;
+            string msg = null;
+
+            Alias alias = null;
+            try
+            {
+                List<Alias> aliases = db.Fetch<Alias, Alias, Alias>(new AliasRelator().Map, "SELECT a.id, f.id, f.name, f.remark FROM qb_aliases a LEFT JOIN qb_aliases f ON f.parentid = a.id WHERE a.id = @0", id);
+
+                if (aliases.Count > 0)
+                    alias = aliases[0];
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+                result = 0;
+            }
+
+            JsonNetResult jr = new JsonNetResult();
+            jr.Data = new { success = result, message = msg, alias = alias };
+            return jr;
+        }
 
         [OutputCache(Duration = 120, VaryByParam = "page;limit;query")]
         public JsonNetResult GetAliases(int page, int limit, string query)
@@ -172,31 +206,6 @@ namespace asv.Controllers
 
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, data = aliases, total = total };
-            return jr;
-        }
-
-        [OutputCache(Duration = 120, VaryByParam = "id")]
-        public JsonNetResult GetAlias(int id)
-        {
-            byte result = 1;
-            string msg = null;
-
-            Alias alias = null;
-            try
-            {
-                List<Alias> aliases = db.Fetch<Alias, Alias, Alias>(new AliasRelator().Map, "SELECT a.id, f.id, f.name, f.remark FROM qb_aliases a LEFT JOIN qb_aliases f ON f.parentid = a.id WHERE a.id = @0", id);
-
-                if (aliases.Count > 0)
-                    alias = aliases[0];
-            }
-            catch (Exception e)
-            {
-                msg = e.Message;
-                result = 0;
-            }
-
-            JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg, alias = alias };
             return jr;
         }
         
@@ -400,6 +409,38 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, data = funcs, total = total };
             return jr;
         }
+
+        public JsonNetResult GetLogs(int page, int limit)
+        {
+            byte result = 1;
+            string msg = null;
+
+
+            long total = 0;
+            IList<LogModel> logs = new List<LogModel>();
+            try
+            {                
+                // read from tail
+                IEnumerable<string> lines = System.IO.File.ReadLines(Server.MapPath(@"~\" + _logfile)).Reverse();
+                total = lines.Count();
+
+                foreach (string line in lines.Skip((page - 1) * limit).Take(limit))
+                {
+                    logs.Add(new LogModel { Event = line });
+                }
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+                result = 0;
+            }
+
+            JsonNetResult jr = new JsonNetResult();
+            jr.Data = new { success = result, message = msg, data = logs, total = total };
+
+            return jr;
+        }
+
 
         [OutputCache(Duration = 120, VaryByParam = "none")]
         public JsonNetResult GetSettings()

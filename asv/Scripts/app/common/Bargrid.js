@@ -27,19 +27,16 @@ Ext.define('QB.common.Bargrid', {
     enableEdit: true,
     enableRemove: true,
     enableContext: true,
-    bbarConfig: { enable: true, kind: 'default' },
-    tbarConfig: { enable: true, kind: 'default', enableSearch: true, minChars: 3 },
+    bbarConfig: { },
+    tbarConfig: { },
 
     constructor: function (cfg) {
-        var me = this, obj;
+        var me = this,
+            basebbar = { enable: true, kind: 'default' },
+            basetbar = { enable: true, kind: 'default', enableSearch: true, minChars: 3 };
 
-        obj = {};
-        Ext.apply(obj, cfg.bbarConfig, me.bbarConfig);
-        cfg.bbarConfig = obj;
-
-        obj = {};
-        Ext.apply(obj, cfg.tbarConfig, me.tbarConfig);
-        cfg.tbarConfig = obj;
+        cfg.bbarConfig = cfg.bbarConfig ? Ext.applyIf(cfg.bbarConfig, basebbar) : Ext.applyIf(me.bbarConfig, basebbar);
+        cfg.tbarConfig = cfg.tbarConfig ? Ext.applyIf(cfg.tbarConfig, basetbar) : Ext.applyIf(me.tbarConfig, basetbar);
 
         me.callParent(arguments);
     },

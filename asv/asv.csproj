@@ -2482,6 +2482,7 @@
     <Content Include="Scripts\app\store\Aliases.js" />
     <Content Include="Scripts\app\store\Catalogs.js" />
     <Content Include="Scripts\app\store\Funcs.js" />
+    <Content Include="Scripts\app\store\Logs.js" />
     <Content Include="Scripts\app\store\Params.js" />
     <Content Include="Scripts\app\store\Qdbs.js" />
     <Content Include="Scripts\app\store\Dbs.js" />
@@ -2500,6 +2501,7 @@
     <Content Include="Scripts\app\view\catalog\Edit.js" />
     <Content Include="Scripts\app\view\catalog\List.js" />
     <Content Include="Scripts\app\view\catalog\Tlist.js" />
+    <Content Include="Scripts\app\view\Eventlog.js" />
     <Content Include="Scripts\app\view\section\Edit.js" />
     <Content Include="Scripts\app\view\section\List.js" />
     <Content Include="Scripts\app\view\section\Tlist.js" />

@@ -110,11 +110,6 @@ namespace asv.Security
             throw new NotImplementedException();
         }
 
-        public int DeleteUser(int id)
-        {
-            throw new NotImplementedException();           
-        }
-
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
         {
             throw new NotImplementedException();
@@ -257,11 +252,6 @@ namespace asv.Security
             throw new NotImplementedException();
         }
 
-        public void UpdateUser(MembershipPerson mp)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void UpdateUser(MembershipUser user)
         {
             throw new NotImplementedException();
@@ -277,7 +267,7 @@ namespace asv.Security
 
             using (var db = ConnectToDatabase())
             {
-                var q = db.SingleOrDefault<dynamic>(@"SELECT u.id, u.comment, u.isapproved, u.serverlogin, m.password hash, m.salt, m.islockedout, datetime('now') - m.lastlogindate lockoutduration, b.conn 
+                var q = db.SingleOrDefault<dynamic>(@"SELECT u.id, u.comment, u.isapproved, u.serverlogin, m.password hash, m.salt, m.islockedout, (strftime('%s', 'now', 'localtime') - strftime('%s', m.lastlogindate))/ 60 lockoutduration, b.conn 
                                                       FROM membership m JOIN qb_users u ON u.id = m.userid LEFT JOIN qb_bases b ON b.usercreate = u.id AND b.auth = 1 WHERE u.login = @0", username);
                 if (q != null)
                 {
@@ -286,7 +276,7 @@ namespace asv.Security
                         throw new Exception("Пользователь заблокирован.<br>" + q.comment);
 
                     // заблокирован системой
-                    if (q.islockedout && q.lockoutduration <= _passwordAnswerAttemptLockoutDuration)
+                    if (q.islockedout && q.lockoutduration < _passwordAnswerAttemptLockoutDuration)
                         throw new Exception(q.comment + ".<br>Повторите попытку позднее");
 
                     bool verificationSucceeded = false;
@@ -315,6 +305,27 @@ namespace asv.Security
                     else
                         verificationSucceeded = (q.hash != null && q.hash == Crypto.Hash(password + "{" + q.salt + "}"));
 
+                    int failures = 0, locked = 0;
+
+                    // верификация успешна -> сброс failedpasswordattemptcount
+                    if (verificationSucceeded)
+                    {
+                        // не заблокирован администратором --> сброс комментария
+                        if (q.isapproved)
+                            db.Execute(@"UPDATE qb_users SET comment = NULL WHERE id = @0", q.id);
+                    }
+                    // верификация не прошла 
+                    else
+                    {
+                        failures = db.ExecuteScalar<int>("SELECT failedpasswordattemptcount FROM membership WHERE userid = @0", q.id) + 1;
+                        // кол-во попыток больше --> блокировка
+                        if (failures > _maxInvalidPasswordAttempts)
+                        {
+                            db.Execute(@"UPDATE qb_users SET comment = 'Превышено максимальное количество попыток ввода недопустимого пароля' WHERE id = @0", q.id);
+                            locked = 1;
+                        }
+                    }
+                    db.Execute("UPDATE membership SET failedpasswordattemptcount = @1, islockedout = @2, lastlogindate = datetime('now', 'localtime') WHERE userid = @0", q.id, failures, locked);
 
                     return verificationSucceeded;
                 }

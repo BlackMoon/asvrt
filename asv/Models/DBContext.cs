@@ -86,7 +86,7 @@ namespace asv.Models
         {
             Person user = null;
 
-            List<Person> users = _database.Fetch<Person, Userdb, Person>(new PersonRelator().Map, @"SELECT u.id, u.comment, u.serverlogin, u.theme, u.datecreate, b.conn, b.auth FROM qb_users u 
+            List<Person> users = _database.Fetch<Person, Userdb, Person>(new PersonRelator().Map, @"SELECT u.id, u.comment, u.serverlogin, u.theme, u.datecreate, b.conn, b.auth FROM qb_users u
                                                                                                     LEFT JOIN qb_bases b ON b.usercreate = u.id WHERE u.id = @0", id);
             if (users.Count > 0)
             {
