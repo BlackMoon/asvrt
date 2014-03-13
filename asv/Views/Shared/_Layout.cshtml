@@ -73,8 +73,7 @@
                 }
             }
         }
-        @RenderSection("scripts", required: false)
-        Ext.define('Auser', { serverlogin: @serverLogin, schema: '@schema', singleton: true });                
+        @RenderSection("scripts", required: false)        
         Ext.Loader.setPath('Ext.ux', 'scripts/ux');
 
         Ext.application({

@@ -134,7 +134,7 @@ namespace asv.Controllers
             long total = 0;
             try
             {
-                string sql = "SELECT t.id, t.name, t.fname, CEILING(t.sz / 1024.0) sz FROM qb_templates t WHERE t.usercreate = @0";
+                string sql = "SELECT t.id, t.name, t.fname, t.usercreate, CEILING(t.sz / 1024.0) sz FROM qb_templates t WHERE t.usercreate = @0";
                 if (!string.IsNullOrEmpty(query))
                     sql += " AND (" + Misc.FilterField("t.name", query) + " OR " + Misc.FilterField("t.fname", query) + ")";
 

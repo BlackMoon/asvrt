@@ -262,8 +262,10 @@ namespace asv.Models
         public int Id { get; set; }
         public int Db2Mode { get; set; }                                // Режим DB2 для Cache
         public int UseLeftJoin { get; set; }                            // Использовать LEFT JOIN
-        public int UserDefined { get; set; }                            // Пользовательский
+        public int UserDefined { get; set; }                            // Пользовательский        
+
         public string Conn { get; set; }
+
         [Column("grp")]
         public string Group { get; set; }
         [Column("subgrp")]

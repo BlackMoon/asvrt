@@ -8,6 +8,7 @@ using System.Web.Security;
 using asv.Helpers;
 using asv.Managers;
 using asv.Models;
+using Newtonsoft.Json;
 
 namespace asv.Controllers
 {    
@@ -30,7 +31,27 @@ namespace asv.Controllers
 
             ViewData["minRequiredPasswordLength"] = Membership.MinRequiredPasswordLength;
             ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
-            
+     
+            string json = JsonConvert.SerializeObject(
+                new
+                {
+                    singleton = true,
+                    id = User.Id,                    
+                    roles = User.GetRoles(),
+                    serverLogin = User.ServerLogin,
+                    schema = User.Schema,
+                    isInRole = new Newtonsoft.Json.Linq.JRaw("function(role) { return roles.indexOf(role) != -1; }")
+                },
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new asv.Helpers.LowercaseContractResolver(),
+                    DefaultValueHandling = DefaultValueHandling.Ignore, 
+                    NullValueHandling = NullValueHandling.Ignore
+                }
+            );
+
+            ViewBag.Auser = new MvcHtmlString(json);           
+
             return View();
         }       
 
@@ -188,7 +209,7 @@ namespace asv.Controllers
             List<dynamic> queries = new List<dynamic>();
             try
             {   
-                queries = db.Fetch<dynamic>("SELECT q.id, q.name, q.conn, q.grp, q.drv FROM qb_vqueries q ORDER BY q.name");
+                queries = db.Fetch<dynamic>("SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate FROM qb_vqueries q ORDER BY q.name");
             }
             catch (Exception e)
             {

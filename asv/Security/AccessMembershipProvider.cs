@@ -22,8 +22,6 @@ namespace asv.Security
         private int         _saltLength;
 
         private string      _connectionStringName;        
-        
-        private Database    _db;
 
         internal virtual PetaPoco.Database ConnectToDatabase()
         {
@@ -51,38 +49,8 @@ namespace asv.Security
 
             _connectionStringName = Misc.GetConfigValue(config["connectionStringName"], "");
             InitConfig(config);
-            
-            _db = new Database(_connectionStringName);
-            _db.EnableAutoSelect = false;
         }
-
-        private bool CheckPassword(PetaPoco.Database db, bool serverLogin, int userId, string hashedPassword, string password, string salt)
-        {
-            bool verificationSucceeded = true;
-
-            // авторизация на сервере
-            if (!serverLogin)            
-                verificationSucceeded = (hashedPassword != null && hashedPassword == Crypto.Hash(password + "{" + salt + "}"));
-            
-
-
-            if (verificationSucceeded)
-            {
-                // Reset password failure count on successful credential check
-                db.Execute(@"UPDATE membership SET failedpasswordattemptcount = 0 WHERE userid = @0", userId);
-            }
-            else
-            {
-                int failures = db.ExecuteScalar<int>("SELECT failedpasswordattemptcount FROM membership WHERE userid = @0", userId);
-                if (failures < _maxInvalidPasswordAttempts)
-                {
-                    db.Execute(@"UPDATE membership SET failedpasswordattemptcount = @1 WHERE userid = @0", userId, failures + 1, DateTime.UtcNow);
-                }
-            }
-
-            return verificationSucceeded;
-        }
-
+       
         public override string ApplicationName
         {
             get
@@ -176,6 +144,10 @@ namespace asv.Security
                         mp.Fio += " " + user.MiddleName[0] + ".";
 
                     mp.Bases = user.Bases;
+
+                    string roles = db.SingleOrDefault<string>("SELECT u.roles from qb_users u WHERE u.id = @0", user.Id);
+                    if (!string.IsNullOrEmpty(roles))
+                        mp.Roles = new List<string>(roles.Split(new char[] { ',' }));
                 }
             }
 

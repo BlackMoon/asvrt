@@ -74,6 +74,7 @@ namespace asv
                             user.Firstname = mp.Firstname;
                             user.Middlename = mp.Middlename;                            
                             user.Fio = mp.Fio;
+                            
                             user.ServerLogin = mp.ServerLogin;
                             user.Theme = mp.Theme;
 

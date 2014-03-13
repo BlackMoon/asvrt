@@ -19,7 +19,7 @@ namespace asv.Security
 
         public MemberPrincipal(string username)
             : base(new GenericIdentity(username))
-        {
+        {   
         }        
     }
 

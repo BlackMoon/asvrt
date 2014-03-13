@@ -33,6 +33,7 @@ namespace asv.Security
         }
 
         public IList<Userdb> Bases { get; set; }
+        public List<string> Roles { get; set; }
         
         public MembershipPerson() { }
 

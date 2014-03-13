@@ -1,9 +1,35 @@
-﻿using System.Web.Security;
+﻿using System;
+using System.Collections.Specialized;
+using System.Web;
+using System.Web.Security;
+using asv.Helpers;
+using asv.Models;
 
 namespace asv.Security
 {
     public class AccessRoleProvider : RoleProvider
     {
+        private string _connectionStringName;        
+
+        internal virtual PetaPoco.Database ConnectToDatabase()
+        {
+            return new DBContext(_connectionStringName).Database;
+        }
+
+        public override void Initialize(string name, NameValueCollection config)
+        {
+            if (config == null)
+                throw new ArgumentNullException("config");
+
+            if (string.IsNullOrEmpty(name))
+                name = "AccessRoleProvider";
+
+            base.Initialize(name, config);
+
+            _connectionStringName = Misc.GetConfigValue(config["connectionStringName"], "");         
+        }
+
+
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
             throw new System.NotImplementedException();
@@ -43,7 +69,21 @@ namespace asv.Security
 
         public override string[] GetRolesForUser(string username)
         {
-            throw new System.NotImplementedException();
+            string [] roles = new string[]{};
+
+            MembershipPerson user = (MembershipPerson)HttpContext.Current.Cache[username];
+            if (user != null)
+                roles = user.Roles.ToArray();
+            else
+            {
+                using (var db = ConnectToDatabase())
+                {
+                    string sroles = db.SingleOrDefault<string>("SELECT u.roles from qb_users u WHERE u.id = @0", user.Id);
+                    if (!string.IsNullOrEmpty(sroles))
+                        roles = sroles.Split(new char[] { ',' });
+                }
+            }
+            return roles;
         }
 
         public override string[] GetUsersInRole(string roleName)
