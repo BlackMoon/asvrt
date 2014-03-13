@@ -8,6 +8,7 @@ using System.Web.Security;
 using asv.Helpers;
 using asv.Managers;
 using asv.Models;
+using asv.Security;
 using Newtonsoft.Json;
 
 namespace asv.Controllers
@@ -55,9 +56,9 @@ namespace asv.Controllers
             );           
 
             return View();
-        }       
+        }
 
-        [Authorize]
+        [GrantAttribute(Roles = "ERASER")]
         public JsonNetResult DeleteQuery(int id)
         {
             byte result = 1;
@@ -210,8 +211,15 @@ namespace asv.Controllers
 
             List<dynamic> queries = new List<dynamic>();
             try
-            {   
-                queries = db.Fetch<dynamic>("SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate FROM qb_vqueries q ORDER BY q.name");
+            {
+                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate FROM qb_vqueries q";
+                
+                if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
+                    sql += " WHERE q.usercreate = @0";
+                
+                sql += " ORDER BY q.name";
+
+                queries = db.Fetch<dynamic>(sql, User.Id);
             }
             catch (Exception e)
             {
@@ -398,9 +406,9 @@ namespace asv.Controllers
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, data = nodes };
             return jr;
-        }       
+        }
 
-        [Authorize]
+        [GrantAttribute(Roles = "EDITOR")]
         [ValidateInput(false)]
         public JsonNetResult UpdateQuery(string json)
         {

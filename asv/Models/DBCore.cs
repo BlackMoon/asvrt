@@ -260,7 +260,7 @@ namespace asv.Models
     public class Query : Base, IKey
     {   
         public int Id { get; set; }
-        public int Db2Mode { get; set; }                                // Режим DB2 для Cache
+        public int Db2Mode { get; set; }                                // Режим DB2 для Cache        
         public int UseLeftJoin { get; set; }                            // Использовать LEFT JOIN
         public int UserDefined { get; set; }                            // Пользовательский        
 
