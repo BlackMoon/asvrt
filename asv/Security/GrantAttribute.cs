@@ -8,7 +8,7 @@ namespace asv.Security
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool isAutorized = base.AuthorizeCore(httpContext);
-            if (isAutorized)
+            if (!isAutorized)
             {
                 MemberPrincipal user = (MemberPrincipal)httpContext.User;
 

@@ -12,6 +12,15 @@ namespace asv.Controllers
 {
     public class AccountController : Controller
     {
+        public JsonNetResult LogOn()
+        {
+            object msg = TempData["AttrMessage"];
+
+            JsonNetResult jr = new JsonNetResult();
+            jr.Data = new { message = msg };
+            return jr;
+        }
+
         [HttpPost]
         public JsonNetResult LogOn(LogOnModel model)
         {
@@ -42,7 +51,9 @@ namespace asv.Controllers
                         serverLogin = mp.ServerLogin;
                         fio = mp.Fio;
                         schema = mp.Schema;
-                        roles = mp.Roles.ToArray();
+                        
+                        if (mp.Roles != null)
+                            roles = mp.Roles.ToArray();
 
                         result = 1;
 

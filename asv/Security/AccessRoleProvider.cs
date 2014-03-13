@@ -72,7 +72,7 @@ namespace asv.Security
             string [] roles = new string[]{};
 
             MembershipPerson user = (MembershipPerson)HttpContext.Current.Cache[username];
-            if (user != null)
+            if (user != null && user.Roles != null)
                 roles = user.Roles.ToArray();
             else
             {

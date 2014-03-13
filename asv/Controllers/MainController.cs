@@ -164,7 +164,7 @@ namespace asv.Controllers
             return jr;
         }
         
-        [Authorize(Roles = "EDITOR, READER")]
+        [GrantAttribute(Roles = "EDITOR, READER")]
         [OutputCache(Duration = 120, VaryByParam = "id")]
         public JsonNetResult GetQuery(int id)
         {
@@ -232,7 +232,7 @@ namespace asv.Controllers
             return jr;
         }
 
-        [Authorize]
+        [GrantAttribute(Roles = "EDITOR, READER")]
         [OutputCache(Duration = 120, VaryByParam = "name;drv;table;od")]
         public JsonNetResult GetTable(string name, eDriverType drv, string table, string od)
         {
@@ -307,7 +307,7 @@ namespace asv.Controllers
             return jr;
         }
 
-        [Authorize]
+        [GrantAttribute(Roles = "EDITOR, READER")]
         [OutputCache(Duration = 120, VaryByParam="name;drv")]
         public JsonNetResult GetTables(string name, eDriverType drv)
         {
