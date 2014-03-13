@@ -13,8 +13,7 @@ using PetaPoco;
 using asv.Security;
 
 namespace asv.Controllers
-{
-    [Authorize]
+{   
     public class ReportController : BaseController
     {
         private const string REPORTSPATH = "Reports";
@@ -39,7 +38,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg };
             return jr;
         }
-       
+
+        [GrantAttribute(Roles = "EDITOR, READER")]
         public JsonNetResult Export(string name, eDriverType drv, string sql, string json, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
@@ -71,7 +71,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, link = path };
             return jr;
         }
-       
+        
+        [Authorize]
         public JsonNetResult GetReport(string name, eDriverType drv, string sql, string json, int repId, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
@@ -103,7 +104,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, link = path };
             return jr;
         }
-       
+
+        [GrantAttribute(Roles = "EDITOR, READER")]
         public JsonNetResult GetTpl(int id)
         {
             byte result = 1;
@@ -126,6 +128,7 @@ namespace asv.Controllers
             return jr;       
         }
       
+        [Authorize]
         public JsonNetResult GetTemplates(int page, int limit, string query)
         {
             byte result = 1;
@@ -165,7 +168,7 @@ namespace asv.Controllers
         }
       
         [HttpPost]
-        [GrantAttribute(Roles = "EDITOR")]
+        [GrantAttribute(Roles = "AUTHOR, EDITOR")]
         public ActionResult UpdateTpl(int? id, string name, HttpPostedFileBase file)
         {
             byte result = 1;

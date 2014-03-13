@@ -78,6 +78,7 @@
         me.explorer = me.application.viewport.down('explorer');
 
         me.callParent(arguments);
+        me.application.logged && me.refreshBases();
     },
 
     onSelectionChange: function (selmodel, selected) {        
@@ -151,10 +152,7 @@
                         Auser.schema = obj.schema;
                         Auser.roles = obj.roles;
 
-                        var store = me.getDbsStore();
-                        store.loaded = false;
-                        store.clearFilter();
-                        store.load(me.explorer.getRootNode());
+                        me.refreshBases();
 
                         wnd.close();
                     }
@@ -195,9 +193,9 @@
     },
 
     refreshBases: function(tool) {
-        var store = tool.toolOwner.store;
-        store.loaded = false;
-        store.clearFilter();
-        store.load();
+        var root = this.explorer.getRootNode();
+        root.collapse();
+        root.removeAll();
+        root.expand();        
     }
 })

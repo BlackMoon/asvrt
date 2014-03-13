@@ -12,6 +12,8 @@ namespace asv.Security
             {
                 MemberPrincipal user = (MemberPrincipal)httpContext.User;
 
+
+
                 /*if (_unitsSplit.Length > 0)
                 {
                     // проверка разрешений                    

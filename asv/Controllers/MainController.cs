@@ -163,8 +163,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, data = nodes };
             return jr;
         }
-
-        [Authorize]
+        
+        [Authorize(Roles = "EDITOR, READER")]
         [OutputCache(Duration = 120, VaryByParam = "id")]
         public JsonNetResult GetQuery(int id)
         {
@@ -407,8 +407,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, data = nodes };
             return jr;
         }
-
-        [GrantAttribute(Roles = "EDITOR")]
+        
+        [GrantAttribute(Roles = "AUTHOR, EDITOR")]
         [ValidateInput(false)]
         public JsonNetResult UpdateQuery(string json)
         {

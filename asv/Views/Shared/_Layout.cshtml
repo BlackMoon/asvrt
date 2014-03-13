@@ -93,8 +93,7 @@
             requires: ['Ext.container.Viewport'],
             name: 'QB',
             appFolder: 'scripts/app',
-            controllers: ['Admin', 'Main', 'Query', 'Template'],
-            stores: ['Dbs'],
+            controllers: ['Admin', 'Main', 'Query', 'Template'],            
             views: ['Explorer'],                        
             @if (logged)
             {
@@ -111,16 +110,9 @@
 
             launch: function () {
                 var me = this;
-
                 me.maincontroller = me.getController('Main');
-                if (me.logged){ 
-                    var store = me.getDbsStore()
-                    store.loaded = false;
-                    store.load();
-                }
-                else {                    
-                    me.maincontroller.auth(); 
-                }
+                
+                !me.logged && me.maincontroller.auth();
 
                 me.viewport = Ext.create('Ext.container.Viewport', {
                     layout: 'border',
