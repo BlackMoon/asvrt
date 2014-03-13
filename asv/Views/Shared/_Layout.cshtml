@@ -2,16 +2,14 @@
 @{  
     bool logged = Request.IsAuthenticated;         
     
-    int isAdmin = 0, serverLogin = 0;
-    string schema = string.Empty, theme = "classic";
+    int isAdmin = 0;
+    string theme = "classic";
     
     MemberPrincipal user = null;
     
     if (logged) {
         user = (MemberPrincipal)User;
-        isAdmin = user.IsAdmin;
-        serverLogin = user.ServerLogin;
-        schema = user.Schema;
+        isAdmin = user.IsAdmin;        
         
         if (!string.IsNullOrEmpty(user.Theme)) {
             theme = user.Theme;
@@ -55,6 +53,14 @@
             };
         }
 
+        Ext.Ajax.defaultHeaders = { accept: 'application/json' };
+        Ext.Ajax.on({
+            requestexception: function (conn, response, options) {                
+                var obj = Ext.decode(response.responseText);
+                showStatus(response.status + ' ' + (obj ? obj.message : response.statusText));                
+            }
+        });
+
         if (Ext.form.Panel)
             Ext.apply(Ext.form.Panel.prototype, { frame: true });
 
@@ -74,7 +80,7 @@
             }
         }
         @RenderSection("scripts", required: false)        
-        Ext.Loader.setPath('Ext.ux', 'scripts/ux');
+        Ext.Loader.setPath('Ext.ux', 'scripts/ux');        
 
         Ext.application({
             requires: ['Ext.container.Viewport'],
@@ -307,12 +313,19 @@
                         height: 22,
                         items: [{
                             xtype: 'tbtext', 
-                            itemId: 'status'                            
+                            id: 'status'                            
                         }]
                     }]
                 });            
             }
         });
+        var status = window.document.getElementById('status');
+        function showStatus(msg) {
+            if (status) {
+                status.innerHTML = msg;
+                setTimeout(function () { status.innerHTML = ''; }, 10000);
+            }
+        }
     </script>
     <style>@@import '@Url.Content("~/Content/ext-theme-" + theme + "/ext-theme-" + theme + "-all.css")';</style>
 </head>

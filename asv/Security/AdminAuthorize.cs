@@ -1,9 +1,8 @@
 ﻿using System.Web;
-using System.Web.Mvc;
 
 namespace asv.Security
 {
-    public class AdminAuthorize : AuthorizeAttribute
+    public class AdminAuthorize : BaseAttribute
     {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {

@@ -31,26 +31,28 @@ namespace asv.Controllers
 
             ViewData["minRequiredPasswordLength"] = Membership.MinRequiredPasswordLength;
             ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
-     
-            string json = JsonConvert.SerializeObject(
-                new
-                {
-                    singleton = true,
-                    id = User.Id,                    
-                    roles = User.GetRoles(),
-                    serverLogin = User.ServerLogin,
-                    schema = User.Schema,
-                    isInRole = new Newtonsoft.Json.Linq.JRaw("function(role) { return roles.indexOf(role) != -1; }")
-                },
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new asv.Helpers.LowercaseContractResolver(),
-                    DefaultValueHandling = DefaultValueHandling.Ignore, 
-                    NullValueHandling = NullValueHandling.Ignore
-                }
-            );
+            
+            IDictionary<string, object> obj = new Dictionary<string, object>();
+            obj["sintgleton"] = true;
+            obj["isInRole"] = new Newtonsoft.Json.Linq.JRaw("function(role) { return roles.indexOf(role) != -1; }");
 
-            ViewBag.Auser = new MvcHtmlString(json);           
+            if (Request.IsAuthenticated)
+            {   
+                obj["id"] = User.Id;
+                obj["roles"] = User.GetRoles();
+                obj["schema"] = User.Schema;                
+            }
+            
+            ViewBag.Auser = new MvcHtmlString(JsonConvert.SerializeObject(
+                    obj,                  
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new asv.Helpers.LowercaseContractResolver(),
+                        DefaultValueHandling = DefaultValueHandling.Ignore,
+                        NullValueHandling = NullValueHandling.Ignore
+                    }
+                )
+            );           
 
             return View();
         }       

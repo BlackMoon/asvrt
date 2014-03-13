@@ -87,6 +87,25 @@ namespace asv
             }
         }
 
+        protected void Application_Error(Object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError();
+
+            if (ex is HttpException)
+            {
+                HttpException hex = (HttpException)ex;
+
+                HttpContextWrapper context = new HttpContextWrapper(Context);
+                if (context.Request.IsAjaxRequest())
+                {
+                    Response.ContentType = "application/json";
+                    Response.StatusCode = hex.GetHttpCode();
+                    Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(new { message = hex.Message }));
+                    Response.End();
+                }
+            }
+        }
+
         protected void Application_Start()
         {
             string repPath = Server.MapPath(@"\Reports");
