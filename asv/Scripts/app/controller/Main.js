@@ -193,7 +193,11 @@
     },
 
     refreshBases: function(tool) {
-        var root = this.explorer.getRootNode();
+        var store = this.getDbsStore(),
+            root = store.getRootNode();
+
+        store.clearFilter();
+
         root.collapse();
         root.removeAll();
         root.expand();        
