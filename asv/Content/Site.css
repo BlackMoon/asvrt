@@ -1,4 +1,8 @@
-﻿.icon-add {
+﻿#footer {
+    color: #DD4B39;
+}
+
+.icon-add {
     background-image: url("/Content/ext-theme-classic/images/dd/drop-add.gif");
 }
 

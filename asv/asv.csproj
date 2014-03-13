@@ -2492,6 +2492,8 @@
     <Content Include="Scripts\app\controller\Admin.js" />
     <Content Include="Scripts\app\model\User.js" />
     <Content Include="Scripts\app\store\Conns.js" />
+    <Content Include="Scripts\app\store\Params.js" />
+    <Content Include="Scripts\app\store\Qdbs.js" />
     <Content Include="Scripts\app\store\Queries.js" />
     <Content Include="Scripts\app\store\Roles.js" />
     <Content Include="Scripts\app\store\Sections.js" />

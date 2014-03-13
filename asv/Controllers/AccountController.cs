@@ -18,11 +18,13 @@ namespace asv.Controllers
             byte result = 0;
             string msg = null;
 
+            int id = 0;
             int isAdmin = 0;
             int serverLogin = 0;
 
             string fio = null;
             string schema = null;
+            string[] roles = null;
 
             if (ModelState.IsValid)
             {
@@ -35,11 +37,13 @@ namespace asv.Controllers
                         HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                         FormsAuthentication.SetAuthCookie(model.Login + ":" + model.Password, model.RememberMe);
 
+                        id = mp.Id;
                         isAdmin = mp.IsAdmin;
                         serverLogin = mp.ServerLogin;
                         fio = mp.Fio;
                         schema = mp.Schema;
-                       
+                        roles = mp.Roles.ToArray();
+
                         result = 1;
 
                         LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
@@ -57,7 +61,7 @@ namespace asv.Controllers
                 msg = string.Join("<br>", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
 
             JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg, fio = fio, isadmin = isAdmin, serverlogin = serverLogin, schema = schema };
+            jr.Data = new { success = result, message = msg, id = id, fio = fio, isadmin = isAdmin, serverlogin = serverLogin, schema = schema, roles = roles };
             return jr;
         }
 

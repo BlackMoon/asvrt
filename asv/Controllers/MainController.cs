@@ -33,8 +33,8 @@ namespace asv.Controllers
             ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
             
             IDictionary<string, object> obj = new Dictionary<string, object>();
-            obj["sintgleton"] = true;
-            obj["isInRole"] = new Newtonsoft.Json.Linq.JRaw("function(role) { return roles.indexOf(role) != -1; }");
+            obj["singleton"] = true;
+            obj["isInRole"] = new Newtonsoft.Json.Linq.JRaw("function(role) { return this.roles.indexOf(role) != -1; }");
 
             if (Request.IsAuthenticated)
             {   

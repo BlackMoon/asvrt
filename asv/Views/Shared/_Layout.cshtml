@@ -70,6 +70,7 @@
         if (Ext.form.field.TextArea)
             Ext.apply(Ext.form.field.TextArea.prototype, { height: 60 });
         
+        var status;
         var comboRenderer = function(combo){
             return function(v){
                 if (v) {
@@ -77,6 +78,12 @@
                     if (rec) 
                         return rec.get(combo.displayField);
                 }
+            }
+        }
+        function showStatus(msg) {
+            if (status) {
+                status.innerHTML = msg;
+                setTimeout(function () { status.innerHTML = ''; }, 10000);
             }
         }
         @RenderSection("scripts", required: false)        
@@ -310,22 +317,13 @@
                     {
                         region: 'south',
                         xtype: 'toolbar',
-                        height: 22,
-                        items: [{
-                            xtype: 'tbtext', 
-                            id: 'status'                            
-                        }]
+                        id: 'footer',                                                    
+                        height: 22                        
                     }]
                 });            
-            }
-        });
-        var status = window.document.getElementById('status');
-        function showStatus(msg) {
-            if (status) {
-                status.innerHTML = msg;
-                setTimeout(function () { status.innerHTML = ''; }, 10000);
-            }
-        }
+                status = window.document.getElementById('footer');
+            }            
+        });                
     </script>
     <style>@@import '@Url.Content("~/Content/ext-theme-" + theme + "/ext-theme-" + theme + "-all.css")';</style>
 </head>

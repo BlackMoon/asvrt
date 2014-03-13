@@ -1,7 +1,7 @@
 ﻿Ext.define('QB.controller.Main', {
     extend: 'QB.controller.Base',
     logged: false,
-    stores: ['Qdbs', 'Dbs'],
+    stores: ['Dbs'],
     views: ['user.Login'],    
 
     init: function () {
@@ -145,8 +145,11 @@
                         me.lbfio.setText(obj.fio);
                         me.btnauth.setText('Выход');
                         
+                        Auser.id = obj.id;
+                        Auser.isadmin = obj.isadmin;
                         Auser.serverlogin = obj.serverlogin;
                         Auser.schema = obj.schema;
+                        Auser.roles = obj.roles;
 
                         var store = me.getDbsStore();
                         store.loaded = false;
