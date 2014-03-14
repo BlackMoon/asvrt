@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using asv.Models;
 
 namespace asv.Security
 {
@@ -10,32 +11,34 @@ namespace asv.Security
             bool isAutorized = base.AuthorizeCore(httpContext);
             if (!isAutorized)
             {
+                string unit = null;
                 MemberPrincipal user = (MemberPrincipal)httpContext.User;
-
-
-
-                /*if (_unitsSplit.Length > 0)
+                
+                // проверка автора
+                string action = httpContext.Request.RequestContext.RouteData.Values["action"].ToString();
+                switch (action)
                 {
-                    // проверка разрешений                    
-                    if (_unitsSplit.Any(u => { return user.IsInGrant(u, Perm); }))
-                        return true;
+                    case "deletequery":
+                    case "getquery":
+                    case "updatequery":
+                        unit = "query";
+                        break;
+                    case "deletetpl":
+                    case "gettpl":
+                    case "updatetpl":
+                        unit = "template";
+                        break;
+                }
 
-                    // проверка автора
-                    string action = httpContext.Request.RequestContext.RouteData.Values["action"].ToString();
-                    if (action.StartsWith("Delete", StringComparison.CurrentCultureIgnoreCase) || action.StartsWith("Update", StringComparison.CurrentCultureIgnoreCase))
+                if (unit != null)
+                {
+                    int id;
+                    if (int.TryParse(httpContext.Request.Params["id"], out id))
                     {
-                        Guid id;
-                        if (Guid.TryParse(httpContext.Request.Params["id"], out id))
-                        {
-                            IDBContext dbContext = new DBContext();
-                            return _unitsSplit.All(u => { return dbContext.IsAuthor(u, id, user.Id); });
-                        }
-
-                        return false;
-                    }
-                    // ни одно условие не выполнено
-                    isAutorized = false;
-                }*/
+                        IDBContext dbContext = new DBContext();
+                        return dbContext.IsAuthor(unit, id, user.Id);
+                    }                    
+                }
             }
             return isAutorized;
         }

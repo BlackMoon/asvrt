@@ -6,6 +6,7 @@ namespace asv.Models
     interface IDBContext
     {
         Database Database { get; }
+        bool IsAuthor(string unit, int id, int userid);
 
         int CreateUser(Person person, int authorId);
         int DeleteUser(int id);

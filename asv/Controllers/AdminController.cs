@@ -613,7 +613,7 @@ namespace asv.Controllers
             byte result = 1;
             string msg = null;
 
-            MembershipPerson mp = null;
+            Person p = null;            
             Userdb udb = null;
 
             if (serverlogin == 1)
@@ -632,14 +632,13 @@ namespace asv.Controllers
                 XDocument xd = XDocument.Load(file.InputStream);
                 
                 foreach (var u in xd.Descendants("Users"))
-                {                    
-                    mp = new MembershipPerson();
-                    mp.Bases = new List<Userdb>();
-                    // isApproved = 1
-                    //mp.Locked = 1; 
+                {
+                    p = new Person();
+                    p.Bases = new List<Userdb>();
+                    p.IsApproved = 1;
 
-                    mp.Login = u.Element("Name").Value;
-                    System.Diagnostics.Debug.WriteLine(mp.Login);
+                    p.Login = u.Element("Name").Value;
+                    System.Diagnostics.Debug.WriteLine(p.Login);
 
                     fio = u.Element("FullName").Value;
                     if (!string.IsNullOrEmpty(fio))
@@ -647,35 +646,35 @@ namespace asv.Controllers
                         int pos = fio.IndexOf(' ');
                         if (pos != -1)
                         {
-                            mp.Lastname = fio.Substring(0, pos++);
+                            p.LastName = fio.Substring(0, pos++);
 
                             string[] arr = fio.Substring(pos).Split(new char [] {'.', ' '}, StringSplitOptions.RemoveEmptyEntries);
                             if (arr.Length > 0)
                             {
-                                mp.Firstname = arr[0];
+                                p.FirstName = arr[0];
 
                                 if (arr.Length > 1)
-                                    mp.Middlename = arr[1];
+                                    p.MiddleName = arr[1];
                             }
                         }
                         else 
-                            mp.Lastname = mp.Firstname = fio;                        
+                            p.LastName = p.FirstName = fio;                        
                     }
 
                     if (serverlogin == 1)
                     {
-                        mp.ServerLogin = 1;
-                        mp.Bases.Add(udb);
+                        p.ServerLogin = 1;
+                        p.Bases.Add(udb);
                     }
                     else
-                        //mp.Password = "123456";
+                        p.Password = "123456";
 
-                    mp.Id = db.SingleOrDefault<int>("SELECT u.id FROM qb_users u WHERE u.login = @0", mp.Login);
-                    
-                    if (mp.Id != 0)
-                        ap.UpdateUser(mp);
-                    //else
-                        //ap.CreateUser(mp);
+                    p.Id = db.SingleOrDefault<int>("SELECT u.id FROM qb_users u WHERE u.login = @0", p.Login);
+
+                    if (p.Id != 0)
+                        Membership.Provider.UpdateUser(p.Id, p);
+                    else
+                        Membership.Provider.CreateUserAndAccount(p);
 
                     n++;
                     System.Diagnostics.Debug.WriteLine(n);                    

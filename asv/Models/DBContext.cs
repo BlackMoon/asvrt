@@ -32,6 +32,22 @@ namespace asv.Models
             _database.EnableAutoSelect = false;
         }
 
+        /// <summary>
+        /// проверка автора
+        /// </summary>
+        /// <param name="unit">тип объекта</param>
+        /// <param name="id">id объекта</param>
+        /// <param name="userid">id пользователя</param>
+        /// <returns>bool</returns>
+        public bool IsAuthor(string unit, int id, int userid)
+        {
+            int usercreate = _database.SingleOrDefault<int>("SELECT usercreate FROM qb_" + unit + " WHERE id = @0", id);
+            Debug.WriteLine(_database.LastSQL);
+
+            return (userid == usercreate);
+        }
+
+
         public int CreateUser(Person person, int authorId)
         {
             string roles = null;

@@ -232,7 +232,7 @@ namespace asv.Controllers
             return jr;
         }
 
-        [GrantAttribute(Roles = "EDITOR, READER")]
+        [Authorize]
         [OutputCache(Duration = 120, VaryByParam = "name;drv;table;od")]
         public JsonNetResult GetTable(string name, eDriverType drv, string table, string od)
         {
@@ -307,7 +307,7 @@ namespace asv.Controllers
             return jr;
         }
 
-        [GrantAttribute(Roles = "EDITOR, READER")]
+        [Authorize]
         [OutputCache(Duration = 120, VaryByParam="name;drv")]
         public JsonNetResult GetTables(string name, eDriverType drv)
         {
@@ -410,67 +410,65 @@ namespace asv.Controllers
         
         [GrantAttribute(Roles = "AUTHOR, EDITOR")]
         [ValidateInput(false)]
-        public JsonNetResult UpdateQuery(string json)
+        public JsonNetResult UpdateQuery(Query value)
         {
             byte result = 1;
             string msg = null;
 
-            Query q = Newtonsoft.Json.JsonConvert.DeserializeObject<Query>(json);
-
             int? id = null;
             try
             {
-                if (q.Id != 0)
+                if (value.Id != 0)
                 {
                     db.Execute(@"UPDATE qb_queries SET name = @1, grp = @2, subgrp = @3, sql = @4, db2mode = @5, useleftjoin = @6, userdefined = @7 WHERE id = @0;
                                 DELETE FROM qb_params WHERE queryid = @0;DELETE FROM qb_relations WHERE queryid = @0;DELETE FROM qb_reports WHERE queryid = @0;
                                 DELETE FROM qb_tables WHERE queryid = @0;DELETE FROM qb_ufunctions WHERE queryid = @0;DELETE FROM qb_uparams WHERE queryid = @0;",
-                        q.Id, q.Name, q.Group, q.Subgroup, q.Sql, q.Db2Mode, q.UseLeftJoin, q.UserDefined);
+                        value.Id, value.Name, value.Group, value.Subgroup, value.Sql, value.Db2Mode, value.UseLeftJoin, value.UserDefined);
                     
                     Response.RemoveOutputCacheItem("/Main/GetQuery");    
                 }
                 else
-                    id = q.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6);\nSELECT last_insert_rowid();",
-                        q.Name, q.Conn, q.Group, q.Subgroup, q.Sql, q.UseLeftJoin, User.Id);
+                    id = value.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6);\nSELECT last_insert_rowid();",
+                        value.Name, value.Conn, value.Group, value.Subgroup, value.Sql, value.UseLeftJoin, User.Id);
 
                 // tables insert first
-                foreach (Table t in q.Tables)
+                foreach (Table t in value.Tables)
                 {
-                    db.Execute("INSERT INTO qb_tables(queryid, name, od, schema, collapsed) VALUES(@0, @1, @2, @3, @4)", q.Id, t.Name, t.Od, t.Schema, t.Collapsed);
+                    db.Execute("INSERT INTO qb_tables(queryid, name, od, schema, collapsed) VALUES(@0, @1, @2, @3, @4)", value.Id, t.Name, t.Od, t.Schema, t.Collapsed);
                 }
 
                 // params
-                foreach (Param p in q.Params)
+                foreach (Param p in value.Params)
                 {
                     db.Execute(@"INSERT INTO qb_params(queryid, field, formula, alias, schema, tbl, tabix, out, aggr, ord, ft, oper, uor, userp, descr, def, oper1, uor1, userp1, descr1, def1, filter2, uor2) 
                     VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20, @21, @22)", 
-                        q.Id, p.Field, p.Formula, p.Alias, p.Schema, p.Tbl, p.Tabix, p.Out, p.Aggr, p.Ord, p.Ft, p.Oper, p.Uor, p.Userp, p.Descr, p.Def, p.Oper1, p.Uor1, p.Userp1, p.Descr1, p.Def1, p.Filter2, p.Uor2);
+                        value.Id, p.Field, p.Formula, p.Alias, p.Schema, p.Tbl, p.Tabix, p.Out, p.Aggr, p.Ord, p.Ft, p.Oper, p.Uor, p.Userp, p.Descr, p.Def, p.Oper1, p.Uor1, p.Userp1, p.Descr1, p.Def1, p.Filter2, p.Uor2);
                 }
 
                 // relations
-                foreach (Relation r in q.Relations)
+                foreach (Relation r in value.Relations)
                 {
                     db.Execute("INSERT INTO qb_relations(queryid, tab, od, schema, field, reftab, refod, refschema, reffield) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)", 
-                        q.Id, r.Tab, r.Od, r.Schema, r.Field, r.RefTab, r.RefOd, r.RefSchema, r.RefField);
+                        value.Id, r.Tab, r.Od, r.Schema, r.Field, r.RefTab, r.RefOd, r.RefSchema, r.RefField);
                 }
 
                 // reports
-                foreach (Template r in q.Reports)
+                foreach (Template r in value.Reports)
                 {
-                    db.Execute("INSERT INTO qb_reports(queryid, tplid) VALUES(@0, @1)", q.Id, r.Id);
+                    db.Execute("INSERT INTO qb_reports(queryid, tplid) VALUES(@0, @1)", value.Id, r.Id);
                 }
 
                 // user functions
-                foreach (UFunc f in q.Funcs)
+                foreach (UFunc f in value.Funcs)
                 {
                     db.Execute("INSERT INTO qb_ufunctions(queryid, fnid, body, args, out, alias, filter, oper, def, uor, ord, dir) VALUES(@0, (CASE WHEN @1 = 0 THEN NULL ELSE @1 END), @2, @3, @4, @5, @6, @7, @8, @9, @10, @11)", 
-                        q.Id, f.FnId, f.Body, f.Args, f.Out, f.Alias, f.Filter, f.Oper, f.Def, f.Uor, f.Ord, f.Dir);
+                        value.Id, f.FnId, f.Body, f.Args, f.Out, f.Alias, f.Filter, f.Oper, f.Def, f.Uor, f.Ord, f.Dir);
                 }
 
                 // user params
-                foreach (UParam u in q.UParams)
+                foreach (UParam u in value.UParams)
                 {
-                    db.Execute("INSERT INTO qb_uparams(queryid, field, ft, descr, def) VALUES(@0, @1, @2, @3, @4)", q.Id, u.Field, u.Ft, u.Descr, u.Def);
+                    db.Execute("INSERT INTO qb_uparams(queryid, field, ft, descr, def) VALUES(@0, @1, @2, @3, @4)", value.Id, u.Field, u.Ft, u.Descr, u.Def);
                 }
 
                 Response.RemoveOutputCacheItem("/Main/GetQueries");    

@@ -1280,7 +1280,7 @@ Ext.define('QB.controller.Query', {
 
             Ext.Ajax.request({
                 url: '/main/updatequery',
-                params: { json: Ext.encode(q) },
+                jsonData: q,
                 success: function (response) {
                     var obj = Ext.decode(response.responseText),
                         icon = Ext.MessageBox.INFO, msg = 'Запрос сохранен', title = 'Информация';
