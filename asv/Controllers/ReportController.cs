@@ -138,7 +138,7 @@ namespace asv.Controllers
             long total = 0;
             try
             {
-                string sql = "SELECT t.id, t.name, t.fname, t.usercreate, CEILING(t.sz / 1024.0) sz FROM qb_templates t",
+                string sql = "SELECT t.id, t.name, t.fname, t.usercreate authorid, CEILING(t.sz / 1024.0) sz FROM qb_templates t",
                        where = "";
 
                 if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))

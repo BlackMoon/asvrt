@@ -1279,7 +1279,7 @@ Ext.define('QB.controller.Query', {
             panel.el.mask('Сохранение', 'x-mask-loading');
 
             Ext.Ajax.request({
-                url: '/main/updatequery',
+                url: '/main/updatequery?id=' + q.id,
                 jsonData: q,
                 success: function (response) {
                     var obj = Ext.decode(response.responseText),

@@ -212,7 +212,7 @@ namespace asv.Controllers
             List<dynamic> queries = new List<dynamic>();
             try
             {
-                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate FROM qb_vqueries q";
+                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q";
                 
                 if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
                     sql += " WHERE q.usercreate = @0";
@@ -408,6 +408,7 @@ namespace asv.Controllers
             return jr;
         }
         
+        [HttpPost]
         [GrantAttribute(Roles = "AUTHOR, EDITOR")]
         [ValidateInput(false)]
         public JsonNetResult UpdateQuery(Query value)
@@ -432,43 +433,61 @@ namespace asv.Controllers
                         value.Name, value.Conn, value.Group, value.Subgroup, value.Sql, value.UseLeftJoin, User.Id);
 
                 // tables insert first
-                foreach (Table t in value.Tables)
+                if (value.Tables != null)
                 {
-                    db.Execute("INSERT INTO qb_tables(queryid, name, od, schema, collapsed) VALUES(@0, @1, @2, @3, @4)", value.Id, t.Name, t.Od, t.Schema, t.Collapsed);
+                    foreach (Table t in value.Tables)
+                    {
+                        db.Execute("INSERT INTO qb_tables(queryid, name, od, schema, collapsed) VALUES(@0, @1, @2, @3, @4)", value.Id, t.Name, t.Od, t.Schema, t.Collapsed);
+                    }
                 }
 
                 // params
-                foreach (Param p in value.Params)
+                if (value.Tables != null)
                 {
-                    db.Execute(@"INSERT INTO qb_params(queryid, field, formula, alias, schema, tbl, tabix, out, aggr, ord, ft, oper, uor, userp, descr, def, oper1, uor1, userp1, descr1, def1, filter2, uor2) 
-                    VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20, @21, @22)", 
-                        value.Id, p.Field, p.Formula, p.Alias, p.Schema, p.Tbl, p.Tabix, p.Out, p.Aggr, p.Ord, p.Ft, p.Oper, p.Uor, p.Userp, p.Descr, p.Def, p.Oper1, p.Uor1, p.Userp1, p.Descr1, p.Def1, p.Filter2, p.Uor2);
+                    foreach (Param p in value.Params)
+                    {
+                        db.Execute(@"INSERT INTO qb_params(queryid, field, formula, alias, schema, tbl, tabix, out, aggr, ord, ft, oper, uor, userp, descr, def, oper1, uor1, userp1, descr1, def1, filter2, uor2) 
+                    VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20, @21, @22)",
+                            value.Id, p.Field, p.Formula, p.Alias, p.Schema, p.Tbl, p.Tabix, p.Out, p.Aggr, p.Ord, p.Ft, p.Oper, p.Uor, p.Userp, p.Descr, p.Def, p.Oper1, p.Uor1, p.Userp1, p.Descr1, p.Def1, p.Filter2, p.Uor2);
+                    }
                 }
 
                 // relations
-                foreach (Relation r in value.Relations)
+                if (value.Relations != null)
                 {
-                    db.Execute("INSERT INTO qb_relations(queryid, tab, od, schema, field, reftab, refod, refschema, reffield) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)", 
-                        value.Id, r.Tab, r.Od, r.Schema, r.Field, r.RefTab, r.RefOd, r.RefSchema, r.RefField);
+                    foreach (Relation r in value.Relations)
+                    {
+                        db.Execute("INSERT INTO qb_relations(queryid, tab, od, schema, field, reftab, refod, refschema, reffield) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)",
+                            value.Id, r.Tab, r.Od, r.Schema, r.Field, r.RefTab, r.RefOd, r.RefSchema, r.RefField);
+                    }
                 }
 
                 // reports
-                foreach (Template r in value.Reports)
+                if (value.Relations != null)
                 {
-                    db.Execute("INSERT INTO qb_reports(queryid, tplid) VALUES(@0, @1)", value.Id, r.Id);
+                    foreach (Template r in value.Reports)
+                    {
+                        db.Execute("INSERT INTO qb_reports(queryid, tplid) VALUES(@0, @1)", value.Id, r.Id);
+                    }
                 }
 
                 // user functions
-                foreach (UFunc f in value.Funcs)
+                if (value.Funcs != null)
                 {
-                    db.Execute("INSERT INTO qb_ufunctions(queryid, fnid, body, args, out, alias, filter, oper, def, uor, ord, dir) VALUES(@0, (CASE WHEN @1 = 0 THEN NULL ELSE @1 END), @2, @3, @4, @5, @6, @7, @8, @9, @10, @11)", 
-                        value.Id, f.FnId, f.Body, f.Args, f.Out, f.Alias, f.Filter, f.Oper, f.Def, f.Uor, f.Ord, f.Dir);
+                    foreach (UFunc f in value.Funcs)
+                    {
+                        db.Execute("INSERT INTO qb_ufunctions(queryid, fnid, body, args, out, alias, filter, oper, def, uor, ord, dir) VALUES(@0, (CASE WHEN @1 = 0 THEN NULL ELSE @1 END), @2, @3, @4, @5, @6, @7, @8, @9, @10, @11)",
+                            value.Id, f.FnId, f.Body, f.Args, f.Out, f.Alias, f.Filter, f.Oper, f.Def, f.Uor, f.Ord, f.Dir);
+                    }
                 }
 
                 // user params
-                foreach (UParam u in value.UParams)
+                if (value.UParams != null)
                 {
-                    db.Execute("INSERT INTO qb_uparams(queryid, field, ft, descr, def) VALUES(@0, @1, @2, @3, @4)", value.Id, u.Field, u.Ft, u.Descr, u.Def);
+                    foreach (UParam u in value.UParams)
+                    {
+                        db.Execute("INSERT INTO qb_uparams(queryid, field, ft, descr, def) VALUES(@0, @1, @2, @3, @4)", value.Id, u.Field, u.Ft, u.Descr, u.Def);
+                    }
                 }
 
                 Response.RemoveOutputCacheItem("/Main/GetQueries");    

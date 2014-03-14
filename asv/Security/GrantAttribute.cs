@@ -21,12 +21,12 @@ namespace asv.Security
                     case "deletequery":
                     case "getquery":
                     case "updatequery":
-                        unit = "query";
+                        unit = "queries";
                         break;
                     case "deletetpl":
                     case "gettpl":
                     case "updatetpl":
-                        unit = "template";
+                        unit = "templates";
                         break;
                 }
 
