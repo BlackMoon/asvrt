@@ -405,7 +405,7 @@ Ext.define('QB.controller.Query', {
                 rels.push({ cols: [r.reffield] });
         })
 
-        var view = Ext.widget('tableedit', { conn: query.conn, od: od, schema: schema, table: name, title: title, remark: remark, checks: checks });
+        var view = Ext.widget('tableedit', { conn: query.conn, od: od, schema: schema, table: name, title: title, remark: remark, checks: checks, readOnly: panel.readOnly, closable: !panel.readOnly });
         view.SQLTable.rels = rels;
 
         panel.diagram.add(view);

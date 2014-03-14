@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.query.Edit', {
     extend: 'Ext.tab.Panel',    
-    requires: ['QB.common.Bargrid', 'QB.SQLQuery', 'QB.model.Param', 'QB.model.Uparam', 'QB.view.query.Add'],
+    requires: ['Ext.ux.grid.ReadCheckColumn', 'QB.common.Bargrid', 'QB.SQLQuery', 'QB.model.Param', 'QB.model.Uparam', 'QB.view.query.Add'],
     alias: 'widget.queryedit',
     readOnly: false,
     tabPosition: 'bottom',
@@ -96,7 +96,8 @@
                     dataIndex: 'out',
                     menuDisabled: true,
                     sortable: false,
-                    width: 60
+                    width: 60,
+                    processEvent: me.processEvent
                 },
                 {
                     text: 'Тип сортировки',
@@ -132,14 +133,16 @@
                         dataIndex: 'uor',
                         menuDisabled: true,
                         text: 'Использ.<br>или',
-                        width: 60
+                        width: 60,
+                        processEvent: me.processEvent
                     },
                     {
                         xtype: 'checkcolumn',
                         text: 'Пользов.',
                         dataIndex: 'userp',
                         menuDisabled: true,
-                        width: 60
+                        width: 60,
+                        processEvent: me.processEvent
                     },
                     {
                         text: 'Описание',
@@ -171,14 +174,16 @@
                         dataIndex: 'uor1',
                         menuDisabled: true,
                         text: 'Использ.<br>или',
-                        width: 60
+                        width: 60,
+                        processEvent: me.processEvent
                     },
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'userp1',
                         menuDisabled: true,
+                        readOnly: me.readOnly,
                         text: 'Пользов.',
-                        width: 60
+                        width: 60                        
                     },
                     {
                         text: 'Описание',
@@ -208,7 +213,7 @@
                         dataIndex: 'uor2',
                         text: 'Использ.<br>или',
                         menuDisabled: true,                        
-                        width: 60
+                        width: 60                        
                     }]                    
                 }],
                 selModel: { selType: 'cellmodel' },
@@ -586,6 +591,8 @@
         }
         me.fireEvent('paramchange', rec);
     },
+
+    processEvent: function () { return false; },
 
     ueditorRenderer: function() {
         return function(v, cell, r){            

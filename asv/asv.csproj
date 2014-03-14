@@ -2546,6 +2546,7 @@
     <Content Include="Scripts\ext-lang-ru.js" />
     <Content Include="Scripts\ux\grid\menu\ListMenu.js" />
     <Content Include="Scripts\ux\grid\menu\RangeMenu.js" />
+    <Content Include="Scripts\ux\grid\ReadCheckColumn.js" />
     <Content Include="Scripts\ux\tree\Filter.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
