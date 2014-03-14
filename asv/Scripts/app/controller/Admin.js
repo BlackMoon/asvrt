@@ -10,18 +10,33 @@ Ext.define('QB.controller.Admin', {
     init: function () {
         var me = this;
 
-        me.control({                        
+        me.control({            
             'aliasedit button[action=save]': {
                 click: me.updateAlias
-            },            
+            },
+            'aliaslist': {
+                additem: me.createAlias,
+                edititem: me.editAlias,
+                removeitem: me.deleteAlias
+            },
             'catalogedit button[action=save]': {
                 click: me.updateCatalog
+            },
+            'cataloglist': {
+                additem: me.createCatalog,
+                edititem: me.editCatalog,
+                removeitem: me.deleteCatalog
             },
             'connedit button[action=save]': {
                 click: me.updateConn
             },
             'connedit button[action=test]': {
                 click: me.testConn
+            },
+            'connlist': {
+                additem: me.createConn,
+                edititem: me.editConn,
+                removeitem: me.deleteConn
             },
             'funcedit button[action=save]': {
                 click: me.updateFunc
@@ -151,10 +166,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) : 
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);                        
+                    }                    
                 });
             }
         })
@@ -170,10 +183,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) :
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);                        
+                    }                    
                 });
             }
         })
@@ -189,10 +200,8 @@ Ext.define('QB.controller.Admin', {
                     params: { name: name },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) : 
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);
+                    }                    
                 });
             }
         })
@@ -208,10 +217,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) :
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);                   
+                    }
                 });
             }
         })
@@ -229,10 +236,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        if (obj.success)
-                            view.store.removeAt(ix);
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);
+                    }                    
                 });
             }
         })
@@ -402,47 +407,23 @@ Ext.define('QB.controller.Admin', {
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },
-
-    lockChange: function (column, rowIx, checked) {
-        var view = column.up('grid').view, rowNode = view.getNode(rowIx), rec = view.getRecord(rowNode);
-
-        Ext.Ajax.request({
-            method: 'get',
-            url: '/admin/lockuser',
-            params: { id: rec.get('id'), locked: checked ? 1 : 0 },
-            success: function (response) {
-                var obj = Ext.decode(response.responseText);
-                rec[obj.success ? 'commit' : 'reject']();
-            },
-            failure: function (response) { }
-        });
-    },
-     
+      
     showAliases: function () {
-        var me = this, tab = me.centerRegion.child('#aliastab');
-        if (!tab) {
-            var grid = Ext.widget('aliaslist', { listeners: { additem: me.createAlias, edititem: me.editAlias, removeitem: me.deleteAlias } });
-            tab = me.centerRegion.add({ title: 'Псевдонимы', itemId: 'aliastab', layout: 'fit', items: [grid] });
-        }
+        var me = this, tab = me.centerRegion.child('#aliastab');        
+        !tab && (tab = me.centerRegion.add({ title: 'Псевдонимы', itemId: 'aliastab', layout: 'fit', items: [Ext.widget('aliaslist')] }));
         tab.show();
     },
 
     showCatalogs: function () {
         var me = this, tab = me.centerRegion.child('#catalogtab');
-        if (!tab) {
-            var grid = Ext.widget('cataloglist', { listeners: { additem: me.createCatalog, edititem: me.editCatalog, removeitem: me.deleteCatalog, scope: me } });
-            tab = me.centerRegion.add({ title: 'Каталоги', itemId: 'catalogtab', layout: 'fit', items: [grid] });
-        }
-        tab.show();
+        !tab && (tab = me.centerRegion.add({ title: 'Каталоги', itemId: 'catalogtab', layout: 'fit', items: [Ext.widget('cataloglist')] }));
+        tab.show();        
     },
 
     showConns: function () {
         var me = this, tab = me.centerRegion.child('#conntab');
-        if (!tab) {
-            var grid = Ext.widget('connlist', { listeners: { additem: me.createConn, edititem: me.editConn, removeitem: me.deleteConn } });
-            tab = me.centerRegion.add({ title: 'Соединения', itemId: 'conntab', layout: 'fit', items: [grid] });
-        }
-        tab.show();
+        !tab && (tab = me.centerRegion.add({ title: 'Соединения', itemId: 'conntab', layout: 'fit', items: [Ext.widget('connlist')] }));
+        tab.show();        
     },
 
     showFuncs: function () {

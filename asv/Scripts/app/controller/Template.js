@@ -1,7 +1,5 @@
 ﻿Ext.define('QB.controller.Template', {
     extend: 'QB.controller.Base',
-    templgrid: null,
-
     models: ['Template'],
     stores: ['Templates'],
     views: [ 'template.Edit', 'template.List' ],
@@ -14,6 +12,11 @@
         me.control({
             'templateedit button[action=save]': {
                 click: me.updateTpl
+            },
+            'templatelist': {
+                additem: me.createTpl,
+                edititem: me.editTpl,
+                removeitem: me.deleteTpl
             },
             'toolbar [action=templates]': {
                 click: me.showTemplates
@@ -35,17 +38,15 @@
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        if (obj.success)
-                            view.store.removeAt(ix);
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);
+                    }                    
                 });
             }
         })
     },
 
     editTpl: function (grid, rec) {
-        var view = Ext.widget('templateedit');        
+        var readOnly = rec.get('readonly'), view = Ext.widget('templateedit', { readOnly: readOnly, btnSave: !readOnly });        
         view.form.loadRecord(rec);        
         view.ffield.inputEl.dom.value = rec.get('fname');        
     },
@@ -101,8 +102,8 @@
     showTemplates: function () {
         var me = this, tab = me.centerRegion.child('#tpltab');
         if (!tab) {
-            me.templgrid = Ext.widget('templatelist', { listeners: { additem: me.createTpl, edititem: me.editTpl, removeitem: me.deleteTpl }});
-            tab = me.centerRegion.add({ title: 'Шаблоны', itemId: 'tpltab', layout: 'fit', items: [me.templgrid] });
+            var grid = Ext.widget('templatelist', { enableAdd: Auser.isinrole('AUTHOR') });
+            tab = me.centerRegion.add({ title: 'Шаблоны', itemId: 'tpltab', layout: 'fit', items: [grid] });
         }
         tab.show();
     }

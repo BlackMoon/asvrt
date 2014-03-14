@@ -31,7 +31,7 @@
             this.fireEvent('edititem', this, rec, this.selIndex);
         }
     },
-
+    
     doSelect: function (selected) {
         var me = this, enable = false,
             rec = selected[0],

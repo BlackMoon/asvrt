@@ -490,8 +490,9 @@ Ext.define('QB.controller.Query', {
                             (tab) && tab.close();
                             view.store.removeAt(ix);
                         }
-                    },
-                    failure: function (response) { }
+                        else
+                            showStatus(obj.message);
+                    }                    
                 });
             }
         })
