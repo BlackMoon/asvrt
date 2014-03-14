@@ -35,13 +35,15 @@ namespace asv.Controllers
             
             IDictionary<string, object> obj = new Dictionary<string, object>();
             obj["singleton"] = true;
-            obj["isInRole"] = new Newtonsoft.Json.Linq.JRaw("function(role) { return this.roles.indexOf(role) != -1; }");
+            obj["isInRole"] = new Newtonsoft.Json.Linq.JRaw("function(role) { return this.roles && this.roles.indexOf(role) != -1; }");
 
             if (Request.IsAuthenticated)
             {   
                 obj["id"] = User.Id;
                 obj["roles"] = User.GetRoles();
-                obj["schema"] = User.Schema;                
+                
+                if (!string.IsNullOrEmpty(User.Schema))
+                    obj["schema"] = User.Schema;
             }
             
             ViewBag.Auser = new MvcHtmlString(JsonConvert.SerializeObject(

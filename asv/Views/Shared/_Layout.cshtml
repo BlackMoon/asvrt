@@ -127,8 +127,10 @@
                                 xtype: 'menu',
                                 items: [{ 
                                     text: 'Новый запрос',                                     
+                                    itemId: 'mnuquery',
                                     iconCls: 'icon-ljoin',
-                                    action: 'query'
+                                    action: 'query',
+                                    hidden: !Auser.isinrole('AUTHOR')
                                 },
                                 {
                                     text: 'Список',                                     
@@ -216,8 +218,10 @@
                         itemId: 'toolbar',
                         items: [{   
                             iconCls: 'icon-ljoin',
+                            itemId: 'query',
                             tooltip: 'Новый запрос',
-                            action: 'query'
+                            action: 'query',
+                            hidden: !Auser.isinrole('AUTHOR')
                         },
                         {   
                             iconCls: 'icon-join',
