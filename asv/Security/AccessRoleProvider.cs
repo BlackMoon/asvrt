@@ -78,7 +78,7 @@ namespace asv.Security
             {
                 using (var db = ConnectToDatabase())
                 {
-                    string sroles = db.SingleOrDefault<string>("SELECT u.roles from qb_users u WHERE u.id = @0", user.Id);
+                    string sroles = db.SingleOrDefault<string>("SELECT u.roles from qb_users u WHERE u.id = @0", user.ProviderUserKey);
                     if (!string.IsNullOrEmpty(sroles))
                         roles = sroles.Split(new char[] { ',' });
                 }

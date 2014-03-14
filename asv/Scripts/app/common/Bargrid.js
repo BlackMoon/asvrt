@@ -129,14 +129,18 @@ Ext.define('QB.common.Bargrid', {
                 me.selected = selected;
                 me.selIx = me.store.indexOf(selected[0]);
 
-                if (me.enableEdit)
-                    me.actions.edititem.setDisabled(selected.length === 0);
-
-                if (me.enableRemove)
-                    me.actions.removeitem.setDisabled(selected.length === 0);                
+                me.doSelect(selected);
             }
         })
     },
 
-    doEdit: function () { this.fireEvent('edititem', this, this.selected[0], this.selIndex) }
+    doEdit: function () { this.fireEvent('edititem', this, this.selected[0], this.selIndex) },
+    doSelect: function (selected) {
+        var me = this;
+        if (me.enableEdit)
+            me.actions.edititem.setDisabled(selected.length === 0);
+
+        if (me.enableRemove)
+            me.actions.removeitem.setDisabled(selected.length === 0);
+    }
 });

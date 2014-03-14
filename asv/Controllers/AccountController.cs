@@ -46,7 +46,7 @@ namespace asv.Controllers
                         HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                         FormsAuthentication.SetAuthCookie(model.Login + ":" + model.Password, model.RememberMe);
 
-                        id = mp.Id;
+                        id = (int)mp.ProviderUserKey;
                         isAdmin = mp.IsAdmin;
                         serverLogin = mp.ServerLogin;
                         fio = mp.Fio;

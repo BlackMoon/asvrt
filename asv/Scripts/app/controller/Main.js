@@ -190,6 +190,8 @@
                     me.lbfio.setText('');
                     me.btnauth.setText('Вход');
 
+                    Auser.roles = [];
+
                     me.centerRegion.removeAll();
                     me.explorer.getRootNode().removeAll();
                 }

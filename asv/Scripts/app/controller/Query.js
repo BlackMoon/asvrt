@@ -85,6 +85,11 @@ Ext.define('QB.controller.Query', {
             'queryform button[action=execparam]': {
                 click: me.getUserParams
             },
+            'querylist': {
+                additem: me.createQuery,
+                edititem: me.editQuery,
+                removeitem: me.deleteQuery
+            },
             'queryrlist button[action=add]': {
                 click: me.addRelations
             },
@@ -245,7 +250,7 @@ Ext.define('QB.controller.Query', {
 
         query.userdefined = pressed ? 1 : 0;
         panel.diagram.setVisible(!pressed);
-        panel.parambtn.setVisible(pressed);
+        panel.parambtn.setVisible(!panel.readOnly && pressed);
 
         panel.paramgrid.setVisible(!pressed);
         panel.uparamgrid.setVisible(pressed);
@@ -500,7 +505,7 @@ Ext.define('QB.controller.Query', {
         if (!tab) {
             var conn = { name: rec.get('conn'), drv: rec.get('drv'), schema: rec.get('schema') },
                 grp = rec.get('grp'),
-                panel = Ext.widget('queryedit', { conn: conn }),
+                panel = Ext.widget('queryedit', { conn: conn, readOnly: rec.get('readonly') }),
                 pstore = panel.paramsstore;                
 
             tab = me.centerRegion.add({ title: title, sqltab: 1, layout: 'fit', items: [panel] });
@@ -1064,8 +1069,8 @@ Ext.define('QB.controller.Query', {
     showQueries: function () {
         var me = this, tab = me.centerRegion.child('#querytab');
         if (!tab) {
-            me.querygrid = Ext.widget('querylist', { listeners: { additem: me.createQuery, edititem: me.editQuery, removeitem: me.deleteQuery, scope: me } });
-            tab = me.centerRegion.add({ title: 'Запросы', itemId: 'querytab', layout: 'fit', items: [me.querygrid] });
+            var grid = Ext.widget('querylist', { enableAdd: Auser.isinrole('AUTHOR') });
+            tab = me.centerRegion.add({ title: 'Запросы', itemId: 'querytab', layout: 'fit', items: [grid] });        
         }
         tab.show();
     },

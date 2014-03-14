@@ -7,9 +7,8 @@ using PetaPoco;
 
 namespace asv.Security
 {   
-    public class MembershipPerson : MembershipUser, IKey
-    {        
-        public int Id { get; set; }        
+    public class MembershipPerson : MembershipUser
+    {   
         public int IsAdmin { get; set; }       
         public int ServerLogin { get; set; }
 
