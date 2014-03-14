@@ -231,7 +231,11 @@
                     }
                 },
                 viewConfig: {
-                    plugins: { ptype: 'gridviewdragdrop' }
+                    plugins: {
+                        ptype: 'gridviewdragdrop',
+                        enableDrag: !me.readOnly,
+                        enableDrop: !me.readOnly
+                    }
                 }
             }),
             me.uparamgrid = Ext.widget('grid', {
