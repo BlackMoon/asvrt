@@ -786,9 +786,10 @@ Ext.define('QB.controller.Query', {
             pageSize: itemsPerPage,
             proxy: {
                 actionMethods: { read: 'post' },
-                extraParams: { sql: me.prepareSQL(), args: query.args },
+                extraParams: { id: query.id, sql: me.prepareSQL(), args: query.args },
                 reader: {
                     idProperty: 'rn',
+                    root: 'data',
                     getResponseData: function(response) {
                         var me = this, cnt = me.model.prototype.fields.getCount(),
                             data, error;
