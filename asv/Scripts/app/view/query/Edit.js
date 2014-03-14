@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.query.Edit', {
     extend: 'Ext.tab.Panel',    
-    requires: ['Ext.ux.grid.ReadCheckColumn', 'QB.common.Bargrid', 'QB.SQLQuery', 'QB.model.Param', 'QB.model.Uparam', 'QB.view.query.Add'],
+    requires: ['QB.common.Bargrid', 'QB.SQLQuery', 'QB.model.Param', 'QB.model.Uparam', 'QB.view.query.Add'],
     alias: 'widget.queryedit',
     readOnly: false,
     tabPosition: 'bottom',
@@ -65,7 +65,7 @@
                 flex: 6
             }),            
             me.paramgrid = Ext.widget('grid', {  
-                itemId: 'paramgrid',
+                itemId: 'paramgrid',                
                 store: me.paramsstore,
                 plugins: [ { pluginId: 'celleditor', ptype: 'cellediting', clicksToEdit: 1 } ],
                 columns: [ {
@@ -94,10 +94,10 @@
                     xtype: 'checkcolumn',
                     text: 'Выход',
                     dataIndex: 'out',
+                    disabled: me.readOnly,
                     menuDisabled: true,
                     sortable: false,
-                    width: 60,
-                    processEvent: me.processEvent
+                    width: 60                    
                 },
                 {
                     text: 'Тип сортировки',
@@ -131,18 +131,18 @@
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'uor',
+                        disabled: me.readOnly,
                         menuDisabled: true,
                         text: 'Использ.<br>или',
-                        width: 60,
-                        processEvent: me.processEvent
+                        width: 60                        
                     },
                     {
                         xtype: 'checkcolumn',
                         text: 'Пользов.',
                         dataIndex: 'userp',
+                        disabled: me.readOnly,
                         menuDisabled: true,
-                        width: 60,
-                        processEvent: me.processEvent
+                        width: 60                        
                     },
                     {
                         text: 'Описание',
@@ -163,7 +163,7 @@
                     menuDisabled: true,
                     columns: [{
                         text: 'Операция',
-                        dataIndex: 'oper1',
+                        dataIndex: 'oper1',                        
                         menuDisabled: true,
                         width: 80,
                         editor: opercombo1,
@@ -172,16 +172,16 @@
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'uor1',
+                        disabled: me.readOnly,
                         menuDisabled: true,
                         text: 'Использ.<br>или',
-                        width: 60,
-                        processEvent: me.processEvent
+                        width: 60                        
                     },
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'userp1',
-                        menuDisabled: true,
-                        readOnly: me.readOnly,
+                        disabled: me.readOnly,
+                        menuDisabled: true,                        
                         text: 'Пользов.',
                         width: 60                        
                     },
@@ -211,6 +211,7 @@
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'uor2',
+                        disabled: me.readOnly,
                         text: 'Использ.<br>или',
                         menuDisabled: true,                        
                         width: 60                        
@@ -591,8 +592,6 @@
         }
         me.fireEvent('paramchange', rec);
     },
-
-    processEvent: function () { return false; },
 
     ueditorRenderer: function() {
         return function(v, cell, r){            
