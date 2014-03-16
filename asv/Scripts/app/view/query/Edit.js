@@ -2,6 +2,7 @@
     extend: 'Ext.tab.Panel',    
     requires: ['QB.common.Bargrid', 'QB.SQLQuery', 'QB.model.Param', 'QB.model.Uparam', 'QB.view.query.Add'],
     alias: 'widget.queryedit',
+    readOnly: false,
     tabPosition: 'bottom',
     upd: true, 
 
@@ -10,7 +11,8 @@
         var me = this,
             opers = ['Нет', 'Равно', 'Не равно', 'Больше', 'Меньше', 'Определено', 'Не определено', 'С .. по ..', 'Содержит', 'Начинается', 'В списке', 'Не в списке'],
             aggrcombo = new QB.common.Labelcombo({ labels: ['Нет', 'Среднее', 'Количество', 'Группировка', 'Макс.', 'Мин.', 'Сумма'] }),
-            ftcombo = new QB.common.Labelcombo({ labels: ['Логический', 'Дата', 'Число', 'Строка'] }); 
+            ftcombo = new QB.common.Labelcombo({ labels: ['Логический', 'Дата', 'Число', 'Строка'] });
+
         opercombo = new QB.common.Labelcombo({ labels: opers }),
         opercombo1 = new QB.common.Labelcombo({ labels: opers }),
         ordcombo = new QB.common.Labelcombo({ labels: ['Без сортировки', 'По возрастанию', 'По убыванию'] });
@@ -48,7 +50,8 @@
         me.text = Ext.widget('textarea', {
             region: 'south',
             flex: 2,
-            value: 'SELECT\r\nFROM'            
+            value: 'SELECT\r\nFROM',
+            readOnly: me.readOnly
         });
 
         me.items = [{
@@ -62,9 +65,9 @@
                 flex: 6
             }),            
             me.paramgrid = Ext.widget('grid', {  
-                itemId: 'paramgrid',
+                itemId: 'paramgrid',                
                 store: me.paramsstore,
-                plugins: [ { ptype: 'cellediting', clicksToEdit: 1 } ],
+                plugins: [ { pluginId: 'celleditor', ptype: 'cellediting', clicksToEdit: 1 } ],
                 columns: [ {
                     text: 'Столбец',
                     dataIndex: 'formula',
@@ -91,9 +94,10 @@
                     xtype: 'checkcolumn',
                     text: 'Выход',
                     dataIndex: 'out',
+                    disabled: me.readOnly,
                     menuDisabled: true,
                     sortable: false,
-                    width: 60
+                    width: 60                    
                 },
                 {
                     text: 'Тип сортировки',
@@ -127,16 +131,18 @@
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'uor',
+                        disabled: me.readOnly,
                         menuDisabled: true,
                         text: 'Использ.<br>или',
-                        width: 60
+                        width: 60                        
                     },
                     {
                         xtype: 'checkcolumn',
                         text: 'Пользов.',
                         dataIndex: 'userp',
+                        disabled: me.readOnly,
                         menuDisabled: true,
-                        width: 60
+                        width: 60                        
                     },
                     {
                         text: 'Описание',
@@ -157,7 +163,7 @@
                     menuDisabled: true,
                     columns: [{
                         text: 'Операция',
-                        dataIndex: 'oper1',
+                        dataIndex: 'oper1',                        
                         menuDisabled: true,
                         width: 80,
                         editor: opercombo1,
@@ -166,16 +172,18 @@
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'uor1',
+                        disabled: me.readOnly,
                         menuDisabled: true,
                         text: 'Использ.<br>или',
-                        width: 60
+                        width: 60                        
                     },
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'userp1',
-                        menuDisabled: true,
+                        disabled: me.readOnly,
+                        menuDisabled: true,                        
                         text: 'Пользов.',
-                        width: 60
+                        width: 60                        
                     },
                     {
                         text: 'Описание',
@@ -203,9 +211,10 @@
                     {
                         xtype: 'checkcolumn',
                         dataIndex: 'uor2',
+                        disabled: me.readOnly,
                         text: 'Использ.<br>или',
                         menuDisabled: true,                        
-                        width: 60
+                        width: 60                        
                     }]                    
                 }],
                 selModel: { selType: 'cellmodel' },
@@ -214,12 +223,19 @@
                 region: 'south',               
                 flex: 4,
                 listeners: {
-                    beforeedit: function (editor, e) {                        
+                    beforeedit: function (editor, e) {
+                        if (me.readOnly)
+                            return false;
+
                         return (e.field == 'formula' || e.record.get('formula') != '*');
                     }
                 },
                 viewConfig: {
-                    plugins: { ptype: 'gridviewdragdrop' }
+                    plugins: {
+                        ptype: 'gridviewdragdrop',
+                        enableDrag: !me.readOnly,
+                        enableDrop: !me.readOnly
+                    }
                 }
             }),
             me.uparamgrid = Ext.widget('grid', {
@@ -250,10 +266,11 @@
                     getEditor: me.getUEditor,
                     renderer: me.ueditorRenderer()
                 }],
-                plugins: [{
+                plugins: [{                   
                     ptype: 'cellediting',
-                    clicksToEdit: 1,
+                    clicksToEdit: 1,                    
                     listeners: {
+                        beforeedit: function () { return !me.readOnly; },
                         edit: function (editor, e) { e.record.commit(); }
                     }
                 }],
@@ -274,24 +291,27 @@
                 iconCls: 'icon-gears',
                 tooltip: 'Пользовательский / автоматический',
                 enableToggle: true, 
-                action: 'userdedined'
+                action: 'userdedined',
+                hidden: me.readOnly
             }),
             me.parambtn = Ext.widget('button', {
                 iconCls: 'icon-field',
                 tooltip: 'Сформировать параметры',
                 hidden: true, 
-                action: 'pgenerate'
+                action: 'pgenerate',                
             }),
             '-',
             {
                 iconCls: 'icon-tableadd',
                 tooltip: 'Добавить таблицу',
-                action: 'addtable'
+                action: 'addtable',
+                hidden: me.readOnly
             },
             {
                 iconCls: 'icon-chain',
                 tooltip: 'Добавить связь',
-                action: 'rel'
+                action: 'rel',
+                hidden: me.readOnly
             },
             {
                 iconCls: 'icon-go',
@@ -302,7 +322,8 @@
             {
                 iconCls: 'icon-save',
                 tooltip: 'Сохранить',
-                action: 'save'
+                action: 'save',
+                hidden: me.readOnly
             },            
             {
                 text: 'Экспорт',
@@ -316,7 +337,8 @@
                     items: [{
                         text: 'Изменить',
                         iconCls: 'icon-edit',
-                        action: 'reports'                        
+                        action: 'reports',
+                        hidden: me.readOnly
                     }]
                 })
             },
@@ -324,11 +346,13 @@
             me.funcbtn = Ext.widget('button', {            
                 iconCls: 'icon-func',
                 text: 'Функция',                
-                action: 'ufunc'
+                action: 'ufunc',
+                hidden: me.readOnly
             }),            
             me.ljoin = Ext.widget('checkboxfield', {
                 itemId: 'useleftjoin',
-                boxLabel: '&nbsp;Использовать LEFT JOIN',                
+                boxLabel: '&nbsp;Использовать LEFT JOIN',
+                hidden: me.readOnly,
                 margin: '0 5 0 2'
             }),
             '-',
@@ -344,9 +368,10 @@
         {
             xtype: 'toolbar',
             dock: 'top',
-            items: ['Имя:', me.qname = Ext.widget('textfield', { width: 480, allowBlank: false }), 
+            items: ['Имя:', me.qname = Ext.widget('textfield', { width: 480, readOnly: me.readOnly, allowBlank: false }),
                     'Группа:', me.group = Ext.widget('textfield', {
-                        width: 200,
+                        readOnly: me.readOnly,
+                        width: 200,                        
                         validator: function (v) {
                             if (new RegExp('^\\d+').test(v))
                                 return 'Группа не может начинаться с цифры!';
@@ -354,13 +379,13 @@
                                 return true;
                         }
                     }),
-                    'Подгруппа:', me.subgroup = Ext.widget('textfield', { width: 200 })]
+                    'Подгруппа:', me.subgroup = Ext.widget('textfield', { readOnly: me.readOnly, width: 200 })]
         }];        
 
         me.SQLQuery = new QB.SQLQuery(me.conn, me);       
         me.addEvents('paramchange');
 
-        me.callParent(arguments);        
+        me.callParent(arguments);
     },
 
     destroy: function () {

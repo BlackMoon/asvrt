@@ -19,6 +19,15 @@ namespace asv.Helpers
         }
     }
 
+    public class TimeConverter : IsoDateTimeConverter
+    {
+        public TimeConverter() : base()
+        {
+            DateTimeFormat = "dd.MM.yyyy HH:mm";
+        }
+    }
+
+
     /// <summary>
     /// JsonResult Serialization and Deserialization Assistant Class, using custom DateTime Format
     /// </summary>

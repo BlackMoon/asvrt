@@ -27,19 +27,16 @@ Ext.define('QB.common.Bargrid', {
     enableEdit: true,
     enableRemove: true,
     enableContext: true,
-    bbarConfig: { enable: true, kind: 'default' },
-    tbarConfig: { enable: true, kind: 'default', enableSearch: true, minChars: 3 },
+    bbarConfig: { },
+    tbarConfig: { },
 
     constructor: function (cfg) {
-        var me = this, obj;
+        var me = this,
+            basebbar = { enable: true, kind: 'default' },
+            basetbar = { enable: true, kind: 'default', enableSearch: true, minChars: 3 };
 
-        obj = {};
-        Ext.apply(obj, cfg.bbarConfig, me.bbarConfig);
-        cfg.bbarConfig = obj;
-
-        obj = {};
-        Ext.apply(obj, cfg.tbarConfig, me.tbarConfig);
-        cfg.tbarConfig = obj;
+        cfg.bbarConfig = cfg.bbarConfig ? Ext.applyIf(cfg.bbarConfig, basebbar) : Ext.applyIf(me.bbarConfig, basebbar);
+        cfg.tbarConfig = cfg.tbarConfig ? Ext.applyIf(cfg.tbarConfig, basetbar) : Ext.applyIf(me.tbarConfig, basetbar);
 
         me.callParent(arguments);
     },
@@ -132,14 +129,18 @@ Ext.define('QB.common.Bargrid', {
                 me.selected = selected;
                 me.selIx = me.store.indexOf(selected[0]);
 
-                if (me.enableEdit)
-                    me.actions.edititem.setDisabled(selected.length === 0);
-
-                if (me.enableRemove)
-                    me.actions.removeitem.setDisabled(selected.length === 0);                
+                me.doSelect(selected);
             }
         })
     },
 
-    doEdit: function () { this.fireEvent('edititem', this, this.selected[0], this.selIndex) }
+    doEdit: function () { this.fireEvent('edititem', this, this.selected[0], this.selIndex) },
+    doSelect: function (selected) {
+        var me = this;
+        if (me.enableEdit)
+            me.actions.edititem.setDisabled(selected.length === 0);
+
+        if (me.enableRemove)
+            me.actions.removeitem.setDisabled(selected.length === 0);
+    }
 });

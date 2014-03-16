@@ -9,6 +9,7 @@ using System.Web.Helpers;
 using System.Configuration;
 using System.Web.Caching;
 using System.Web;
+using System.Text.RegularExpressions;
 
 namespace asv.Security
 {
@@ -20,10 +21,12 @@ namespace asv.Security
         private int         _passwordAnswerAttemptLockoutDuration;
         private int         _saltLength;
 
-        private string      _connectionStringName;
-        private string      _syslogin = "system";
-        
-        private Database    _db;
+        private string      _connectionStringName;        
+
+        internal virtual PetaPoco.Database ConnectToDatabase()
+        {
+            return new DBContext(_connectionStringName).Database;
+        }
 
         public void InitConfig(NameValueCollection config)
         {
@@ -46,11 +49,8 @@ namespace asv.Security
 
             _connectionStringName = Misc.GetConfigValue(config["connectionStringName"], "");
             InitConfig(config);
-            
-            _db = new Database(_connectionStringName);
-            _db.EnableAutoSelect = false;
         }
-
+       
         public override string ApplicationName
         {
             get
@@ -72,34 +72,10 @@ namespace asv.Security
         {
             throw new NotImplementedException();
         }
-
-        public long CreateUser(MembershipPerson mp)
-        {
-            long id = 0;
-            // hash with salt (sha-256)
-            if (!string.IsNullOrEmpty(mp.Password))
-            {
-                mp.Salt = Crypto.GenerateSalt(16);
-                mp.Password = Crypto.Hash(mp.Password + "{" + mp.Salt + "}", Membership.HashAlgorithmType);
-            }
-            id = (long)_db.Insert(mp);
-
-            foreach (Userdb udb in mp.Bases)
-            {
-                _db.Execute("INSERT INTO qb_bases(conn, auth, usercreate) VALUES(@0, @1, @2)", udb.Conn, udb.Auth, id);
-            }
-            return id;
-        }
-
+    
         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
         {
             throw new NotImplementedException();
-        }
-
-        public int DeleteUser(int id)
-        {
-            _db.Delete<Userdb>("WHERE usercreate = @0", id);
-            return _db.Delete<MembershipPerson>("WHERE id = @0", id);            
         }
 
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
@@ -125,21 +101,7 @@ namespace asv.Security
         public override MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords)
         {
             throw new NotImplementedException();
-        }
-
-        public List<dynamic> GetAllUsers(int page, int limit, string query, out long total)
-        {            
-            // locked = 1 - approved
-            string sql = "SELECT u.id, u.login, u.lastname, u.firstname, u.middlename, CAST(1 - u.isapproved AS int) locked, CAST(u.isadmin AS int) isadmin FROM qb_users u WHERE u.login <> '" + _syslogin + "'";
-            if (!string.IsNullOrEmpty(query))
-                sql += " AND (" + Misc.FilterField("u.login", query) + " OR " + Misc.FilterField1("u.lastname", query) + " OR " + Misc.FilterField1("u.firstname", query) + " OR " + Misc.FilterField1("u.middlename", query) + ")";
-
-            sql += " ORDER BY u.login";
-
-            Page<dynamic> p = _db.Page<dynamic>(page, limit, sql);            
-            total = p.TotalItems;
-            return p.Items;
-        }
+        }    
 
         public override MembershipUserCollection GetAllUsers(int page, int limit, out int total)
         {
@@ -158,29 +120,43 @@ namespace asv.Security
 
         // для principal
         public override MembershipUser GetUser(string username, bool userIsOnline)
-        {  
-            var person = _db.Single<dynamic>("SELECT u.id, u.login, u.lastname, u.firstname, u.middlename, u.isapproved, u.isadmin, u.comment, u.serverlogin, u.theme FROM qb_users u WHERE u.login = @0", username);
+        {
+            MembershipPerson mp = null;
 
-            MembershipPerson mp = new MembershipPerson(this.Name, (int)person.id, username, person.lastname, person.firstname, person.middlename, person.isapproved, person.isadmin, person.serverlogin, person.comment);
+            using (var db = ConnectToDatabase())
+            {
+                Person user = null;
+                List<Person> users = db.Fetch<Person, Userdb, Person>(new PersonRelator().Map, @"SELECT u.id, u.lastname, u.firstname, u.middlename, u.isadmin, u.serverlogin, u.theme, b.conn, b.auth FROM qb_users u 
+                                                                                                 LEFT JOIN qb_bases b ON b.usercreate = u.id AND b.auth = 1 WHERE u.login = @0", username);
+                if (users.Count > 0)
+                {
+                    user = users[0];
 
-            if (mp.ServerLogin == 1)            
-                mp.Bases = _db.Fetch<Userdb>("SELECT b.conn, b.auth FROM qb_bases b WHERE b.usercreate = @0 AND b.auth = 1", mp.Id);
+                    mp = new MembershipPerson(this.Name, username, user.Id, true, user.LastLoginDate);
+                    mp.IsAdmin = user.IsAdmin;
+                    mp.Lastname = user.LastName;
+                    mp.Firstname = user.FirstName;
+                    mp.Middlename = user.MiddleName;
+                    mp.Theme = user.Theme;
 
-            mp.Theme = person.theme;
+                    mp.Fio = user.LastName + " " + user.FirstName[0] + ".";
+                    if (!string.IsNullOrEmpty(user.MiddleName))
+                        mp.Fio += " " + user.MiddleName[0] + ".";
+
+                    mp.Bases = user.Bases;
+
+                    string roles = db.SingleOrDefault<string>("SELECT u.roles from qb_users u WHERE u.id = @0", user.Id);
+                    if (!string.IsNullOrEmpty(roles))
+                        mp.Roles = new List<string>(roles.Split(new char[] { ',' }));
+                }
+            }
 
             return mp;
         }
-
-        // для формы
+        
         public override MembershipUser GetUser(object providerUserKey, bool userIsOnline)
-        {  
-            var person = _db.Single<dynamic>("SELECT u.id, u.comment, u.serverlogin, u.theme FROM qb_users u WHERE u.id = @0", providerUserKey);
-            
-            MembershipPerson mp = new MembershipPerson(this.Name, (int)person.id, null, null, null, null, true, false, person.serverlogin, person.comment);            
-            mp.Bases = _db.Fetch<Userdb>("SELECT b.conn, b.auth FROM qb_bases b WHERE b.usercreate = @0", mp.Id);
-            mp.Theme = person.theme;
-
-            return mp;
+        {
+            throw new NotImplementedException();
         }
 
         public override string GetUserNameByEmail(string email)
@@ -188,14 +164,9 @@ namespace asv.Security
             throw new NotImplementedException();
         }
 
-        public int LockUser(int id, int locked)
-        {
-            return _db.Update<MembershipPerson>("SET isapproved = @1 WHERE id = @0", id, locked);
-        }
-
         public override int MaxInvalidPasswordAttempts
         {
-            get { throw new NotImplementedException(); }
+            get { return _maxInvalidPasswordAttempts; }
         }
 
         public override int MinRequiredNonAlphanumericCharacters
@@ -216,6 +187,11 @@ namespace asv.Security
         public override int PasswordAttemptWindow
         {
             get { throw new NotImplementedException(); }
+        }
+
+        public int SaltLength
+        {
+            get { return _saltLength; }
         }
 
         public override MembershipPasswordFormat PasswordFormat
@@ -248,27 +224,6 @@ namespace asv.Security
             throw new NotImplementedException();
         }
 
-        public void UpdateUser(MembershipPerson mp)
-        {
-            if (!string.IsNullOrEmpty(mp.Password))
-            {
-                mp.Salt = Crypto.GenerateSalt(16);
-                mp.Password = Crypto.Hash(mp.Password + "{" + mp.Salt + "}", Membership.HashAlgorithmType);
-            }
-
-            _db.Update<MembershipPerson>(@"SET login = @1, password = (CASE WHEN @2 IS NULL THEN password WHEN @2 = '' THEN password ELSE @2 END), salt = IFNULL(@3, salt), 
-                                           lastname = @4, firstname = @5, middlename = @6, isadmin = @7, isapproved = @8, comment = @9, serverlogin = @10, theme = @11 WHERE id = @0;
-                                           DELETE FROM qb_bases WHERE usercreate = @0;",
-                       mp.Id, mp.Login, mp.Password, mp.Salt, mp.Lastname, mp.Firstname, mp.Middlename, mp.IsAdmin, mp.Locked, mp.Comment, mp.ServerLogin, mp.Theme);
-            
-            System.Diagnostics.Debug.WriteLine(_db.LastSQL);
-
-            foreach (Userdb udb in mp.Bases)
-            {
-                _db.Execute("INSERT INTO qb_bases(conn, auth, usercreate) VALUES(@0, @1, @2)", udb.Conn, udb.Auth, mp.Id);                
-            }            
-        }
-
         public override void UpdateUser(MembershipUser user)
         {
             throw new NotImplementedException();
@@ -276,39 +231,100 @@ namespace asv.Security
 
         public override bool ValidateUser(string username, string password)
         {
-            bool result = false;
-            string msg = null;
+            if (string.IsNullOrEmpty(username))
+                throw new Exception("Требуется поле Логин.");
 
-            try
+            if (string.IsNullOrEmpty(password))
+                throw new Exception("Требуется поле Пароль.");
+
+            using (var db = ConnectToDatabase())
             {
-                var q = _db.Single<dynamic>("SELECT u.password, u.salt, u.serverlogin, b.conn FROM qb_users u LEFT JOIN qb_bases b ON b.usercreate = u.id AND b.auth = 1 WHERE u.login = @0", username);
-                
-                // авторизация на сервере
-                if (q.serverlogin)
+                var q = db.SingleOrDefault<dynamic>(@"SELECT u.id, u.comment, u.isapproved, u.serverlogin, m.password hash, m.salt, m.islockedout, (strftime('%s', 'now', 'localtime') - strftime('%s', m.lastlogindate))/ 60 lockoutduration, b.conn 
+                                                      FROM membership m JOIN qb_users u ON u.id = m.userid LEFT JOIN qb_bases b ON b.usercreate = u.id AND b.auth = 1 WHERE u.login = @0", username);
+                if (q != null)
                 {
-                    ConnectionStringSettings css = ConfigurationManager.ConnectionStrings[q.conn];
-                    if (css != null)
-                    {                        
-                        string conStr = Misc.ConnCredentials(css.ConnectionString, username, password);
-                        
-                        using (System.Data.Odbc.OdbcConnection con = new System.Data.Odbc.OdbcConnection(conStr))
-                        {
-                            con.Open();                            
-                            con.Close();                           
+                    // заблокирован
+                    if (!q.isapproved)
+                        throw new Exception("Пользователь заблокирован.<br>" + q.comment);
 
-                            result = true;
+                    // заблокирован системой
+                    if (q.islockedout && q.lockoutduration < _passwordAnswerAttemptLockoutDuration)
+                        throw new Exception(q.comment + ".<br>Повторите попытку позднее");
+
+                    bool verificationSucceeded = false;
+                    // авторизация на сервере                    
+                    if (q.serverlogin)
+                    {
+                        try
+                        {
+                            ConnectionStringSettings css = ConfigurationManager.ConnectionStrings[q.conn];
+                            if (css != null)
+                            {
+                                string conStr = Misc.ConnCredentials(css.ConnectionString, username, password);
+
+                                using (System.Data.Odbc.OdbcConnection con = new System.Data.Odbc.OdbcConnection(conStr))
+                                {
+                                    con.Open();
+                                    con.Close();
+                                    verificationSucceeded = true;
+                                }
+                            }
+                        }
+                        catch
+                        {
                         }
                     }
+                    else
+                        verificationSucceeded = (q.hash != null && q.hash == Crypto.Hash(password + "{" + q.salt + "}"));
+
+                    int failures = 0, locked = 0;
+
+                    // верификация успешна -> сброс failedpasswordattemptcount
+                    if (verificationSucceeded)
+                    {
+                        // не заблокирован администратором --> сброс комментария
+                        if (q.isapproved)
+                            db.Execute(@"UPDATE qb_users SET comment = NULL WHERE id = @0", q.id);
+                    }
+                    // верификация не прошла 
+                    else
+                    {
+                        failures = db.ExecuteScalar<int>("SELECT failedpasswordattemptcount FROM membership WHERE userid = @0", q.id) + 1;
+                        // кол-во попыток больше --> блокировка
+                        if (failures > _maxInvalidPasswordAttempts)
+                        {
+                            db.Execute(@"UPDATE qb_users SET comment = 'Превышено максимальное количество попыток ввода недопустимого пароля' WHERE id = @0", q.id);
+                            locked = 1;
+                        }
+                    }
+                    db.Execute("UPDATE membership SET failedpasswordattemptcount = @1, islockedout = @2, lastlogindate = datetime('now', 'localtime') WHERE userid = @0", q.id, failures, locked);
+
+                    return verificationSucceeded;
                 }
                 else
-                    result = (q.password == Crypto.Hash(password + "{" + q.salt + "}", Membership.HashAlgorithmType));
-            }
-            catch(Exception e)
-            {
-                msg = e.Message;
-            }
+                    return false;
+            }               
+        }
 
-            return result;
+        public void OnValidateUsername(ValidatePasswordEventArgs args)
+        {
+            try
+            {
+                if (args.UserName.Length < _minRequiredUsernameLength)
+                    throw new ArgumentException("Слишком короткий логин! Минимальная длина логина - " + _minRequiredUsernameLength + " символов.");
+
+                Regex rx = new Regex(@"^\w+$");
+                if (!rx.IsMatch(args.UserName))
+                    throw new ArgumentException("Логин. Можно использовать только буквы латинского алфавита (a–z), цифры и знак подчеркивания(\'_\').");
+
+                if (args.UserName[0] == '_')
+                    throw new ArgumentException("Логин. Первый символ должен быть латинской буквой (a–z) или цифрой.");
+            }
+            catch (ArgumentException e)
+            {
+                args.FailureInformation = e;
+                args.Cancel = true;
+            }
         }
     }
 }

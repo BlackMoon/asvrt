@@ -8,6 +8,8 @@ using System.Web.Security;
 using asv.Helpers;
 using asv.Managers;
 using asv.Models;
+using asv.Security;
+using Newtonsoft.Json;
 
 namespace asv.Controllers
 {    
@@ -31,10 +33,34 @@ namespace asv.Controllers
             ViewData["minRequiredPasswordLength"] = Membership.MinRequiredPasswordLength;
             ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
             
-            return View();
-        }       
+            IDictionary<string, object> obj = new Dictionary<string, object>();
+            obj["singleton"] = true;
+            obj["isInRole"] = new Newtonsoft.Json.Linq.JRaw("function(role) { return this.roles && this.roles.indexOf(role) != -1; }");
 
-        [Authorize]
+            if (Request.IsAuthenticated)
+            {   
+                obj["id"] = User.Id;
+                obj["roles"] = User.GetRoles();
+                
+                if (!string.IsNullOrEmpty(User.Schema))
+                    obj["schema"] = User.Schema;
+            }
+            
+            ViewBag.Auser = new MvcHtmlString(JsonConvert.SerializeObject(
+                    obj,                  
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new asv.Helpers.LowercaseContractResolver(),
+                        DefaultValueHandling = DefaultValueHandling.Ignore,
+                        NullValueHandling = NullValueHandling.Ignore
+                    }
+                )
+            );           
+
+            return View();
+        }
+
+        [GrantAttribute(Roles = "ERASER")]
         public JsonNetResult DeleteQuery(int id)
         {
             byte result = 1;
@@ -139,8 +165,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, data = nodes };
             return jr;
         }
-
-        [Authorize]
+        
+        [GrantAttribute(Roles = "EDITOR, READER")]
         [OutputCache(Duration = 120, VaryByParam = "id")]
         public JsonNetResult GetQuery(int id)
         {
@@ -187,8 +213,15 @@ namespace asv.Controllers
 
             List<dynamic> queries = new List<dynamic>();
             try
-            {   
-                queries = db.Fetch<dynamic>("SELECT q.id, q.name, q.conn, q.grp, q.drv FROM qb_vqueries q ORDER BY q.name");
+            {
+                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q";
+                
+                if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
+                    sql += " WHERE q.usercreate = @0";
+                
+                sql += " ORDER BY q.name";
+
+                queries = db.Fetch<dynamic>(sql, User.Id);
             }
             catch (Exception e)
             {
@@ -375,9 +408,10 @@ namespace asv.Controllers
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, data = nodes };
             return jr;
-        }       
-
-        [Authorize]
+        }
+        
+        [HttpPost]
+        [GrantAttribute(Roles = "AUTHOR, EDITOR")]
         [ValidateInput(false)]
         public JsonNetResult UpdateQuery(string json)
         {
@@ -402,45 +436,45 @@ namespace asv.Controllers
                     id = q.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6);\nSELECT last_insert_rowid();",
                         q.Name, q.Conn, q.Group, q.Subgroup, q.Sql, q.UseLeftJoin, User.Id);
 
-                // tables insert first
+                // tables insert first                
                 foreach (Table t in q.Tables)
                 {
                     db.Execute("INSERT INTO qb_tables(queryid, name, od, schema, collapsed) VALUES(@0, @1, @2, @3, @4)", q.Id, t.Name, t.Od, t.Schema, t.Collapsed);
-                }
+                }                
 
-                // params
+                // params                
                 foreach (Param p in q.Params)
                 {
                     db.Execute(@"INSERT INTO qb_params(queryid, field, formula, alias, schema, tbl, tabix, out, aggr, ord, ft, oper, uor, userp, descr, def, oper1, uor1, userp1, descr1, def1, filter2, uor2) 
-                    VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20, @21, @22)", 
+                                 VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20, @21, @22)",
                         q.Id, p.Field, p.Formula, p.Alias, p.Schema, p.Tbl, p.Tabix, p.Out, p.Aggr, p.Ord, p.Ft, p.Oper, p.Uor, p.Userp, p.Descr, p.Def, p.Oper1, p.Uor1, p.Userp1, p.Descr1, p.Def1, p.Filter2, p.Uor2);
-                }
+                }                
 
-                // relations
+                // relations                
                 foreach (Relation r in q.Relations)
                 {
-                    db.Execute("INSERT INTO qb_relations(queryid, tab, od, schema, field, reftab, refod, refschema, reffield) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)", 
+                    db.Execute("INSERT INTO qb_relations(queryid, tab, od, schema, field, reftab, refod, refschema, reffield) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)",
                         q.Id, r.Tab, r.Od, r.Schema, r.Field, r.RefTab, r.RefOd, r.RefSchema, r.RefField);
-                }
+                }                
 
-                // reports
+                // reports                
                 foreach (Template r in q.Reports)
                 {
-                    db.Execute("INSERT INTO qb_reports(queryid, tplid) VALUES(@0, @1)", q.Id, r.Id);
-                }
+                    db.Execute("INSERT INTO qb_reports(queryid, tplid) qS(@0, @1)", q.Id, r.Id);
+                }                
 
-                // user functions
+                // user functions                
                 foreach (UFunc f in q.Funcs)
                 {
-                    db.Execute("INSERT INTO qb_ufunctions(queryid, fnid, body, args, out, alias, filter, oper, def, uor, ord, dir) VALUES(@0, (CASE WHEN @1 = 0 THEN NULL ELSE @1 END), @2, @3, @4, @5, @6, @7, @8, @9, @10, @11)", 
+                    db.Execute("INSERT INTO qb_ufunctions(queryid, fnid, body, args, out, alias, filter, oper, def, uor, ord, dir) VALUES(@0, (CASE WHEN @1 = 0 THEN NULL ELSE @1 END), @2, @3, @4, @5, @6, @7, @8, @9, @10, @11)",
                         q.Id, f.FnId, f.Body, f.Args, f.Out, f.Alias, f.Filter, f.Oper, f.Def, f.Uor, f.Ord, f.Dir);
-                }
+                }                
 
-                // user params
+                // user params 
                 foreach (UParam u in q.UParams)
                 {
                     db.Execute("INSERT INTO qb_uparams(queryid, field, ft, descr, def) VALUES(@0, @1, @2, @3, @4)", q.Id, u.Field, u.Ft, u.Descr, u.Def);
-                }
+                }                
 
                 Response.RemoveOutputCacheItem("/Main/GetQueries");    
             }

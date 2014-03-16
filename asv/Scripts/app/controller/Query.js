@@ -85,6 +85,11 @@ Ext.define('QB.controller.Query', {
             'queryform button[action=execparam]': {
                 click: me.getUserParams
             },
+            'querylist': {
+                additem: me.createQuery,
+                edititem: me.editQuery,
+                removeitem: me.deleteQuery
+            },
             'queryrlist button[action=add]': {
                 click: me.addRelations
             },
@@ -245,7 +250,7 @@ Ext.define('QB.controller.Query', {
 
         query.userdefined = pressed ? 1 : 0;
         panel.diagram.setVisible(!pressed);
-        panel.parambtn.setVisible(pressed);
+        panel.parambtn.setVisible(!panel.readOnly && pressed);
 
         panel.paramgrid.setVisible(!pressed);
         panel.uparamgrid.setVisible(pressed);
@@ -400,7 +405,7 @@ Ext.define('QB.controller.Query', {
                 rels.push({ cols: [r.reffield] });
         })
 
-        var view = Ext.widget('tableedit', { conn: query.conn, od: od, schema: schema, table: name, title: title, remark: remark, checks: checks });
+        var view = Ext.widget('tableedit', { conn: query.conn, od: od, schema: schema, table: name, title: title, remark: remark, checks: checks, readOnly: panel.readOnly, closable: !panel.readOnly });
         view.SQLTable.rels = rels;
 
         panel.diagram.add(view);
@@ -485,8 +490,9 @@ Ext.define('QB.controller.Query', {
                             (tab) && tab.close();
                             view.store.removeAt(ix);
                         }
-                    },
-                    failure: function (response) { }
+                        else
+                            showStatus(obj.message);
+                    }                    
                 });
             }
         })
@@ -500,7 +506,7 @@ Ext.define('QB.controller.Query', {
         if (!tab) {
             var conn = { name: rec.get('conn'), drv: rec.get('drv'), schema: rec.get('schema') },
                 grp = rec.get('grp'),
-                panel = Ext.widget('queryedit', { conn: conn }),
+                panel = Ext.widget('queryedit', { conn: conn, readOnly: rec.get('readonly') }),
                 pstore = panel.paramsstore;                
 
             tab = me.centerRegion.add({ title: title, sqltab: 1, layout: 'fit', items: [panel] });
@@ -781,9 +787,10 @@ Ext.define('QB.controller.Query', {
             pageSize: itemsPerPage,
             proxy: {
                 actionMethods: { read: 'post' },
-                extraParams: { sql: me.prepareSQL(), args: query.args },
+                extraParams: { id: query.id, sql: me.prepareSQL(), args: query.args },
                 reader: {
                     idProperty: 'rn',
+                    root: 'data',
                     getResponseData: function(response) {
                         var me = this, cnt = me.model.prototype.fields.getCount(),
                             data, error;
@@ -1064,8 +1071,8 @@ Ext.define('QB.controller.Query', {
     showQueries: function () {
         var me = this, tab = me.centerRegion.child('#querytab');
         if (!tab) {
-            me.querygrid = Ext.widget('querylist', { listeners: { additem: me.createQuery, edititem: me.editQuery, removeitem: me.deleteQuery, scope: me } });
-            tab = me.centerRegion.add({ title: 'Запросы', itemId: 'querytab', layout: 'fit', items: [me.querygrid] });
+            var grid = Ext.widget('querylist', { enableAdd: Auser.isinrole('AUTHOR') });
+            tab = me.centerRegion.add({ title: 'Запросы', itemId: 'querytab', layout: 'fit', items: [grid] });        
         }
         tab.show();
     },
@@ -1279,7 +1286,7 @@ Ext.define('QB.controller.Query', {
             panel.el.mask('Сохранение', 'x-mask-loading');
 
             Ext.Ajax.request({
-                url: '/main/updatequery',
+                url: '/main/updatequery?id=' + q.id,
                 params: { json: Ext.encode(q) },
                 success: function (response) {
                     var obj = Ext.decode(response.responseText),

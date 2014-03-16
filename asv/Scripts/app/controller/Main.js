@@ -1,7 +1,7 @@
 ﻿Ext.define('QB.controller.Main', {
     extend: 'QB.controller.Base',
     logged: false,
-    stores: ['Qdbs', 'Dbs'],
+    stores: ['Dbs'],
     views: ['user.Login'],    
 
     init: function () {
@@ -27,8 +27,9 @@
     onItemContextMenu: function (view, rec, el, ix, e) {
         var me = this, panel = me.explorer,
             nt = panel.selNode.get('nt'),
+            isAuthor = Auser.isinrole('AUTHOR'),
             isSchema = (nt == 0),
-            isTable = (nt == 1);
+            isTable = (nt == 1);            
             
         panel.getSelectionModel().selectRange(ix, ix);
         
@@ -50,9 +51,10 @@
                 })]
             }));                
         
+        me.mnuquery.setVisible(isAuthor);
         me.mnutable.setVisible(isTable);
 
-        contextMenu.showAt(e.getXY());                    
+        (isAuthor || isTable) && contextMenu.showAt(e.getXY());                    
         
         return false;                
     },            
@@ -62,22 +64,23 @@
             menubar = me.application.viewport.down('toolbar[itemId=menubar]'),
             toolbar = me.application.viewport.down('toolbar[itemId=toolbar]');
 
-        me.delbase = me.application.viewport.query('[action=delbase]') || [];        
-
         me.mnuadmin = menubar.getComponent('mnuadmin')
+        me.mnunewquery = menubar.down('menuitem[itemId=mnuquery]')
         me.btnauth = menubar.getComponent('btnauth');
         me.lbfio = menubar.getComponent('lbfio');
 
         me.btnaliases = toolbar.getComponent('aliases');
         me.btncatalogs = toolbar.getComponent('catalogs');
         me.btnconns = toolbar.getComponent('conns');
-        me.btnfuncs = toolbar.getComponent('funcs');        
+        me.btnfuncs = toolbar.getComponent('funcs');
+        me.btnquery = toolbar.getComponent('query');
         me.btnsettings = toolbar.getComponent('settings');        
         me.btnusers = toolbar.getComponent('users');
         
         me.explorer = me.application.viewport.down('explorer');
 
         me.callParent(arguments);
+        me.application.logged && me.refreshBases();
     },
 
     onSelectionChange: function (selmodel, selected) {        
@@ -140,18 +143,22 @@
 
                         [me.mnuadmin, me.btnaliases, me.btncatalogs, me.btnconns, me.btnfuncs, me.btnsettings, me.btnusers].forEach(function (b) {
                             b.setVisible(obj.isadmin);
-                        })                        
+                        })
 
                         me.lbfio.setText(obj.fio);
                         me.btnauth.setText('Выход');
                         
+                        Auser.id = obj.id;
+                        Auser.isadmin = obj.isadmin;
                         Auser.serverlogin = obj.serverlogin;
                         Auser.schema = obj.schema;
+                        Auser.roles = obj.roles;
 
-                        var store = me.getDbsStore();
-                        store.loaded = false;
-                        store.clearFilter();
-                        store.load(me.explorer.getRootNode());
+                        [me.mnunewquery, me.btnquery].forEach(function (b) {
+                            b.setVisible(Auser.isinrole('AUTHOR'));
+                        })
+
+                        me.refreshBases();
 
                         wnd.close();
                     }
@@ -176,12 +183,14 @@
                 if (obj.success) {
                     me.application.logged = false;
 
-                    [me.mnuadmin, me.btnaliases, me.btncatalogs, me.btnconns, me.btnfuncs, me.btnsettings, me.btnusers].forEach(function (b) {
+                    [me.mnuadmin, me.mnunewquery, me.btnaliases, me.btncatalogs, me.btnconns, me.btnfuncs, me.btnquery, me.btnsettings, me.btnusers].forEach(function (b) {
                         b.hide();
                     })
                     
                     me.lbfio.setText('');
                     me.btnauth.setText('Вход');
+
+                    Auser.roles = [];
 
                     me.centerRegion.removeAll();
                     me.explorer.getRootNode().removeAll();
@@ -192,9 +201,13 @@
     },
 
     refreshBases: function(tool) {
-        var store = tool.toolOwner.store;
-        store.loaded = false;
+        var store = this.getDbsStore(),
+            root = store.getRootNode();
+
         store.clearFilter();
-        store.load();
+
+        root.collapse();
+        root.removeAll();
+        root.expand();        
     }
 })

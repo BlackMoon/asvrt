@@ -3,7 +3,7 @@
 namespace asv.Security
 {
     public class AdminAuthorize : BaseAttribute
-    {       
+    {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool isAutorized = base.AuthorizeCore(httpContext);
@@ -13,6 +13,6 @@ namespace asv.Security
                 return user.IsAdmin == 1;
             }
             return isAutorized;
-        }       
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Web.Security;
 using asv.Security;
 using System.Web.Caching;
 using System.IO;
+using asv.Managers;
 
 namespace asv
 {   
@@ -53,7 +54,7 @@ namespace asv
                                     HttpContext.Current.Cache.Add(login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                                     FormsAuthentication.SetAuthCookie(login + ":" + passwd, ticket.IsPersistent);
 
-                                    asv.Managers.LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
+                                    LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
                                 }
                                 else
                                     FormsAuthentication.SignOut();
@@ -66,22 +67,41 @@ namespace asv
                         // valid user
                         if (mp != null)
                         {
-                            user = new MemberPrincipal(HttpContext.Current.User.Identity, null);
-                            user.Id = mp.Id;
+                            user = new MemberPrincipal(login);
+                            user.Id = (int)mp.ProviderUserKey;
                             user.IsAdmin = mp.IsAdmin;
-                            user.ServerLogin = mp.ServerLogin == 1 ? true : false;
-                            user.Login = mp.UserName;
                             user.Lastname = mp.Lastname;
                             user.Firstname = mp.Firstname;
                             user.Middlename = mp.Middlename;                            
                             user.Fio = mp.Fio;
+                            
+                            user.ServerLogin = mp.ServerLogin;
                             user.Theme = mp.Theme;
 
-                            if (user.ServerLogin)                            
+                            if (user.ServerLogin == 1)                            
                                 user.Schema = mp.Schema;
                         }
                         HttpContext.Current.User = user;
                     }
+                }
+            }
+        }
+
+        protected void Application_Error(Object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError();
+
+            if (ex is HttpException)
+            {
+                HttpException hex = (HttpException)ex;
+
+                HttpContextWrapper context = new HttpContextWrapper(Context);
+                if (context.Request.IsAjaxRequest())
+                {
+                    Response.ContentType = "application/json";
+                    Response.StatusCode = hex.GetHttpCode();
+                    Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(new { message = hex.Message }));
+                    Response.End();
                 }
             }
         }

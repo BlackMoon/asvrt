@@ -5,6 +5,7 @@
     collapsible: true,
     constrainHeader: true,
     layout: { type: 'vbox', align: 'stretch' },
+    readOnly: false,
     height: 160,
     width: 250,    
 
@@ -24,10 +25,10 @@
 
         me.grid = Ext.widget('grid', {            
             store: me.store,
-            columns: [ { xtype: 'checkcolumn', dataIndex: 'out', sortable: false, width: 24 },
-                       { dataIndex: 'rem', filterable: true, flex: 1, renderer: me.fieldRenderer },
-                       { dataIndex: 'name', filterable: true, flex: 1 },
-                       { xtype: 'imagecolumn', dataIndex: 'joined', sortable: false, width: 20, align: 'left', img: '/content/chain.png' }],                        
+            columns: [{ xtype: 'checkcolumn', dataIndex: 'out', disabled: me.readOnly, sortable: false, width: 24 },
+                      { dataIndex: 'rem', filterable: true, flex: 1, renderer: me.fieldRenderer },
+                      { dataIndex: 'name', filterable: true, flex: 1 },
+                      { xtype: 'imagecolumn', dataIndex: 'joined', sortable: false, width: 20, align: 'left', img: '/content/chain.png' }],                        
             enableColumnHide: false,
             features: [filters],
             flex: 1,

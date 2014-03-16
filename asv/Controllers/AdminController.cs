@@ -12,12 +12,15 @@ using asv.Security;
 using asv.Models;
 using PetaPoco;
 using System.Collections.Specialized;
+using System.IO;
 
 namespace asv.Controllers
 {
     //[AdminAuthorize]
     public class AdminController : BaseController
-    {
+    {   
+        private const string _logfile = "user.log";
+
         public JsonNetResult DeleteAlias(int id)
         {
             byte result = 1;
@@ -129,8 +132,7 @@ namespace asv.Controllers
 
             try
             {
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                ap.DeleteUser(id);       
+                Membership.Provider.DeleteUser(id);
          
                 Response.RemoveOutputCacheItem("/Admin/GetUser");
                 Response.RemoveOutputCacheItem("/Admin/GetUsers");
@@ -144,7 +146,38 @@ namespace asv.Controllers
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg };
             return jr;
-        }        
+        }
+
+        public FileResult ExportLogs()
+        {
+            Response.AddHeader("Content-Disposition", "attachment; filename=\"" + _logfile + "\"");
+            return File(Server.MapPath(@"~\" + _logfile), "text/plain");
+        }
+
+        [OutputCache(Duration = 120, VaryByParam = "id")]
+        public JsonNetResult GetAlias(int id)
+        {
+            byte result = 1;
+            string msg = null;
+
+            Alias alias = null;
+            try
+            {
+                List<Alias> aliases = db.Fetch<Alias, Alias, Alias>(new AliasRelator().Map, "SELECT a.id, f.id, f.name, f.remark FROM qb_aliases a LEFT JOIN qb_aliases f ON f.parentid = a.id WHERE a.id = @0", id);
+
+                if (aliases.Count > 0)
+                    alias = aliases[0];
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+                result = 0;
+            }
+
+            JsonNetResult jr = new JsonNetResult();
+            jr.Data = new { success = result, message = msg, alias = alias };
+            return jr;
+        }
 
         [OutputCache(Duration = 120, VaryByParam = "page;limit;query")]
         public JsonNetResult GetAliases(int page, int limit, string query)
@@ -173,31 +206,6 @@ namespace asv.Controllers
 
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, data = aliases, total = total };
-            return jr;
-        }
-
-        [OutputCache(Duration = 120, VaryByParam = "id")]
-        public JsonNetResult GetAlias(int id)
-        {
-            byte result = 1;
-            string msg = null;
-
-            Alias alias = null;
-            try
-            {
-                List<Alias> aliases = db.Fetch<Alias, Alias, Alias>(new AliasRelator().Map, "SELECT a.id, f.id, f.name, f.remark FROM qb_aliases a LEFT JOIN qb_aliases f ON f.parentid = a.id WHERE a.id = @0", id);
-
-                if (aliases.Count > 0)
-                    alias = aliases[0];
-            }
-            catch (Exception e)
-            {
-                msg = e.Message;
-                result = 0;
-            }
-
-            JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg, alias = alias };
             return jr;
         }
         
@@ -402,6 +410,38 @@ namespace asv.Controllers
             return jr;
         }
 
+        public JsonNetResult GetLogs(int page, int limit)
+        {
+            byte result = 1;
+            string msg = null;
+
+
+            long total = 0;
+            IList<LogModel> logs = new List<LogModel>();
+            try
+            {                
+                // read from tail
+                IEnumerable<string> lines = System.IO.File.ReadLines(Server.MapPath(@"~\" + _logfile)).Reverse();
+                total = lines.Count();
+
+                foreach (string line in lines.Skip((page - 1) * limit).Take(limit))
+                {
+                    logs.Add(new LogModel { Event = line });
+                }
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+                result = 0;
+            }
+
+            JsonNetResult jr = new JsonNetResult();
+            jr.Data = new { success = result, message = msg, data = logs, total = total };
+
+            return jr;
+        }
+
+
         [OutputCache(Duration = 120, VaryByParam = "none")]
         public JsonNetResult GetSettings()
         {
@@ -489,10 +529,10 @@ namespace asv.Controllers
             byte result = 1;
             string msg = null;
 
-            MembershipPerson mp = null;
+            Person user = null;            
             try
             {
-                mp = (MembershipPerson)Membership.GetUser(id);
+                user = Membership.Provider.GetUser(id);
             }
             catch (Exception e)
             {
@@ -501,7 +541,7 @@ namespace asv.Controllers
             }
 
             JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg, user = mp };
+            jr.Data = new { success = result, message = msg, user = user };
             return jr;
         }
 
@@ -512,11 +552,10 @@ namespace asv.Controllers
             string msg = null;
 
             long total = 0;
-            List<dynamic> users = new List<dynamic>();
+            IEnumerable<Person> users = new List<Person>();
             try
             {
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                users = ap.GetAllUsers(page, limit, query, out total);                
+                users = Membership.Provider.FindUsersByName(query, page, limit, out total);
             }
             catch (Exception e)
             {
@@ -527,30 +566,7 @@ namespace asv.Controllers
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = result, message = msg, data = users, total = total };
             return jr;
-        }
-
-        public JsonNetResult LockUser(int id, int locked)
-        {
-            byte result = 1;
-            string msg = null;
-
-            try
-            {
-                // approved = 1 - locked
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                ap.LockUser(id, 1 - locked);
-                Response.RemoveOutputCacheItem("/Admin/GetUser");
-                Response.RemoveOutputCacheItem("/Admin/GetUsers");
-            }
-            catch (Exception e)
-            {
-                msg = e.Message;
-                result = 0;
-            }
-            JsonNetResult jr = new JsonNetResult();
-            jr.Data = new { success = result, message = msg };
-            return jr;
-        }
+        }       
 
         [HttpPost]
         public ActionResult ImportAliases(HttpPostedFileBase file)
@@ -597,7 +613,7 @@ namespace asv.Controllers
             byte result = 1;
             string msg = null;
 
-            MembershipPerson mp = null;
+            Person p = null;            
             Userdb udb = null;
 
             if (serverlogin == 1)
@@ -616,14 +632,13 @@ namespace asv.Controllers
                 XDocument xd = XDocument.Load(file.InputStream);
                 
                 foreach (var u in xd.Descendants("Users"))
-                {                    
-                    mp = new MembershipPerson();
-                    mp.Bases = new List<Userdb>();
-                    // isApproved = 1
-                    mp.Locked = 1; 
+                {
+                    p = new Person();
+                    p.Bases = new List<Userdb>();
+                    p.IsApproved = 1;
 
-                    mp.Login = u.Element("Name").Value;
-                    System.Diagnostics.Debug.WriteLine(mp.Login);
+                    p.Login = u.Element("Name").Value;
+                    System.Diagnostics.Debug.WriteLine(p.Login);
 
                     fio = u.Element("FullName").Value;
                     if (!string.IsNullOrEmpty(fio))
@@ -631,35 +646,35 @@ namespace asv.Controllers
                         int pos = fio.IndexOf(' ');
                         if (pos != -1)
                         {
-                            mp.Lastname = fio.Substring(0, pos++);
+                            p.LastName = fio.Substring(0, pos++);
 
                             string[] arr = fio.Substring(pos).Split(new char [] {'.', ' '}, StringSplitOptions.RemoveEmptyEntries);
                             if (arr.Length > 0)
                             {
-                                mp.Firstname = arr[0];
+                                p.FirstName = arr[0];
 
                                 if (arr.Length > 1)
-                                    mp.Middlename = arr[1];
+                                    p.MiddleName = arr[1];
                             }
                         }
                         else 
-                            mp.Lastname = mp.Firstname = fio;                        
+                            p.LastName = p.FirstName = fio;                        
                     }
 
                     if (serverlogin == 1)
                     {
-                        mp.ServerLogin = 1;
-                        mp.Bases.Add(udb);
+                        p.ServerLogin = 1;
+                        p.Bases.Add(udb);
                     }
                     else
-                        mp.Password = "123456";
+                        p.Password = "123456";
 
-                    mp.Id = db.SingleOrDefault<int>("SELECT u.id FROM qb_users u WHERE u.login = @0", mp.Login);
-                    
-                    if (mp.Id != 0)
-                        ap.UpdateUser(mp);
+                    p.Id = db.SingleOrDefault<int>("SELECT u.id FROM qb_users u WHERE u.login = @0", p.Login);
+
+                    if (p.Id != 0)
+                        Membership.Provider.UpdateUser(p.Id, p);
                     else
-                        ap.CreateUser(mp);
+                        Membership.Provider.CreateUserAndAccount(p);
 
                     n++;
                     System.Diagnostics.Debug.WriteLine(n);                    
@@ -970,27 +985,26 @@ namespace asv.Controllers
             return jr;
         }
 
-        public JsonNetResult UpdateUser(string json)
+        public JsonNetResult UpdateUser(Person value)
         {
             byte result = 1;
             string msg = null;
 
-            MembershipPerson mp = Newtonsoft.Json.JsonConvert.DeserializeObject<MembershipPerson>(json);
-
-            long id = 0;
+            int id = 0;
             try
             {
-                // isApproved = 1 - locked
-                mp.Locked = 1 - mp.Locked;
+                if (!ModelState.IsValid)
+                    throw new Exception(string.Join(", ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
 
-                AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
-                if (mp.Id != 0)
+                // isApproved = 1 - locked
+                value.IsApproved = 1 - value.IsApproved;
+                if (value.Id != 0)
                 {
-                    ap.UpdateUser(mp);
-                    Response.RemoveOutputCacheItem("/Admin/GetUser");                    
+                    Membership.Provider.UpdateUser(value.Id, value);
+                    Response.RemoveOutputCacheItem("/Admin/GetUser");        
                 }
                 else
-                    id = ap.CreateUser(mp);
+                    id = (int)Membership.Provider.CreateUserAndAccount(value);
 
                 Response.RemoveOutputCacheItem("/Admin/GetUsers");
             }

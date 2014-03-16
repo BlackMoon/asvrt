@@ -133,9 +133,15 @@
     <Compile Include="Managers\DataManager.cs" />
     <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Managers\ReportManager.cs" />
+    <Compile Include="Models\IDBContext.cs" />
     <Compile Include="Security\AccessMembershipProvider.cs" />
+    <Compile Include="Security\AccessRoleProvider.cs" />
     <Compile Include="Security\AdminAuthorize.cs" />
+    <Compile Include="Models\DBContext.cs" />
+    <Compile Include="Security\BaseAttribute.cs" />
+    <Compile Include="Security\GrantAttribute.cs" />
     <Compile Include="Security\MemberPrincipal.cs" />
+    <Compile Include="Security\MembershipExtention.cs" />
     <Compile Include="Security\MembershipPerson.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\DBCore.cs" />
@@ -149,6 +155,7 @@
     <Content Include="Content\2leftarrow.png" />
     <Content Include="Content\admin16.png" />
     <Content Include="Content\alphabet16.png" />
+    <Content Include="Content\bullet_txt.png" />
     <Content Include="Content\bullet_xls.png" />
     <Content Include="Content\bullet_xml.png" />
     <Content Include="Content\cancel.png" />
@@ -2428,6 +2435,7 @@
     <Content Include="Content\gears16.png" />
     <Content Include="Content\help16.png" />
     <Content Include="Content\ikey16.png" />
+    <Content Include="Content\journal16.png" />
     <Content Include="Content\key16.png" />
     <Content Include="Content\pencil.png" />
     <Content Include="Content\pkey16.png" />
@@ -2478,13 +2486,14 @@
     <Content Include="Scripts\app\store\Aliases.js" />
     <Content Include="Scripts\app\store\Catalogs.js" />
     <Content Include="Scripts\app\store\Funcs.js" />
-    <Content Include="Scripts\app\store\Params.js" />
-    <Content Include="Scripts\app\store\Qdbs.js" />
+    <Content Include="Scripts\app\store\Logs.js" />
     <Content Include="Scripts\app\store\Dbs.js" />
     <Content Include="Scripts\app\store\Lstore.js" />
     <Content Include="Scripts\app\controller\Admin.js" />
     <Content Include="Scripts\app\model\User.js" />
     <Content Include="Scripts\app\store\Conns.js" />
+    <Content Include="Scripts\app\store\Params.js" />
+    <Content Include="Scripts\app\store\Qdbs.js" />
     <Content Include="Scripts\app\store\Queries.js" />
     <Content Include="Scripts\app\store\Roles.js" />
     <Content Include="Scripts\app\store\Sections.js" />
@@ -2496,6 +2505,7 @@
     <Content Include="Scripts\app\view\catalog\Edit.js" />
     <Content Include="Scripts\app\view\catalog\List.js" />
     <Content Include="Scripts\app\view\catalog\Tlist.js" />
+    <Content Include="Scripts\app\view\Eventlog.js" />
     <Content Include="Scripts\app\view\section\Edit.js" />
     <Content Include="Scripts\app\view\section\List.js" />
     <Content Include="Scripts\app\view\section\Tlist.js" />

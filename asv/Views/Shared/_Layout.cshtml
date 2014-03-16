@@ -3,16 +3,13 @@
     bool logged = Request.IsAuthenticated;         
     
     int isAdmin = 0;
-    int serverLogin = 0;
-    string schema = string.Empty, theme = "classic";
+    string theme = "classic";
     
     MemberPrincipal user = null;
     
     if (logged) {
         user = (MemberPrincipal)User;
-        isAdmin = user.IsAdmin;
-        serverLogin = user.ServerLogin ? 1 : 0;
-        schema = user.Schema;
+        isAdmin = user.IsAdmin;        
         
         if (!string.IsNullOrEmpty(user.Theme)) {
             theme = user.Theme;
@@ -33,8 +30,7 @@
     {
         <script src="@Url.Content("~/scripts/ext-all.js")"></script>
     }
-    <script src="@Url.Content("~/scripts/ext-lang-ru.js")"></script>    
-    @RenderSection("scripts", false)
+    <script src="@Url.Content("~/scripts/ext-lang-ru.js")"></script>        
     <script type="text/javascript">        
         String.prototype.trimLeft = function () { return this.replace(/^\s+/, ""); };
 
@@ -57,6 +53,14 @@
             };
         }
 
+        Ext.Ajax.defaultHeaders = { accept: 'application/json' };
+        Ext.Ajax.on({
+            requestexception: function (conn, response, options) {                
+                var obj = Ext.decode(response.responseText);
+                showStatus(response.status + ' ' + (obj ? obj.message : response.statusText));                
+            }
+        });
+
         if (Ext.form.Panel)
             Ext.apply(Ext.form.Panel.prototype, { frame: true });
 
@@ -66,6 +70,7 @@
         if (Ext.form.field.TextArea)
             Ext.apply(Ext.form.field.TextArea.prototype, { height: 60 });
         
+        var status;
         var comboRenderer = function(combo){
             return function(v){
                 if (v) {
@@ -75,15 +80,20 @@
                 }
             }
         }
-
-        Ext.Loader.setPath('Ext.ux', 'scripts/ux');
+        function showStatus(msg) {
+            if (status) {
+                status.innerHTML = msg;
+                setTimeout(function () { status.innerHTML = ''; }, 10000);
+            }
+        }
+        @RenderSection("scripts", required: false)        
+        Ext.Loader.setPath('Ext.ux', 'scripts/ux');        
 
         Ext.application({
             requires: ['Ext.container.Viewport'],
             name: 'QB',
             appFolder: 'scripts/app',
-            controllers: ['Admin', 'Main', 'Query', 'Template'],
-            stores: ['Dbs'],
+            controllers: ['Admin', 'Main', 'Query', 'Template'],            
             views: ['Explorer'],                        
             @if (logged)
             {
@@ -96,22 +106,13 @@
             init: function() {
                 var stateProvider = Ext.supports.LocalStorage ? new Ext.state.LocalStorageProvider() : new Ext.state.CookieProvider({ expires: new Date(new Date().getTime() + 2.592e9) }); // 30 days in msec
                 Ext.state.Manager.setProvider(stateProvider);
-              
-                Ext.define('Auser', { serverlogin: @serverLogin, schema: '@schema', singleton: true });                
             },
 
             launch: function () {
                 var me = this;
-
                 me.maincontroller = me.getController('Main');
-                if (me.logged){ 
-                    var store = me.getDbsStore()
-                    store.loaded = false;
-                    store.load();
-                }
-                else {                    
-                    me.maincontroller.auth(); 
-                }
+                
+                !me.logged && me.maincontroller.auth();
 
                 me.viewport = Ext.create('Ext.container.Viewport', {
                     layout: 'border',
@@ -126,8 +127,10 @@
                                 xtype: 'menu',
                                 items: [{ 
                                     text: 'Новый запрос',                                     
+                                    itemId: 'mnuquery',
                                     iconCls: 'icon-ljoin',
-                                    action: 'query'
+                                    action: 'query',
+                                    hidden: !Auser.isinrole('AUTHOR')
                                 },
                                 {
                                     text: 'Список',                                     
@@ -182,8 +185,8 @@
                                 },
                                 { 
                                     text: 'Журнал', 
-                                    action: 'journal',
-                                    iconCls: 'icon-tools'
+                                    action: 'eventlog',
+                                    iconCls: 'icon-journal'
                                 }]                                    
                             }
                         },                            
@@ -215,8 +218,10 @@
                         itemId: 'toolbar',
                         items: [{   
                             iconCls: 'icon-ljoin',
+                            itemId: 'query',
                             tooltip: 'Новый запрос',
-                            action: 'query'
+                            action: 'query',
+                            hidden: !Auser.isinrole('AUTHOR')
                         },
                         {   
                             iconCls: 'icon-join',
@@ -308,15 +313,13 @@
                     {
                         region: 'south',
                         xtype: 'toolbar',
-                        height: 22,
-                        items: [{
-                            xtype: 'tbtext', 
-                            itemId: 'status'                            
-                        }]
+                        id: 'footer',                                                    
+                        height: 22                        
                     }]
                 });            
-            }
-        });
+                status = window.document.getElementById('footer');
+            }            
+        });                
     </script>
     <style>@@import '@Url.Content("~/Content/ext-theme-" + theme + "/ext-theme-" + theme + "-all.css")';</style>
 </head>

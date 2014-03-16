@@ -4,28 +4,51 @@ Ext.define('QB.controller.Admin', {
     extend: 'QB.controller.Base',    
 
     models: ['Alias', 'Connection', 'Fparam', 'Table', 'Udb', 'User' ],
-    stores: ['Aliases', 'Catalogs', 'Conns', 'Funcs', 'Qdbs', 'Roles', 'Tables', 'Users'],
-    views: ['alias.Edit', 'alias.List', 'conn.Edit', 'conn.List', 'func.Edit', 'func.List', 'catalog.Edit', 'catalog.List', 'setting.Edit', 'user.Edit', 'user.Import', 'user.List'],
+    stores: ['Aliases', 'Catalogs', 'Conns', 'Funcs', 'Logs', 'Qdbs', 'Roles', 'Tables', 'Users'],
+    views: ['Eventlog', 'alias.Edit', 'alias.List', 'conn.Edit', 'conn.List', 'func.Edit', 'func.List', 'catalog.Edit', 'catalog.List', 'setting.Edit', 'user.Edit', 'user.Import', 'user.List'],
 
     init: function () {
         var me = this;
 
-        me.control({                        
+        me.control({            
             'aliasedit button[action=save]': {
                 click: me.updateAlias
-            },            
+            },
+            'aliaslist': {
+                additem: me.createAlias,
+                edititem: me.editAlias,
+                removeitem: me.deleteAlias
+            },
+            'catalogedit button[action=save]': {
+                click: me.updateCatalog
+            },
+            'cataloglist': {
+                additem: me.createCatalog,
+                edititem: me.editCatalog,
+                removeitem: me.deleteCatalog
+            },
             'connedit button[action=save]': {
                 click: me.updateConn
             },
             'connedit button[action=test]': {
                 click: me.testConn
             },
+            'connlist': {
+                additem: me.createConn,
+                edititem: me.editConn,
+                removeitem: me.deleteConn
+            },
             'funcedit button[action=save]': {
                 click: me.updateFunc
-            },            
-            'catalogedit button[action=save]': {
-                click: me.updateCatalog
-            },                                    
+            },
+            'funclist': {
+                additem: me.createFunc,
+                edititem: me.editFunc,
+                removeitem: me.deleteFunc
+            },
+            'eventlog button[action=export]': {
+                click: function () { window.open('/admin/exportlogs', '_self'); }
+            },
             'toolbar [action=aliases]': {
                 click: me.showAliases
             },
@@ -37,6 +60,9 @@ Ext.define('QB.controller.Admin', {
             },
             'toolbar [action=funcs]': {
                 click: me.showFuncs
+            },
+            'toolbar [action=eventlog]': {
+                click: me.showEventlog
             },
             'toolbar [action=settings]': {
                 click: me.showSetting
@@ -59,12 +85,14 @@ Ext.define('QB.controller.Admin', {
             'userimport button[action=importusers]': {
                 click: me.importUsers
             },
-            'userlist button[action=import]': {
-                click: function () { Ext.widget('userimport'); }
+            'userlist': {
+                additem: me.createUser,
+                edititem: me.editUser,
+                removeitem: me.deleteUser
             },
-            'userlist gridcolumn[dataIndex=locked]': {
-                checkchange: me.lockChange
-            }
+            'userlist button[action=import]': {                
+                click: function () { Ext.widget('userimport'); }
+            }            
         });
     },
 
@@ -121,7 +149,11 @@ Ext.define('QB.controller.Admin', {
     },
 
     createUser: function () {
-        Ext.widget('useredit', { upd: false });
+        var wnd = Ext.widget('useredit', { upd: false }),
+            store = wnd.rolesstore;
+        
+        store.actives = [];
+        store.loaded && store.setActives();
     },
 
     deleteAlias: function(view, rec, ix){
@@ -134,10 +166,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) : 
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);                        
+                    }                    
                 });
             }
         })
@@ -153,10 +183,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) :
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);                        
+                    }                    
                 });
             }
         })
@@ -172,10 +200,8 @@ Ext.define('QB.controller.Admin', {
                     params: { name: name },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) : 
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);
+                    }                    
                 });
             }
         })
@@ -191,10 +217,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        (obj.success) ? view.store.removeAt(ix) :
-                    	    Ext.MessageBox.show({ title: 'Внимание', msg: obj.message, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);                   
+                    }
                 });
             }
         })
@@ -212,10 +236,8 @@ Ext.define('QB.controller.Admin', {
                     params: { id: rec.get('id') },
                     success: function (response) {
                         var obj = Ext.decode(response.responseText);
-                        if (obj.success)
-                            view.store.removeAt(ix);
-                    },
-                    failure: function (response) { }
+                        (obj.success) ? view.store.removeAt(ix) : showStatus(obj.message);
+                    }                    
                 });
             }
         })
@@ -318,7 +340,7 @@ Ext.define('QB.controller.Admin', {
     },
     
     editUser: function (grid, rec) {
-        var view = Ext.widget('useredit');
+        var wnd = Ext.widget('useredit');
 
         Ext.Ajax.request({
             method: 'get',
@@ -327,21 +349,18 @@ Ext.define('QB.controller.Admin', {
             success: function (response) {
                 var obj = Ext.decode(response.responseText);
                 if (obj.success) {
-                    var roles = obj.user.roles || [];
+                    var form = wnd.form,
+                        store = wnd.rolesstore,
+                        usr = obj.user;
 
-                    view.form.loadRecord(rec);
-                    view.form.getForm().setValues(obj.user);
+                    store.actives = usr.roles || [];
+                    store.loaded && store.setActives();
 
-                    roles.forEach(function (r) {
-                        var rec = view.rolestore.findRecord('authority', r);
-                        if (rec) {
-                            rec.set('available', 1);
-                            rec.commit();
-                        }
-                    })
+                    form.loadRecord(rec);
+                    form.getForm().setValues(obj.user);
 
-                    obj.user.bases.forEach(function (b) {
-                        view.dbstore.add(new QB.model.Udb(b));
+                    usr.bases.forEach(function (b) {
+                        wnd.dbstore.add(new QB.model.Udb(b));
                     })
                 }
                 else
@@ -388,73 +407,46 @@ Ext.define('QB.controller.Admin', {
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },
-
-    lockChange: function (column, rowIx, checked) {
-        var view = column.up('grid').view, rowNode = view.getNode(rowIx), rec = view.getRecord(rowNode);
-
-        Ext.Ajax.request({
-            method: 'get',
-            url: '/admin/lockuser',
-            params: { id: rec.get('id'), locked: checked ? 1 : 0 },
-            success: function (response) {
-                var obj = Ext.decode(response.responseText);
-                rec[obj.success ? 'commit' : 'reject']();
-            },
-            failure: function (response) { }
-        });
-    },
-     
+      
     showAliases: function () {
-        var me = this, tab = me.centerRegion.child('#aliastab');
-        if (!tab) {
-            var grid = Ext.widget('aliaslist', { listeners: { additem: me.createAlias, edititem: me.editAlias, removeitem: me.deleteAlias } });
-            tab = me.centerRegion.add({ title: 'Псевдонимы', itemId: 'aliastab', layout: 'fit', items: [grid] });
-        }
+        var me = this, tab = me.centerRegion.child('#aliastab');        
+        !tab && (tab = me.centerRegion.add({ title: 'Псевдонимы', itemId: 'aliastab', layout: 'fit', items: [Ext.widget('aliaslist')] }));
         tab.show();
     },
 
     showCatalogs: function () {
         var me = this, tab = me.centerRegion.child('#catalogtab');
-        if (!tab) {
-            var grid = Ext.widget('cataloglist', { listeners: { additem: me.createCatalog, edititem: me.editCatalog, removeitem: me.deleteCatalog, scope: me } });
-            tab = me.centerRegion.add({ title: 'Каталоги', itemId: 'catalogtab', layout: 'fit', items: [grid] });
-        }
-        tab.show();
+        !tab && (tab = me.centerRegion.add({ title: 'Каталоги', itemId: 'catalogtab', layout: 'fit', items: [Ext.widget('cataloglist')] }));
+        tab.show();        
     },
 
     showConns: function () {
         var me = this, tab = me.centerRegion.child('#conntab');
-        if (!tab) {
-            var grid = Ext.widget('connlist', { listeners: { additem: me.createConn, edititem: me.editConn, removeitem: me.deleteConn } });
-            tab = me.centerRegion.add({ title: 'Соединения', itemId: 'conntab', layout: 'fit', items: [grid] });
-        }
-        tab.show();
+        !tab && (tab = me.centerRegion.add({ title: 'Соединения', itemId: 'conntab', layout: 'fit', items: [Ext.widget('connlist')] }));
+        tab.show();        
     },
 
     showFuncs: function () {
         var me = this, tab = me.centerRegion.child('#functab');
-        if (!tab) {
-            var grid = Ext.widget('funclist', { listeners: { additem: me.createFunc, edititem: me.editFunc, removeitem: me.deleteFunc } });
-            tab = me.centerRegion.add({ title: 'Функции', itemId: 'functab', layout: 'fit', items: [grid] });
-        }
+        !tab && (tab = me.centerRegion.add({ title: 'Функции', itemId: 'functab', layout: 'fit', items: [Ext.widget('funclist')] }));        
+        tab.show();
+    },
+
+    showEventlog: function () {
+        var me = this, tab = me.centerRegion.child('#logtab');
+        !tab && (tab = me.centerRegion.add({ title: 'События', itemId: 'logtab', layout: 'fit', items: [Ext.widget('eventlog')] }));        
         tab.show();
     },
 
     showSetting: function () {
         var me = this, tab = me.centerRegion.child('#settab');
-        if (!tab) {
-            var view = Ext.widget('setedit');            
-            tab = me.centerRegion.add({ title: 'Настройки', itemId: 'settab', layout: 'fit', items: [view] });            
-        }
+        !tab && (tab = me.centerRegion.add({ title: 'Настройки', itemId: 'settab', layout: 'fit', items: [Ext.widget('setedit')] }));        
         tab.show();
     },
 
     showUsers: function () {
         var me = this, tab = me.centerRegion.child('#usertab');
-        if (!tab) {
-            var grid = Ext.widget('userlist', { listeners: { additem: me.createUser, edititem: me.editUser, removeitem: me.deleteUser } });            
-            tab = me.centerRegion.add({ title: 'Пользователи', itemId: 'usertab', layout: 'fit', items: [grid] });
-        }
+        !tab && (tab = me.centerRegion.add({ title: 'Пользователи', itemId: 'usertab', layout: 'fit', items: [Ext.widget('userlist')] }));        
         tab.show();
     },
 
@@ -753,14 +745,14 @@ Ext.define('QB.controller.Admin', {
                     return (b.get('auth') && b.get('conn'));
                 })
                 if (ix == -1) throw 'Выберите базу для авторизации!';
-            }
-            else {
-                if (usr.password.length > 0 && usr.password.length < 6) throw 'Минимальная длина пароля - 6 символов!';
-            }
+            }            
+
+            usr.isadmin = usr.isadmin || 0;
+            usr.isapproved = usr.isapproved || 0;
 
             usr.roles = [];
-            wnd.rolestore.each(function (r) {
-                r.get('available') && usr.roles.push(r.get('authority'));
+            wnd.rolesstore.each(function (r) {
+                r.get('active') && usr.roles.push(r.get('authority'));
             })
 
             usr.bases = [];
@@ -769,10 +761,9 @@ Ext.define('QB.controller.Admin', {
             })
 
             wnd.el.mask('Сохранение', 'x-mask-loading');
-
             Ext.Ajax.request({
                 url: '/admin/updateuser',
-                params: { json: Ext.encode(usr) },                
+                jsonData: usr,                
                 success: function (response) {
                     var obj = Ext.decode(response.responseText);
                     wnd.el.unmask();

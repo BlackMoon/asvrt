@@ -3,9 +3,11 @@
 * ************************************************************** */
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using PetaPoco;
 using System.Text.RegularExpressions;
+using System;
 
 namespace asv.Models
 {
@@ -258,10 +260,12 @@ namespace asv.Models
     public class Query : Base, IKey
     {   
         public int Id { get; set; }
-        public int Db2Mode { get; set; }                                // Режим DB2 для Cache
+        public int Db2Mode { get; set; }                                // Режим DB2 для Cache        
         public int UseLeftJoin { get; set; }                            // Использовать LEFT JOIN
-        public int UserDefined { get; set; }                            // Пользовательский
+        public int UserDefined { get; set; }                            // Пользовательский        
+
         public string Conn { get; set; }
+
         [Column("grp")]
         public string Group { get; set; }
         [Column("subgrp")]
@@ -391,4 +395,57 @@ namespace asv.Models
         public T1 Key { get; set; }        
         public T2 Value { get; set; }
     }
+
+    [TableName("qb_bases")]
+    public class Userdb
+    {
+        public int Auth { get; set; }
+        public string Conn { get; set; }
+    }
+
+    #region Пользователь
+    [TableName("qb_users")]
+    [PrimaryKey("id")]
+    public class Person : Key
+    {
+        public int IsAdmin { get; set; }
+        public int IsApproved { get; set; }
+        public int ServerLogin { get; set; }
+
+        [JsonConverter(typeof(asv.Helpers.TimeConverter))]
+        public DateTime DateCreate { get; set; }
+        public DateTime LastLoginDate { get; set; }
+
+        [Required]
+        public string Login { get; set; }
+        public string Password { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+        
+        [DefaultValue("")]
+        public string MiddleName { get; set; }
+
+        public string Comment { get; set; }
+
+        [DefaultValue("")]
+        public string Theme { get; set; }
+
+        [ResultColumn]
+        public List<Userdb> Bases { get; set; }
+
+        [ResultColumn]
+        public List<string> Roles { get; set; }
+    }
+    #endregion
+
+    #region Журнал
+    public class LogModel
+    {
+        public string Event { get; set; }
+    }
+    #endregion
 }

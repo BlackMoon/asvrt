@@ -1,4 +1,8 @@
-﻿.icon-add {
+﻿#footer {
+    color: #DD4B39;
+}
+
+.icon-add {
     background-image: url("/Content/ext-theme-classic/images/dd/drop-add.gif");
 }
 
@@ -40,6 +44,10 @@
 
 .icon-func {
     background-image: url("/Content/stockf.png");
+}
+
+.icon-journal {
+    background-image: url("/Content/journal16.png");
 }
 
 .icon-gears {
@@ -88,6 +96,10 @@
 
 .icon-users {
     background-image: url("/Content/users16.png");
+}
+
+.icon-txt {
+    background-image: url("/Content/bullet_txt.png") !important;
 }
 
 .icon-xls {

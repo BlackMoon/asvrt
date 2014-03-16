@@ -13,12 +13,12 @@ using PetaPoco;
 using asv.Security;
 
 namespace asv.Controllers
-{
-    [Authorize]
+{   
     public class ReportController : BaseController
     {
-        private const string REPORTSPATH = "Reports";        
-        
+        private const string REPORTSPATH = "Reports";
+
+        [GrantAttribute(Roles = "ERASER")]
         public JsonNetResult DeleteTpl(int id)
         {
             byte result = 1;
@@ -38,7 +38,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg };
             return jr;
         }
-       
+
+        [GrantAttribute(Roles = "EDITOR, READER")]
         public JsonNetResult Export(string name, eDriverType drv, string sql, string json, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
@@ -70,7 +71,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, link = path };
             return jr;
         }
-       
+        
+        [Authorize]
         public JsonNetResult GetReport(string name, eDriverType drv, string sql, string json, int repId, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
@@ -102,7 +104,8 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, link = path };
             return jr;
         }
-       
+
+        [GrantAttribute(Roles = "EDITOR, READER")]
         public JsonNetResult GetTpl(int id)
         {
             byte result = 1;
@@ -125,6 +128,7 @@ namespace asv.Controllers
             return jr;       
         }
       
+        [Authorize]
         public JsonNetResult GetTemplates(int page, int limit, string query)
         {
             byte result = 1;
@@ -134,9 +138,17 @@ namespace asv.Controllers
             long total = 0;
             try
             {
-                string sql = "SELECT t.id, t.name, t.fname, CEILING(t.sz / 1024.0) sz FROM qb_templates t WHERE t.usercreate = @0";
+                string sql = "SELECT t.id, t.name, t.fname, t.usercreate authorid, CEILING(t.sz / 1024.0) sz FROM qb_templates t",
+                       where = "";
+
+                if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
+                    where += " t.usercreate = @0";
+
                 if (!string.IsNullOrEmpty(query))
-                    sql += " AND (" + Misc.FilterField("t.name", query) + " OR " + Misc.FilterField("t.fname", query) + ")";
+                    where += " AND (" + Misc.FilterField1("t.name", query) + " OR " + Misc.FilterField1("t.fname", query) + ")";
+
+                if (where.Length > 0)
+                    sql += " WHERE " + where;
 
                 sql += " ORDER BY t.name";
 
@@ -156,6 +168,7 @@ namespace asv.Controllers
         }
       
         [HttpPost]
+        [GrantAttribute(Roles = "AUTHOR, EDITOR")]
         public ActionResult UpdateTpl(int? id, string name, HttpPostedFileBase file)
         {
             byte result = 1;

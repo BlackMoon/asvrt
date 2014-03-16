@@ -11,7 +11,7 @@ Ext.define('QB.view.template.Edit', {
     extend: 'QB.common.Updwnd',
     requires: ['QB.common.Updwnd'],
     alias: 'widget.templateedit',
-
+    readOnly: false,
     title: 'Шаблон',
     height: 160,
     width: 480,
@@ -19,7 +19,7 @@ Ext.define('QB.view.template.Edit', {
     initComponent: function () {
         var me = this;
 
-        me.ffield = Ext.widget('filefield', { name: 'file', fieldLabel: 'Файл', labelWidth: 150, margin: '5', allowBlank: false, vtype: 'xlsfile' });
+        me.ffield = Ext.widget('filefield', { name: 'file', fieldLabel: 'Файл', labelWidth: 150, margin: '5', allowBlank: false, disabled: me.readOnly, vtype: 'xlsfile' });
         me.form = Ext.widget('form',
         {
             defaults: { anchor: '100%' },
@@ -34,7 +34,8 @@ Ext.define('QB.view.template.Edit', {
                 fieldLabel: 'Наименование',
                 labelWidth: 150,
                 margin: '5',
-                allowBlank: false
+                allowBlank: false,
+                readOnly: me.readOnly
             }, me.ffield ]
         });
 

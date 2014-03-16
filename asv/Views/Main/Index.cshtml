@@ -1,10 +1,14 @@
-﻿@{
+﻿@using asv.Security;
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Конструктор запросов";    
 }
-@section scripts{
-    <script type="text/javascript">
-        var connTimeout = @ViewBag.ConnTimeout, 
-            itemsPerPage = @ViewBag.ItemsPerPage;             
-    </script>
+
+@section scripts{    
+    var connTimeout = @ViewBag.ConnTimeout, 
+        itemsPerPage = @ViewBag.ItemsPerPage,
+        minRequiredPasswordLength = @ViewData["minRequiredPasswordLength"],
+        minRequiredUsernameLength = @ViewData["minRequiredUsernameLength"];
+
+    Ext.define('Auser', @ViewBag.Auser );
 }
