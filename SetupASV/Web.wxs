@@ -13,9 +13,9 @@
       </Component>
 
       <Component Id="WebSite" Guid="751DEB01-ECC1-48ff-869A-65BCEE9E0528" KeyPath="yes">        
-        <iis:WebSite Id="Site" Description="$(var.ProductName)" Directory="INSTALLLOCATION" >
-          <iis:WebAddress Id="AllUnassigned" Port="81" />
-          <iis:WebApplication Id="WebApp" Name="$(var.ProductName)" WebAppPool="Pool"/>          
+        <iis:WebSite Id="Site" Description="INSTALLSITE" Directory="INSTALLLOCATION" >
+          <iis:WebAddress Id="AllUnassigned" Port="INSTALLPORT" />
+          <iis:WebApplication Id="WebApp" Name="INSTALLSITE" WebAppPool="Pool"/>          
           <iis:WebDirProperties Id="DirProp" AnonymousAccess="yes" WindowsAuthentication="no" BasicAuthentication="no"/>
         </iis:WebSite>      
       </Component>
