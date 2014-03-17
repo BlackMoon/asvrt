@@ -7,11 +7,14 @@ using asv.Security;
 using asv.Models;
 using asv.Helpers;
 using asv.Managers;
+using log4net;
 
 namespace asv.Controllers
 {
     public class AccountController : Controller
     {
+        private static readonly ILog log = MvcApplication.log; 
+
         public JsonNetResult LogOn()
         {
             object msg = TempData["AttrMessage"];
@@ -56,12 +59,11 @@ namespace asv.Controllers
                             roles = mp.Roles.ToArray();
 
                         result = 1;
-
-                        LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
+                        
+                        log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");                        
                     }
                     else
                         msg = "Неверные логин или пароль!";
-
                 }
                 catch (Exception e)
                 {
@@ -84,7 +86,8 @@ namespace asv.Controllers
 
             string key = User.Identity.Name;
             HttpContext.Cache.Remove(key);
-            LogManager.WriteLine("Пользователь " + key + ". Выход.");
+            
+            log.Info("Пользователь " + key + ". Выход.");
 
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = 1 };

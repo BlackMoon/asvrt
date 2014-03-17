@@ -9,13 +9,15 @@ using asv.Helpers;
 using asv.Managers;
 using asv.Models;
 using asv.Security;
+using log4net;
 using Newtonsoft.Json;
 
 namespace asv.Controllers
 {    
     public class MainController : BaseController
     {
-        private DataManager dm = new DataManager();
+        private static readonly ILog log = MvcApplication.log; 
+        private DataManager dm = new DataManager();        
 
         protected override void Initialize(RequestContext requestContext)
         {            
@@ -100,7 +102,7 @@ namespace asv.Controllers
         /// <returns>JSON</returns>
         //[OutputCache(Duration = 120, VaryByParam = "name;drv;sql;args;page;limit")]
         [Authorize]
-        public JsonNetResult Execute(string name, eDriverType drv, string sql, object [] args, int page, int limit)
+        public JsonNetResult Execute(string name, eDriverType drv, string sql, int? id, string qname, object [] args, int page, int limit)
         {
             byte result = 1;
             string msg = null;
@@ -109,6 +111,12 @@ namespace asv.Controllers
             List<dynamic> rows = new List<dynamic>();
             try
             {
+                string query = " (" + qname + ")";
+                if (id != null)
+                    query = " №" + id + query;
+
+                log.Info("Пользователь " + User.Identity.Name + ". Выполнение запроса -" + query);
+
                 rows = dm.GetQData(name, drv, sql, args, page, page, limit).ToList();
                 total = dm.TotalItems;
             }
