@@ -115,7 +115,7 @@ namespace asv.Controllers
                 if (id != null)
                     query = " №" + id + query;
 
-                log.Info("Пользователь " + User.Identity.Name + ". Выполнение запроса -" + query);
+                log.Info("Пользователь " + User.Identity.Name + ". Выполнение запроса -" + query + ".");
 
                 rows = dm.GetQData(name, drv, sql, args, page, page, limit).ToList();
                 total = dm.TotalItems;

@@ -56,7 +56,7 @@ namespace asv.Controllers
                 if (id != null)
                     query = " №" + id + query;
 
-                log.Info("Пользователь " + User.Identity.Name + ". Экспорт запроса -" + query);
+                log.Info("Пользователь " + User.Identity.Name + ". Экспорт запроса -" + query + ".");
 
                 ReportManager rm = new ReportManager(System.Web.HttpContext.Current.Server.MapPath(@"\" + REPORTSPATH));
                 rm.userParams = pars;
@@ -95,7 +95,7 @@ namespace asv.Controllers
                 if (id != null)
                     query = " №" + id + query;
 
-                log.Info("Пользователь " + User.Identity.Name + ". Экспорт запроса -" + query);
+                log.Info("Пользователь " + User.Identity.Name + ". Экспорт запроса -" + query + ".");
 
                 ReportManager rm = new ReportManager(System.Web.HttpContext.Current.Server.MapPath(@"\" + REPORTSPATH));
                 rm.userParams = pars;
