@@ -16,7 +16,7 @@ using System.IO;
 
 namespace asv.Controllers
 {
-    //[AdminAuthorize]
+    [AdminAuthorize]
     public class AdminController : BaseController
     {   
         private const string _logfile = "user.log";
