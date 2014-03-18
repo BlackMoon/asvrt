@@ -69,11 +69,13 @@ namespace asv.Security
 
         public override string[] GetRolesForUser(string username)
         {
-            string [] roles = new string[]{};
+            string [] roles = new string[]{ };
 
             MembershipPerson user = (MembershipPerson)HttpContext.Current.Cache[username];
-            if (user != null && user.Roles != null)
-                roles = user.Roles.ToArray();
+            if (user != null) {
+                if (user.Roles != null)
+                    roles = user.Roles.ToArray();
+            }
             else
             {
                 using (var db = ConnectToDatabase())
