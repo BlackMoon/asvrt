@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <UI Id="WixUI_SkipLicenseAgreement">
+      <UIRef Id="WixUI_InstallDir" />
+      <DialogRef Id="InstallIIsDlg" />
+      
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="InstallIIsDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+
+      <Publish Dialog="InstallIIsDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+      <Publish Dialog="InstallIIsDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallIIsDlg" Order="1">NOT Installed</Publish>
+      
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2">NOT Installed</Publish>
+    </UI>
+	</Fragment>
+</Wix>
