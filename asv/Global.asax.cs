@@ -31,6 +31,11 @@ namespace asv
             );
         }
 
+        public static void RemoveCallback(string key, object value, CacheItemRemovedReason removedReason)
+        {
+            log.Info("Пользователь " + key + ". Выход.");
+        }
+
         protected void Application_AuthenticateRequest(Object sender, EventArgs e)
         {
             HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
@@ -54,7 +59,8 @@ namespace asv
                                 mp = (MembershipPerson)Membership.GetUser(login);
                                 if (mp.IsApproved)
                                 {
-                                    HttpContext.Current.Cache.Add(login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                                    HttpContext.Current.Cache.Add(login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, 
+                                        new CacheItemRemovedCallback(RemoveCallback));
                                     FormsAuthentication.SetAuthCookie(login + ":" + passwd, ticket.IsPersistent);
 
                                     log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");

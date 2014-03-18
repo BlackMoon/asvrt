@@ -46,7 +46,8 @@ namespace asv.Controllers
                     {
                         MembershipPerson mp = (MembershipPerson)Membership.GetUser(model.Login);
 
-                        HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                        HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, 
+                            new CacheItemRemovedCallback(MvcApplication.RemoveCallback));
                         FormsAuthentication.SetAuthCookie(model.Login + ":" + model.Password, model.RememberMe);
 
                         id = (int)mp.ProviderUserKey;
