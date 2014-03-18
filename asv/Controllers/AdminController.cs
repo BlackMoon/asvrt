@@ -689,7 +689,9 @@ namespace asv.Controllers
                         Membership.Provider.CreateUserAndAccount(p);
 
                     n++;
-                    System.Diagnostics.Debug.WriteLine(n);                    
+                    System.Diagnostics.Debug.WriteLine(n);
+
+                    break;
                 }
                 msg = n.ToString();
 

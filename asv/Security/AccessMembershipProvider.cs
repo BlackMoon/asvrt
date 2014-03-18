@@ -313,11 +313,11 @@ namespace asv.Security
                 if (args.UserName.Length < _minRequiredUsernameLength)
                     throw new ArgumentException("Слишком короткий логин! Минимальная длина логина - " + _minRequiredUsernameLength + " символов.");
 
-                Regex rx = new Regex(@"^\w+$");
+                Regex rx = new Regex(@"^\w|-+$");
                 if (!rx.IsMatch(args.UserName))
-                    throw new ArgumentException("Логин. Можно использовать только буквы латинского алфавита (a–z), цифры и знак подчеркивания(\'_\').");
+                    throw new ArgumentException("Логин. Можно использовать только буквы латинского алфавита (a–z), цифры, тире и знак подчеркивания(\'_\').");
 
-                if (args.UserName[0] == '_')
+                if (args.UserName[0] == '_' || args.UserName[0] == '-')
                     throw new ArgumentException("Логин. Первый символ должен быть латинской буквой (a–z) или цифрой.");
             }
             catch (ArgumentException e)

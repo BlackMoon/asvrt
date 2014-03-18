@@ -68,7 +68,7 @@ namespace asv.Models
             Debug.WriteLine(_database.LastSQL);
 
             // user bases
-            if (person.Bases != null)
+            if (person.Bases != null && person.Bases.Count > 0)
             {
                 int ix = 0;
                 List<string> keys = new List<string>();
@@ -157,7 +157,7 @@ namespace asv.Models
             Debug.WriteLine(_database.LastSQL);
 
             // user bases
-            if (person.Bases != null)
+            if (person.Bases != null && person.Bases.Count > 0)
             {
                 int ix = 0;
                 List<string> keys = new List<string>();
