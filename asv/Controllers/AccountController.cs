@@ -87,8 +87,6 @@ namespace asv.Controllers
 
             string key = User.Identity.Name;
             HttpContext.Cache.Remove(key);
-            
-            log.Info("Пользователь " + key + ". Выход.");
 
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = 1 };
