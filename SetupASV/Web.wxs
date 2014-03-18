@@ -2,20 +2,18 @@
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension">
-
-  <?include Var.wxi?>
-
-  <Fragment>    
-    <DirectoryRef Id="INSTALLLOCATION">
+  
+  <Fragment>  
+    <DirectoryRef Id="INSTALLLOCATION">    
       
       <Component Id="AppPool" Guid="" KeyPath="yes">
-        <iis:WebAppPool Id="Pool" Name="$(var.ProductName)" ManagedRuntimeVersion="v4.0" ManagedPipelineMode="integrated" />
+        <iis:WebAppPool Id="Pool" Name="[INSTALLSITE]" ManagedRuntimeVersion="v4.0" ManagedPipelineMode="integrated" />
       </Component>
 
       <Component Id="WebSite" Guid="751DEB01-ECC1-48ff-869A-65BCEE9E0528" KeyPath="yes">        
-        <iis:WebSite Id="Site" Description="INSTALLSITE" Directory="INSTALLLOCATION" >
-          <iis:WebAddress Id="AllUnassigned" Port="INSTALLPORT" />
-          <iis:WebApplication Id="WebApp" Name="INSTALLSITE" WebAppPool="Pool"/>          
+        <iis:WebSite Id="Site" Description="[INSTALLSITE]" Directory="INSTALLLOCATION" >
+          <iis:WebAddress Id="AllUnassigned" Port="[INSTALLPORT]" />
+          <iis:WebApplication Id="WebApp" Name="[INSTALLSITE]" WebAppPool="Pool"/>          
           <iis:WebDirProperties Id="DirProp" AnonymousAccess="yes" WindowsAuthentication="no" BasicAuthentication="no"/>
         </iis:WebSite>      
       </Component>
