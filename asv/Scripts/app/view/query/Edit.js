@@ -298,7 +298,7 @@
                 iconCls: 'icon-field',
                 tooltip: 'Сформировать параметры',
                 hidden: true, 
-                action: 'pgenerate',                
+                action: 'pgenerate'               
             }),
             '-',
             {
