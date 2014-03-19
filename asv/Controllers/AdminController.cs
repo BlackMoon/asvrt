@@ -422,7 +422,12 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, data = funcs, total = total };
             return jr;
         }
-        
+
+        public FileResult GetRoles()
+        {
+            return File(Server.MapPath(@"~\roles.xml"), "text/xml");
+        }
+
         public JsonNetResult GetLogs(int page, int limit)
         {
             byte result = 1;

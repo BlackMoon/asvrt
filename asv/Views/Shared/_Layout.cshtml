@@ -52,8 +52,7 @@
                 return -1;
             };
         }
-
-        Ext.Ajax.defaultHeaders = { accept: 'application/xmljson' };
+        
         Ext.Ajax.on({
             requestexception: function (conn, response, options) {                
                 var obj = Ext.decode(response.responseText);
