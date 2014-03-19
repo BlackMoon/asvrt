@@ -46,7 +46,7 @@ namespace asv.Controllers
                     {
                         MembershipPerson mp = (MembershipPerson)Membership.GetUser(model.Login);
 
-                        HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, 
+                        HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal,
                             new CacheItemRemovedCallback(MvcApplication.RemoveCallback));
                         FormsAuthentication.SetAuthCookie(model.Login + ":" + model.Password, model.RememberMe);
 
@@ -55,20 +55,20 @@ namespace asv.Controllers
                         serverLogin = mp.ServerLogin;
                         fio = mp.Fio;
                         schema = mp.Schema;
-                        
+
                         if (mp.Roles != null)
                             roles = mp.Roles.ToArray();
 
                         result = 1;
-                        
-                        log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");                        
+
+                        log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
                     }
                     else
                         msg = "Неверные логин или пароль!";
-                }
+                }               
                 catch (Exception e)
                 {
-                    msg = e.Message;  
+                    msg = e.Message;
                 }                
             }
             else
