@@ -7,11 +7,14 @@ using asv.Security;
 using System.Web.Caching;
 using System.IO;
 using asv.Managers;
+using log4net;
 
 namespace asv
 {   
     public class MvcApplication : System.Web.HttpApplication
     {
+        public static readonly ILog log = LogManager.GetLogger(typeof(MvcApplication)); 
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -26,6 +29,11 @@ namespace asv
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Main", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
+        }
+
+        public static void RemoveCallback(string key, object value, CacheItemRemovedReason removedReason)
+        {
+            log.Info("Пользователь " + key + ". Выход.");
         }
 
         protected void Application_AuthenticateRequest(Object sender, EventArgs e)
@@ -51,10 +59,11 @@ namespace asv
                                 mp = (MembershipPerson)Membership.GetUser(login);
                                 if (mp.IsApproved)
                                 {
-                                    HttpContext.Current.Cache.Add(login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                                    HttpContext.Current.Cache.Add(login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, 
+                                        new CacheItemRemovedCallback(RemoveCallback));
                                     FormsAuthentication.SetAuthCookie(login + ":" + passwd, ticket.IsPersistent);
 
-                                    LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
+                                    log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
                                 }
                                 else
                                     FormsAuthentication.SignOut();
@@ -108,6 +117,8 @@ namespace asv
 
         protected void Application_Start()
         {
+            log4net.Config.XmlConfigurator.Configure();
+            
             string repPath = Server.MapPath(@"\Reports");
             Directory.CreateDirectory(repPath);
             

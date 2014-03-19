@@ -7,11 +7,14 @@ using asv.Security;
 using asv.Models;
 using asv.Helpers;
 using asv.Managers;
+using log4net;
 
 namespace asv.Controllers
 {
     public class AccountController : Controller
     {
+        private static readonly ILog log = MvcApplication.log; 
+
         public JsonNetResult LogOn()
         {
             object msg = TempData["AttrMessage"];
@@ -43,7 +46,8 @@ namespace asv.Controllers
                     {
                         MembershipPerson mp = (MembershipPerson)Membership.GetUser(model.Login);
 
-                        HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                        HttpContext.Cache.Add(model.Login, mp, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal,
+                            new CacheItemRemovedCallback(MvcApplication.RemoveCallback));
                         FormsAuthentication.SetAuthCookie(model.Login + ":" + model.Password, model.RememberMe);
 
                         id = (int)mp.ProviderUserKey;
@@ -51,21 +55,20 @@ namespace asv.Controllers
                         serverLogin = mp.ServerLogin;
                         fio = mp.Fio;
                         schema = mp.Schema;
-                        
+
                         if (mp.Roles != null)
                             roles = mp.Roles.ToArray();
 
                         result = 1;
 
-                        LogManager.WriteLine("Пользователь " + mp.Login + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
+                        log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
                     }
                     else
                         msg = "Неверные логин или пароль!";
-
-                }
+                }               
                 catch (Exception e)
                 {
-                    msg = e.Message;  
+                    msg = e.Message;
                 }                
             }
             else
@@ -84,7 +87,6 @@ namespace asv.Controllers
 
             string key = User.Identity.Name;
             HttpContext.Cache.Remove(key);
-            LogManager.WriteLine("Пользователь " + key + ". Выход.");
 
             JsonNetResult jr = new JsonNetResult();
             jr.Data = new { success = 1 };

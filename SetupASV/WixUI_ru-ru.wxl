@@ -101,7 +101,13 @@
   <String Id="InstallDirDlgDescription" Overridable="yes">Нажмите 'Далее' чтобы установить в папку по умолчанию либо нажмите 'Обзор' чтобы выбрать другую папку.</String>
   <String Id="InstallDirDlgBannerBitmap" Overridable="yes">WixUI_Bmp_Banner</String>
   <String Id="InstallDirDlgFolderLabel" Overridable="yes">Установить [ProductName] в:</String>
-
+  
+  <String Id="InstallIIsDlgTitle" Overridable="yes">{\WixUI_Font_Title}Добавление сайта</String>
+  <String Id="InstallIIsDlgDescription" Overridable="yes">Нажмите 'Далее' чтобы установить привязки по умолчанию.</String>
+  <String Id="InstallIIsDlgBannerBitmap" Overridable="yes">WixUI_Bmp_Banner</String>
+  <String Id="InstallIIsDlgSiteLabel" Overridable="yes">Имя сайта:</String>
+  <String Id="InstallIIsDlgPortLabel" Overridable="yes">Порт:</String>
+  
     <String Id="InstallScopeDlg_Title" Overridable="yes">Программа установки [ProductName]</String>
     <String Id="InstallScopeDlgBannerBitmap" Overridable="yes">WixUI_Bmp_Banner</String>
     <String Id="InstallScopeDlgDescription" Overridable="yes">Выберите тип установки и папку установки</String>

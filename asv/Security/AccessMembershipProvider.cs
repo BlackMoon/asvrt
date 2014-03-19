@@ -15,12 +15,14 @@ namespace asv.Security
 {
     public class AccessMembershipProvider : MembershipProvider
     {
+        private static readonly log4net.ILog log = MvcApplication.log; 
+
         private int         _maxInvalidPasswordAttempts;
         private int         _minRequiredPasswordLength;
         private int         _minRequiredUsernameLength;
         private int         _passwordAnswerAttemptLockoutDuration;
         private int         _saltLength;
-
+        
         private string      _connectionStringName;        
 
         internal virtual PetaPoco.Database ConnectToDatabase()
@@ -232,10 +234,10 @@ namespace asv.Security
         public override bool ValidateUser(string username, string password)
         {
             if (string.IsNullOrEmpty(username))
-                throw new Exception("Требуется поле Логин.");
+                throw new ArgumentException("Требуется поле Логин.");
 
             if (string.IsNullOrEmpty(password))
-                throw new Exception("Требуется поле Пароль.");
+                throw new ArgumentException("Требуется поле Пароль.");
 
             using (var db = ConnectToDatabase())
             {
@@ -293,8 +295,11 @@ namespace asv.Security
                         // кол-во попыток больше --> блокировка
                         if (failures > _maxInvalidPasswordAttempts)
                         {
-                            db.Execute(@"UPDATE qb_users SET comment = 'Превышено максимальное количество попыток ввода недопустимого пароля' WHERE id = @0", q.id);
+                            string comment = "Превышено максимальное количество попыток ввода недопустимого пароля";
+                            db.Execute(@"UPDATE qb_users SET comment = @1 WHERE id = @0", q.id, comment);
                             locked = 1;
+
+                            log.Info("Пользователь " + username + " заблокирован. " + comment);
                         }
                     }
                     db.Execute("UPDATE membership SET failedpasswordattemptcount = @1, islockedout = @2, lastlogindate = datetime('now', 'localtime') WHERE userid = @0", q.id, failures, locked);
@@ -313,11 +318,11 @@ namespace asv.Security
                 if (args.UserName.Length < _minRequiredUsernameLength)
                     throw new ArgumentException("Слишком короткий логин! Минимальная длина логина - " + _minRequiredUsernameLength + " символов.");
 
-                Regex rx = new Regex(@"^\w+$");
+                Regex rx = new Regex(@"^\w|-+$");
                 if (!rx.IsMatch(args.UserName))
-                    throw new ArgumentException("Логин. Можно использовать только буквы латинского алфавита (a–z), цифры и знак подчеркивания(\'_\').");
+                    throw new ArgumentException("Логин. Можно использовать только буквы латинского алфавита (a–z), цифры, тире и знак подчеркивания(\'_\').");
 
-                if (args.UserName[0] == '_')
+                if (args.UserName[0] == '_' || args.UserName[0] == '-')
                     throw new ArgumentException("Логин. Первый символ должен быть латинской буквой (a–z) или цифрой.");
             }
             catch (ArgumentException e)

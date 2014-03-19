@@ -2,9 +2,9 @@
 
 Ext.apply(Ext.form.field.VTypes, {
     login: function (v) {
-        return /^\w+$/.test(v);
+        return /^\w|-+$/.test(v);
     },
-    loginText: 'Можно использовать только буквы латинского алфавита (a–z), цифры и знак подчеркивания(\'_\').'
+    loginText: 'Можно использовать только буквы латинского алфавита (a–z), цифры, тире и знак подчеркивания(\'_\').'
 });
 
 Ext.apply(Ext.form.field.VTypes, {
@@ -31,7 +31,7 @@ Ext.define('QB.view.user.Edit', {
             conncombo = Ext.widget('combo', { editable: false, store: 'Conns', displayField: 'name', valueField: 'name', submitValue: false }),
             login = Ext.widget('textfield', { name: 'login', fieldLabel: 'Логин', anchor: '100%', minLength: minRequiredUsernameLength, vtype: 'login', labelWidth: 140, allowBlank: false,
                 validator: function (v) {
-                    return (v[0] !== '_') || 'Первый символ должен быть латинской буквой (a–z) или цифрой.';
+                    return (v[0] !== '_' && v[0] !== '-') || 'Первый символ должен быть латинской буквой (a–z) или цифрой.';
                 }
             }),
             themestore = Ext.create('Ext.data.Store', { fields: ['text'], data: themes });

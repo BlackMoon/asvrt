@@ -11,8 +11,7 @@ namespace asv.Security
     {   
         public int IsAdmin { get; set; }       
         public int ServerLogin { get; set; }
-
-        public string Login { get; set; }  
+        
         public string Lastname { get; set; }        
         public string Firstname { get; set; }        
         public string Middlename { get; set; }

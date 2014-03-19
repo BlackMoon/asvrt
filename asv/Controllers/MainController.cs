@@ -9,13 +9,15 @@ using asv.Helpers;
 using asv.Managers;
 using asv.Models;
 using asv.Security;
+using log4net;
 using Newtonsoft.Json;
 
 namespace asv.Controllers
 {    
     public class MainController : BaseController
     {
-        private DataManager dm = new DataManager();
+        private static readonly ILog log = MvcApplication.log; 
+        private DataManager dm = new DataManager();        
 
         protected override void Initialize(RequestContext requestContext)
         {            
@@ -100,7 +102,7 @@ namespace asv.Controllers
         /// <returns>JSON</returns>
         //[OutputCache(Duration = 120, VaryByParam = "name;drv;sql;args;page;limit")]
         [Authorize]
-        public JsonNetResult Execute(string name, eDriverType drv, string sql, object [] args, int page, int limit)
+        public JsonNetResult Execute(string name, eDriverType drv, string sql, int? id, string qname, object [] args, int page, int limit)
         {
             byte result = 1;
             string msg = null;
@@ -109,6 +111,12 @@ namespace asv.Controllers
             List<dynamic> rows = new List<dynamic>();
             try
             {
+                string query = " (" + qname + ")";
+                if (id != null)
+                    query = " №" + id + query;
+
+                log.Info("Пользователь " + User.Identity.Name + ". Выполнение запроса -" + query + ".");
+
                 rows = dm.GetQData(name, drv, sql, args, page, page, limit).ToList();
                 total = dm.TotalItems;
             }
@@ -423,6 +431,8 @@ namespace asv.Controllers
             int? id = null;
             try
             {
+                string query = " (" + q.Name + ")";
+
                 if (q.Id != 0)
                 {
                     db.Execute(@"UPDATE qb_queries SET name = @1, grp = @2, subgrp = @3, sql = @4, db2mode = @5, useleftjoin = @6, userdefined = @7 WHERE id = @0;
@@ -430,7 +440,8 @@ namespace asv.Controllers
                                 DELETE FROM qb_tables WHERE queryid = @0;DELETE FROM qb_ufunctions WHERE queryid = @0;DELETE FROM qb_uparams WHERE queryid = @0;",
                         q.Id, q.Name, q.Group, q.Subgroup, q.Sql, q.Db2Mode, q.UseLeftJoin, q.UserDefined);
                     
-                    Response.RemoveOutputCacheItem("/Main/GetQuery");    
+                    Response.RemoveOutputCacheItem("/Main/GetQuery");
+                    query = " №" + q.Id + query;
                 }
                 else
                     id = q.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6);\nSELECT last_insert_rowid();",
@@ -476,7 +487,8 @@ namespace asv.Controllers
                     db.Execute("INSERT INTO qb_uparams(queryid, field, ft, descr, def) VALUES(@0, @1, @2, @3, @4)", q.Id, u.Field, u.Ft, u.Descr, u.Def);
                 }                
 
-                Response.RemoveOutputCacheItem("/Main/GetQueries");    
+                Response.RemoveOutputCacheItem("/Main/GetQueries");                
+                log.Info("Пользователь " + User.Identity.Name + ". Сохранение запроса -" + query + ".");
             }
             catch (Exception e)
             {

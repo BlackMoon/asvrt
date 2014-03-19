@@ -11,12 +11,14 @@ using asv.Managers;
 using asv.Models;
 using PetaPoco;
 using asv.Security;
+using log4net;
 
 namespace asv.Controllers
 {   
     public class ReportController : BaseController
     {
         private const string REPORTSPATH = "Reports";
+        private static readonly ILog log = MvcApplication.log; 
 
         [GrantAttribute(Roles = "ERASER")]
         public JsonNetResult DeleteTpl(int id)
@@ -40,7 +42,7 @@ namespace asv.Controllers
         }
 
         [GrantAttribute(Roles = "EDITOR, READER")]
-        public JsonNetResult Export(string name, eDriverType drv, string sql, string json, string qname, string group, string subgroup, int userdefined)
+        public JsonNetResult Export(string name, eDriverType drv, string sql, string json, int? id, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
             string msg = null;
@@ -50,6 +52,12 @@ namespace asv.Controllers
             string path = null;
             try
             {
+                string query = " (" + qname + ")";
+                if (id != null)
+                    query = " №" + id + query;
+
+                log.Info("Пользователь " + User.Identity.Name + ". Экспорт запроса -" + query + ".");
+
                 ReportManager rm = new ReportManager(System.Web.HttpContext.Current.Server.MapPath(@"\" + REPORTSPATH));
                 rm.userParams = pars;
 
@@ -73,7 +81,7 @@ namespace asv.Controllers
         }
         
         [Authorize]
-        public JsonNetResult GetReport(string name, eDriverType drv, string sql, string json, int repId, string qname, string group, string subgroup, int userdefined)
+        public JsonNetResult GetReport(string name, eDriverType drv, string sql, string json, int repId, int? id, string qname, string group, string subgroup, int userdefined)
         {
             byte result = 1;
             string msg = null;
@@ -83,6 +91,12 @@ namespace asv.Controllers
             string path = null;
             try
             {
+                string query = " (" + qname + ")";
+                if (id != null)
+                    query = " №" + id + query;
+
+                log.Info("Пользователь " + User.Identity.Name + ". Экспорт запроса -" + query + ".");
+
                 ReportManager rm = new ReportManager(System.Web.HttpContext.Current.Server.MapPath(@"\" + REPORTSPATH));
                 rm.userParams = pars;
 

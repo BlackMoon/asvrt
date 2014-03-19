@@ -21,22 +21,19 @@
         </Directory>
       </Directory>
     </Directory>
-
+    
     <Feature Id="ProductFeature" Title="SetupASV" Level="1" >
       <ComponentGroupRef Id="ProductComponent" />
       <ComponentGroupRef Id="IssConfiguration" />
       <ComponentRef Id="SharedFolder" />      
     </Feature>
 
-    <UI Id="WixUI_SkipLicenseAgreement">
-      <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_SkipLicenseAgreement"/>
 
-      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">1</Publish>
-      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2">NOT Installed</Publish>
+    <Property Id="INSTALLPORT">81</Property>
+    <Property Id="INSTALLSITE">$(var.ProductName)</Property>
 
-      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
-    </UI>
-
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />    
     <PropertyRef Id="NETFRAMEWORK40FULL"/>
 
   </Product>

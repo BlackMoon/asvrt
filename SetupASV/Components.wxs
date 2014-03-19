@@ -5,6 +5,9 @@
             <Component Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" Guid="*">
                 <File Id="fil00A150C9AD477E1EE4E8CA4503876DA9" KeyPath="yes" Source="$(var.HarvestDir)\Global.asax" />
             </Component>
+            <Component Id="cmpFED9CE4C040C6D017106CB6B92C2F157" Guid="*">
+                <File Id="fil43F031812C2D8647225696DDDF358FCA" KeyPath="yes" Source="$(var.HarvestDir)\packages.config" />
+            </Component>
             <Component Id="cmpDEFB34D73AFBF2C0C55A6186FA567DAE" Guid="*">
                 <File Id="fil87CF725B62ECDC0307F46C9965287D37" KeyPath="yes" Source="$(var.HarvestDir)\roles.xml" />
             </Component>
@@ -22,6 +25,9 @@
                 </Component>
                 <Component Id="cmp150D0EE6B382C821646AB1815CD434A2" Guid="*">
                     <File Id="fil02E47F47AB33F6D95A239EE10F8591DE" KeyPath="yes" Source="$(var.HarvestDir)\bin\ICSharpCode.SharpZipLib.dll" />
+                </Component>
+                <Component Id="cmp7ED9CFC61ABC0D566DFD3D9CA944E4DD" Guid="*">
+                    <File Id="filF31499F83007DA32C8811C678D7A8869" KeyPath="yes" Source="$(var.HarvestDir)\bin\log4net.dll" />
                 </Component>
                 <Component Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" Guid="*">
                     <File Id="fil4A13ABF803EECCA5885EFAE4997322B4" KeyPath="yes" Source="$(var.HarvestDir)\bin\Microsoft.Web.Infrastructure.dll" />
@@ -109,6 +115,9 @@
                 <Component Id="cmp1A12DCBEABF18DEEA911176E18152C56" Guid="*">
                     <File Id="fil1641CD079A5A2ABA90956A36C2791643" KeyPath="yes" Source="$(var.HarvestDir)\Content\alphabet16.png" />
                 </Component>
+                <Component Id="cmpFBA7A2C56471B8C3973F30D9944DFCEF" Guid="*">
+                    <File Id="fil090F8F07658FF82EF3FF1D33086E4D4E" KeyPath="yes" Source="$(var.HarvestDir)\Content\bullet_txt.png" />
+                </Component>
                 <Component Id="cmpC081F5D7D978C397C0C665129C299DEC" Guid="*">
                     <File Id="fil62865C7DF84C356C98694EA701EFE98C" KeyPath="yes" Source="$(var.HarvestDir)\Content\bullet_xls.png" />
                 </Component>
@@ -147,6 +156,9 @@
                 </Component>
                 <Component Id="cmpB8BF919EA421E2AE91F92A66BC0F0D69" Guid="*">
                     <File Id="filEBF0396C20AB1150394F131DCF1172E8" KeyPath="yes" Source="$(var.HarvestDir)\Content\ikey16.png" />
+                </Component>
+                <Component Id="cmpE988C72C8264DDBBF483E19436854EC8" Guid="*">
+                    <File Id="fil23A050E20095D9CC95706ECE173F4B19" KeyPath="yes" Source="$(var.HarvestDir)\Content\journal16.png" />
                 </Component>
                 <Component Id="cmpF2134BDB0FD99576334B68C0EE96BB4A" Guid="*">
                     <File Id="filBE4C80CA185CCC204F44ED731DFEB59F" KeyPath="yes" Source="$(var.HarvestDir)\Content\key16.png" />
@@ -7321,6 +7333,9 @@
                 <Component Id="cmpF474B71DB720A476BCE826ABF27C6F81" Guid="*">
                     <File Id="fil43AC71D911AAD59AF6D78C5DB2F9C0FE" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\ext-lang-ru.js" />
                 </Component>
+                <Component Id="cmpAA5CD97B88F178A602C20B72624A58FB" Guid="*">
+                    <File Id="fil7AEB7C914C7A0B2A1462364875046205" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\_references.js" />
+                </Component>
                 <Directory Id="dir567B203E3213D40DF7409DB44E8EF95C" Name="app">
                     <Component Id="cmpE4DE87ACF19435F92177292C87E5A7DC" Guid="*">
                         <File Id="fil1EAB5168DCF1AF662D807332848728FF" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\SQLQuery.js" />
@@ -7334,6 +7349,9 @@
                         </Component>
                         <Component Id="cmpF497813EC874A1BE5F7DFD7DA95FE9F4" Guid="*">
                             <File Id="fil26DA507C1AB33444C1C8AD6026A27FB5" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\common\Bartree.js" />
+                        </Component>
+                        <Component Id="cmp33FAD63AEEE8CE43145BCCBCCDED418F" Guid="*">
+                            <File Id="filE6DFE86E9AD0492B4C3F867CC65735AD" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\common\Generalset.js" />
                         </Component>
                         <Component Id="cmpEFC6A3858EA585D40E74277E36772603" Guid="*">
                             <File Id="fil10969CCF7AF161D09F61840B2EC3F5C0" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\common\Imagecolumn.js" />
@@ -7446,6 +7464,9 @@
                         <Component Id="cmp44EEC2CAE497A6FD9A100A42AE2F9A52" Guid="*">
                             <File Id="filF2396251E106476144F7AA7422E16883" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\store\Funcs.js" />
                         </Component>
+                        <Component Id="cmpF4AED65B16F366030C590336CE8A7A6A" Guid="*">
+                            <File Id="fil9BE405088A6AF3E80FF1E7D8B61A82D4" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\store\Logs.js" />
+                        </Component>
                         <Component Id="cmp95A7B740CF39594E78B8CDE2D257DB8E" Guid="*">
                             <File Id="fil1B38459F68A1306F9615219F13FC0415" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\store\Lstore.js" />
                         </Component>
@@ -7478,6 +7499,9 @@
                         </Component>
                     </Directory>
                     <Directory Id="dir2987128EF7B206B7642C0E2AAA032B83" Name="view">
+                        <Component Id="cmp71790C6212DC73FBECF580B1E0E2A352" Guid="*">
+                            <File Id="fil7A921DCD5493021F26BA93E3ED21E8EB" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\view\Eventlog.js" />
+                        </Component>
                         <Component Id="cmp0C307FF7A618A87249A5DE55C842666A" Guid="*">
                             <File Id="filE8F6BB7A0ABA6F7B8BB487A81EA90A4D" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\view\Explorer.js" />
                         </Component>
@@ -7560,6 +7584,11 @@
                                 <File Id="filEC724A9B546B9400ED0C9B7D5D73FB07" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\view\section\Tlist.js" />
                             </Component>
                         </Directory>
+                        <Directory Id="dirB8D6A0921DEBD75E31D4258EF9E0C984" Name="setting">
+                            <Component Id="cmp56FEEB4BA2FE445995E7C27FD4BC34E2" Guid="*">
+                                <File Id="fil0CA91657F64E6F5E79073F17A1F4D72C" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\view\setting\Edit.js" />
+                            </Component>
+                        </Directory>
                         <Directory Id="dir19406D03A8EC7F279AEFCFAC10495096" Name="table">
                             <Component Id="cmpBAC542A0D8041A1DCA6414CA83F5E2EC" Guid="*">
                                 <File Id="fil703D75FB489C7F3CD011423758CCCF2F" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\view\table\Edit.js" />
@@ -7574,11 +7603,6 @@
                             </Component>
                             <Component Id="cmp950A654A7A43220D12C1EB2DF5382C37" Guid="*">
                                 <File Id="filADFB886DE488A6594CFC2B356212159F" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\view\template\List.js" />
-                            </Component>
-                        </Directory>
-                        <Directory Id="dir12B3B3BD29803A4B8C6C1F47A6F511C9" Name="tool">
-                            <Component Id="cmp604F1A7E33CF1EBA6AC48BD9AC498F0D" Guid="*">
-                                <File Id="filF2E6B42F30C4C64F2D1FAF2D44C454BA" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\view\tool\Edit.js" />
                             </Component>
                         </Directory>
                         <Directory Id="dir22EBA93C7F293C986C778DA1FA288103" Name="user">
@@ -7688,11 +7712,13 @@
     <Fragment>
         <ComponentGroup Id="ProductComponent">
             <ComponentRef Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" />
+            <ComponentRef Id="cmpFED9CE4C040C6D017106CB6B92C2F157" />
             <ComponentRef Id="cmpDEFB34D73AFBF2C0C55A6186FA567DAE" />
             <ComponentRef Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" />
             <ComponentRef Id="cmp1D3E84918B30A5D48EC3A610A3BADBA4" />
             <ComponentRef Id="cmp310582CBC29388F0AC3C57ADD3775126" />
             <ComponentRef Id="cmp150D0EE6B382C821646AB1815CD434A2" />
+            <ComponentRef Id="cmp7ED9CFC61ABC0D566DFD3D9CA944E4DD" />
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
             <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
             <ComponentRef Id="cmp3A9A52E3BFD3D8D1E757070578D953B5" />
@@ -7719,6 +7745,7 @@
             <ComponentRef Id="cmpC579158A66D19FB0FFAD31A395F521A2" />
             <ComponentRef Id="cmp795692B84DBF189E5C9B4EA03C83E174" />
             <ComponentRef Id="cmp1A12DCBEABF18DEEA911176E18152C56" />
+            <ComponentRef Id="cmpFBA7A2C56471B8C3973F30D9944DFCEF" />
             <ComponentRef Id="cmpC081F5D7D978C397C0C665129C299DEC" />
             <ComponentRef Id="cmp3F2FCBD03CF00E3F521B4127793CD475" />
             <ComponentRef Id="cmpADD5C32B61DF9A1B96B4E18B98EB6B2E" />
@@ -7732,6 +7759,7 @@
             <ComponentRef Id="cmp47213ED9D07D122D695BCBA9FB195D5C" />
             <ComponentRef Id="cmpF6D0C22E8481817CEA867700EE201172" />
             <ComponentRef Id="cmpB8BF919EA421E2AE91F92A66BC0F0D69" />
+            <ComponentRef Id="cmpE988C72C8264DDBBF483E19436854EC8" />
             <ComponentRef Id="cmpF2134BDB0FD99576334B68C0EE96BB4A" />
             <ComponentRef Id="cmpD0AEC6C4845711D423707229998BD01D" />
             <ComponentRef Id="cmpFEA82A97CB220DFAA3C8F8916CF3B092" />
@@ -10019,10 +10047,12 @@
             <ComponentRef Id="cmp5981BEF6A73A32D17FCFB83F3E4243DD" />
             <ComponentRef Id="cmp6D62C1E3834B0B80371C29A7645202E9" />
             <ComponentRef Id="cmpF474B71DB720A476BCE826ABF27C6F81" />
+            <ComponentRef Id="cmpAA5CD97B88F178A602C20B72624A58FB" />
             <ComponentRef Id="cmpE4DE87ACF19435F92177292C87E5A7DC" />
             <ComponentRef Id="cmp10C0DB25FAA9723CC0CE1E77CAAD9121" />
             <ComponentRef Id="cmp6B3A8F4D5B1AE0C4D930BD4002E83F52" />
             <ComponentRef Id="cmpF497813EC874A1BE5F7DFD7DA95FE9F4" />
+            <ComponentRef Id="cmp33FAD63AEEE8CE43145BCCBCCDED418F" />
             <ComponentRef Id="cmpEFC6A3858EA585D40E74277E36772603" />
             <ComponentRef Id="cmp35B358A0156FF9320AE94CD63639A404" />
             <ComponentRef Id="cmp322489EDAE737756842070927AEB0475" />
@@ -10058,6 +10088,7 @@
             <ComponentRef Id="cmp07C84E58CB2DF275BA56AFFC277A3407" />
             <ComponentRef Id="cmp2D5615F36C66B55105278C606EA80A13" />
             <ComponentRef Id="cmp44EEC2CAE497A6FD9A100A42AE2F9A52" />
+            <ComponentRef Id="cmpF4AED65B16F366030C590336CE8A7A6A" />
             <ComponentRef Id="cmp95A7B740CF39594E78B8CDE2D257DB8E" />
             <ComponentRef Id="cmp930849DE77A905AE09BEEEB8A21F37AF" />
             <ComponentRef Id="cmp393215E49D87D03E6FC091D658AAA67A" />
@@ -10068,6 +10099,7 @@
             <ComponentRef Id="cmp8142234943A2258C27067D009D87616D" />
             <ComponentRef Id="cmp1DA96D39B110181724A7B1F5A7459D9D" />
             <ComponentRef Id="cmp7A2BCE93869B98E7963B9B0D542BDDF6" />
+            <ComponentRef Id="cmp71790C6212DC73FBECF580B1E0E2A352" />
             <ComponentRef Id="cmp0C307FF7A618A87249A5DE55C842666A" />
             <ComponentRef Id="cmp33750CC317AC6DF750B3427C0F2E8324" />
             <ComponentRef Id="cmpC3E0666B8D02161B16A788122A116F03" />
@@ -10090,11 +10122,11 @@
             <ComponentRef Id="cmp35ECF6749D0A4D4F961C501783BE7E3C" />
             <ComponentRef Id="cmp491EF65ADD7509A2C3B07F0AA306EFF3" />
             <ComponentRef Id="cmpAF65F7B6BE8BF18C82D9EC5151B0B82F" />
+            <ComponentRef Id="cmp56FEEB4BA2FE445995E7C27FD4BC34E2" />
             <ComponentRef Id="cmpBAC542A0D8041A1DCA6414CA83F5E2EC" />
             <ComponentRef Id="cmpC66D538D474B0ED1D3BF877027DFA8ED" />
             <ComponentRef Id="cmp73C92580948B9FCB58CF57C7DE48068B" />
             <ComponentRef Id="cmp950A654A7A43220D12C1EB2DF5382C37" />
-            <ComponentRef Id="cmp604F1A7E33CF1EBA6AC48BD9AC498F0D" />
             <ComponentRef Id="cmp20AAD60A73958ECFE48F88DBC85C4236" />
             <ComponentRef Id="cmpF1EB066A8FA74173A2A3B3D7BB0143FB" />
             <ComponentRef Id="cmp884BF70B12A255079F0F84E3EC05DD9F" />

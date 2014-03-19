@@ -26,8 +26,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components.wxs" />
-    <Compile Include="Files.wxs" />
+    <Compile Include="InstallIIsDlg.wxs" />
     <Compile Include="Product.wxs" />
+    <Compile Include="UI.wxs" />
     <Compile Include="Web.wxs" />
   </ItemGroup>
   <ItemGroup>

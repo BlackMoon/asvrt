@@ -787,7 +787,7 @@ Ext.define('QB.controller.Query', {
             pageSize: itemsPerPage,
             proxy: {
                 actionMethods: { read: 'post' },
-                extraParams: { id: query.id, sql: me.prepareSQL(), args: query.args },
+                extraParams: { id: query.id, sql: me.prepareSQL(), qname: panel.qname.getValue(), args: query.args },
                 reader: {
                     idProperty: 'rn',
                     root: 'data',
@@ -878,7 +878,7 @@ Ext.define('QB.controller.Query', {
         panel.el.mask('Экспорт', 'x-mask-loading'),
         Ext.Ajax.request({
             url: '/report/export',
-            params: { name: name, drv: drv, sql: me.prepareSQL(), json: Ext.encode(pars), qname: panel.qname.getValue(), group: panel.group.getValue(), subgroup: panel.subgroup.getValue(), userdefined: query.userdefined },
+            params: { id: query.id, name: name, drv: drv, sql: me.prepareSQL(), json: Ext.encode(pars), qname: panel.qname.getValue(), group: panel.group.getValue(), subgroup: panel.subgroup.getValue(), userdefined: query.userdefined },
             timeout: connTimeout * 1000,
             success: function (response) {
                 var obj = Ext.decode(response.responseText);
@@ -1031,7 +1031,7 @@ Ext.define('QB.controller.Query', {
         panel.el.mask('Формируется отчет', 'x-mask-loading'),
         Ext.Ajax.request({
             url: '/report/getreport',
-            params: { name: name, drv: drv, sql: me.prepareSQL(), json: Ext.encode(pars), qname: panel.qname.getValue(), group: panel.group.getValue(), subgroup: panel.subgroup.getValue(), repid: item.repId, userdefined: query.userdefined },
+            params: { id: query.id, name: name, drv: drv, sql: me.prepareSQL(), json: Ext.encode(pars), qname: panel.qname.getValue(), group: panel.group.getValue(), subgroup: panel.subgroup.getValue(), repid: item.repId, userdefined: query.userdefined },
             timeout: connTimeout * 1000,
             success: function (response) {
                 var obj = Ext.decode(response.responseText);

@@ -16,10 +16,23 @@ using System.IO;
 
 namespace asv.Controllers
 {
-    //[AdminAuthorize]
+    [AdminAuthorize]
     public class AdminController : BaseController
     {   
         private const string _logfile = "user.log";
+
+        private IEnumerable<string> ReadLines(string path)
+        {
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var sr = new StreamReader(fs, System.Text.Encoding.UTF8))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    yield return line;
+                }
+            }
+        }
 
         public JsonNetResult DeleteAlias(int id)
         {
@@ -149,9 +162,9 @@ namespace asv.Controllers
         }
 
         public FileResult ExportLogs()
-        {
+        {   
             Response.AddHeader("Content-Disposition", "attachment; filename=\"" + _logfile + "\"");
-            return File(Server.MapPath(@"~\" + _logfile), "text/plain");
+            return File(new FileStream(Server.MapPath(@"~\" + _logfile), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), "text/plain");
         }
 
         [OutputCache(Duration = 120, VaryByParam = "id")]
@@ -409,19 +422,18 @@ namespace asv.Controllers
             jr.Data = new { success = result, message = msg, data = funcs, total = total };
             return jr;
         }
-
+        
         public JsonNetResult GetLogs(int page, int limit)
         {
             byte result = 1;
-            string msg = null;
-
+            string msg = null;     
 
             long total = 0;
             IList<LogModel> logs = new List<LogModel>();
             try
-            {                
-                // read from tail
-                IEnumerable<string> lines = System.IO.File.ReadLines(Server.MapPath(@"~\" + _logfile)).Reverse();
+            {
+                // read from tail                
+                IEnumerable<string> lines = ReadLines(Server.MapPath(@"~\" + _logfile)).Reverse();
                 total = lines.Count();
 
                 foreach (string line in lines.Skip((page - 1) * limit).Take(limit))
@@ -677,7 +689,9 @@ namespace asv.Controllers
                         Membership.Provider.CreateUserAndAccount(p);
 
                     n++;
-                    System.Diagnostics.Debug.WriteLine(n);                    
+                    System.Diagnostics.Debug.WriteLine(n);
+
+                    break;
                 }
                 msg = n.ToString();
 
