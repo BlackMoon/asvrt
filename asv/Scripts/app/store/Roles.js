@@ -3,7 +3,8 @@
     model: 'QB.model.Role',
     actives: [],
 
-    proxy: {        
+    proxy: {
+        headers: { accept: 'application/xml' },
         url: '/roles.xml',        
         reader: {
             type: 'xml',
