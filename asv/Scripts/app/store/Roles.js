@@ -4,7 +4,7 @@
     actives: [],
 
     proxy: {
-        headers: { accept: 'application/xml' },
+        headers: { 'Content-Type': 'text/xml; charset=utf-8' },
         url: '/roles.xml',        
         reader: {
             type: 'xml',
