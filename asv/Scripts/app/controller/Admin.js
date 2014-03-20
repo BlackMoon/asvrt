@@ -758,7 +758,7 @@ Ext.define('QB.controller.Admin', {
             usr.bases = [];
             wnd.dbstore.each(function (b) {
                 b.get('conn') && usr.bases.push({ conn: b.get('conn'), auth: b.get('auth') ? 1 : 0 });
-            })
+            })            
 
             wnd.el.mask('Сохранение', 'x-mask-loading');
             Ext.Ajax.request({

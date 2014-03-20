@@ -2583,6 +2583,7 @@
     <Content Include="Content\ext-theme-classic\Readme.md" />
     <Content Include="Content\ext-theme-gray\Readme.md" />
     <Content Include="Content\ext-theme-neptune\Readme.md" />
+    <None Include="Properties\PublishProfiles\pb.pubxml" />
     <None Include="Properties\PublishProfiles\Prof1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

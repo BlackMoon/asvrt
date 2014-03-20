@@ -110,6 +110,10 @@
     background-image: url("/Content/bullet_xml.png") !important;
 }
 
+.log .x-grid-row .x-grid-cell {
+    border-style: none !important
+}
+
 .psw .x-fieldset-header-text, .x-red .x-form-display-field {
     color: #DD4B39;
 }

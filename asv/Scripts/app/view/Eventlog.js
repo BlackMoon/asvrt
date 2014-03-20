@@ -1,6 +1,7 @@
 ﻿Ext.define('QB.view.Eventlog', {
     extend: 'QB.common.Bargrid',
     alias: 'widget.eventlog',
+    cls: 'log',
     hideHeaders: true,
     enableAdd: false,
     enableEdit: false,
