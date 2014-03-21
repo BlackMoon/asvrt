@@ -115,7 +115,9 @@ namespace asv.Controllers
                 if (id != null)
                     query = " №" + id + query;
 
-                log.Info("Пользователь " + User.Identity.Name + ". Выполнение запроса -" + query + ".");
+                ThreadContext.Properties["user"] = User.Identity.Name;
+                ThreadContext.Properties["host"] = string.Empty;
+                log.Info("Выполнение запроса -" + query + ".");
 
                 rows = dm.GetQData(name, drv, sql, args, page, page, limit).ToList();
                 total = dm.TotalItems;
@@ -487,8 +489,11 @@ namespace asv.Controllers
                     db.Execute("INSERT INTO qb_uparams(queryid, field, ft, descr, def) VALUES(@0, @1, @2, @3, @4)", q.Id, u.Field, u.Ft, u.Descr, u.Def);
                 }                
 
-                Response.RemoveOutputCacheItem("/Main/GetQueries");                
-                log.Info("Пользователь " + User.Identity.Name + ". Сохранение запроса -" + query + ".");
+                Response.RemoveOutputCacheItem("/Main/GetQueries");
+
+                ThreadContext.Properties["user"] = User.Identity.Name;
+                ThreadContext.Properties["host"] = string.Empty;
+                log.Info("Сохранение запроса -" + query + ".");
             }
             catch (Exception e)
             {

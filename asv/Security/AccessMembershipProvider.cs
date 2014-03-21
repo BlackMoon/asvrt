@@ -10,6 +10,7 @@ using System.Configuration;
 using System.Web.Caching;
 using System.Web;
 using System.Text.RegularExpressions;
+using log4net;
 
 namespace asv.Security
 {
@@ -299,7 +300,9 @@ namespace asv.Security
                             db.Execute(@"UPDATE qb_users SET comment = @1 WHERE id = @0", q.id, comment);
                             locked = 1;
 
-                            log.Info("Пользователь " + username + " заблокирован. " + comment);
+                            ThreadContext.Properties["user"] = username;
+                            ThreadContext.Properties["host"] = string.Empty;
+                            log.Info("заблокирован. " + comment);
                         }
                     }
                     db.Execute("UPDATE membership SET failedpasswordattemptcount = @1, islockedout = @2, lastlogindate = datetime('now', 'localtime') WHERE userid = @0", q.id, failures, locked);

@@ -61,7 +61,9 @@ namespace asv.Controllers
 
                         result = 1;
 
-                        log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
+                        ThreadContext.Properties["user"] = mp.UserName;
+                        ThreadContext.Properties["host"] = Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress;
+                        log.Info("Вход в систему.");
                     }
                     else
                         msg = "Неверные логин или пароль!";

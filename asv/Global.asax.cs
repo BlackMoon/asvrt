@@ -8,6 +8,7 @@ using System.Web.Caching;
 using System.IO;
 using asv.Managers;
 using log4net;
+using log4net.Repository.Hierarchy;
 
 namespace asv
 {   
@@ -33,7 +34,8 @@ namespace asv
 
         public static void RemoveCallback(string key, object value, CacheItemRemovedReason removedReason)
         {
-            log.Info("Пользователь " + key + ". Выход.");
+            ThreadContext.Properties["user"] = key;
+            log.Info("Выход.");
         }
 
         protected void Application_AuthenticateRequest(Object sender, EventArgs e)
@@ -63,7 +65,9 @@ namespace asv
                                         new CacheItemRemovedCallback(RemoveCallback));
                                     FormsAuthentication.SetAuthCookie(login + ":" + passwd, ticket.IsPersistent);
 
-                                    log.Info("Пользователь " + mp.UserName + " (" + (Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress) + "). Вход в систему.");
+                                    ThreadContext.Properties["user"] = mp.UserName;
+                                    ThreadContext.Properties["host"] = Request.IsLocal ? "127.0.0.1" : Request.UserHostAddress;
+                                    log.Info("Вход в систему.");
                                 }
                                 else
                                     FormsAuthentication.SignOut();
@@ -117,7 +121,7 @@ namespace asv
 
         protected void Application_Start()
         {
-            log4net.Config.XmlConfigurator.Configure();
+            log4net.Config.XmlConfigurator.Configure();            
             
             string repPath = Server.MapPath(@"\Reports");
             Directory.CreateDirectory(repPath);
