@@ -431,7 +431,7 @@ namespace asv.Controllers
             return jr;
         }
 
-        public JsonNetResult GetLogs(int page, int limit)
+        public JsonNetResult GetLogs(int page, int limit, DateTime? dtFrom, DateTime? dtTo, string query)
         {
             byte result = 1;
             string msg = null;     

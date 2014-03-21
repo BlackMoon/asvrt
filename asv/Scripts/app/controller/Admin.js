@@ -46,8 +46,11 @@ Ext.define('QB.controller.Admin', {
                 edititem: me.editFunc,
                 removeitem: me.deleteFunc
             },
-            'eventlog button[action=export]': {
+            'eventlog toolbar button[action=export]': {
                 click: function () { window.open('/admin/exportlogs', '_self'); }
+            },
+            'eventlog toolbar button[action=filter]': {
+                click: me.filterEventLog
             },
             'toolbar [action=aliases]': {
                 click: me.showAliases
@@ -369,6 +372,43 @@ Ext.define('QB.controller.Admin', {
             failure: function (response) { }
         });
     },    
+
+    filterEventLog: function (btn) {
+        var grid = btn.up('grid'),
+            filters = [],
+            store = this.getLogsStore();            
+            panel = grid.down('toolbar > container'),
+            dtFrom = panel.getComponent('dateFrom').getValue(),
+            dtTo = panel.getComponent('dateTo').getValue(),
+            timeFrom = panel.getComponent('timeFrom').getValue(),
+            timeTo = panel.getComponent('timeTo').getValue(),
+            query = panel.getComponent('query').getValue();
+
+        store.filters.clear();
+
+        if (dtFrom) {
+
+            if (timeFrom) {
+                dtFrom = Ext.Date.add(dtFrom, Ext.Date.HOUR, timeFrom.getHours());
+                dtFrom = Ext.Date.add(dtFrom, Ext.Date.MINUTE, timeFrom.getMinutes());
+            }
+
+            filters.push({ property: 'dtFrom', value: Ext.Date.format(dtFrom, 'd.m.Y H:i') });
+        }
+
+        if (dtTo) {
+            if (timeTo) {
+                dtTo = Ext.Date.add(dtFrom, Ext.Date.HOUR, timeTo.getHours());
+                dtTo = Ext.Date.add(dtFrom, Ext.Date.MINUTE, timeTo.getMinutes());
+            }
+
+            filters.push({ property: 'dtTo', value: Ext.Date.format(dtTo, 'd.m.Y H:i') });
+        }
+
+        query && filters.push({ id: 'query', property: 'query', value: query });
+
+        store.filter(filters);        
+    },
 
     importUsers: function (btn) {
         var me = this, wnd = btn.up('window'), form = wnd.form;

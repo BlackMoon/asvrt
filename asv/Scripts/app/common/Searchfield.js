@@ -49,8 +49,7 @@ Ext.define('QB.common.Searchfield', {
 
     onTrigger2Click: function () {
         var me = this,
-            store = me.store,
-            proxy = store.getProxy(),
+            store = me.store,            
             value = me.getValue();
 
         if (value.length >= me.minChars) {
