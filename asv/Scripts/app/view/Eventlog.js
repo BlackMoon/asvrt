@@ -18,16 +18,86 @@
 
         me.tbarConfig = {
             enable: true,
-            kind: 'custom',
-            enableSearch: false,
+            kind: 'custom',            
             items: [{                
                 text: 'Экспорт',
                 iconCls: 'icon-txt',
                 action: 'export'
+            },
+            '-',
+            {
+                xtype: 'checkboxfield',
+                fieldLabel: 'Фильтр',
+                labelWidth: 50,
+                margin: '0 10 0 10',
+                listeners: {
+                    change: me.toggleFilter,
+                    scope: me
+                }
+            },
+            {
+                xtype: 'container',
+                layout: { type: 'hbox' },
+                defaults: { margin: '0 0 0 10' },
+                hidden: true,
+                items: [{
+                    xtype: 'datefield',
+                    itemId: 'dateFrom',
+                    fieldLabel: 'от',
+                    format: 'd.m.Y',
+                    labelWidth: 20,
+                    width: 120                    
+                },
+                {
+                    xtype: 'timefield',
+                    itemId: 'timeFrom',
+                    format: 'H:i',
+                    width: 60,
+                    margin: '0 0 0 3'
+                },
+                {
+                    xtype: 'datefield',
+                    itemId: 'dateTo',
+                    fieldLabel: 'до',
+                    format: 'd.m.Y',
+                    labelWidth: 20,
+                    width: 120                    
+                },
+                {
+                    xtype: 'timefield',
+                    itemId: 'timeTo',
+                    format: 'H:i',
+                    width: 60,
+                    margin: '0 0 0 3'
+                },
+                {
+                    xtype: 'textfield',
+                    itemId: 'query',
+                    fieldLabel: 'Пользователь / Событие',
+                    labelWidth: 140,
+                    width: 360                    
+                },
+                {
+                    xtype:'button',
+                    text: 'ОК',
+                    cls: 'x-btn-default-small',                    
+                    action: 'filter'
+                }]
+
             }]
         }
 
         me.callParent(arguments);
         me.store.load();
+    },
+
+    toggleFilter: function (field, newv) {
+        var me = this;
+        me.down('toolbar > container').setVisible(newv);
+
+        if (!newv) {
+            delete me.store.proxy.extraParams;
+            me.store.loadPage(1);
+        }
     }
 })

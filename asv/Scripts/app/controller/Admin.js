@@ -375,7 +375,7 @@ Ext.define('QB.controller.Admin', {
 
     filterEventLog: function (btn) {
         var grid = btn.up('grid'),
-            filters = [],
+            params = {},
             store = this.getLogsStore();            
             panel = grid.down('toolbar > container'),
             dtFrom = panel.getComponent('dateFrom').getValue(),
@@ -384,8 +384,6 @@ Ext.define('QB.controller.Admin', {
             timeTo = panel.getComponent('timeTo').getValue(),
             query = panel.getComponent('query').getValue();
 
-        store.filters.clear();
-
         if (dtFrom) {
 
             if (timeFrom) {
@@ -393,21 +391,22 @@ Ext.define('QB.controller.Admin', {
                 dtFrom = Ext.Date.add(dtFrom, Ext.Date.MINUTE, timeFrom.getMinutes());
             }
 
-            filters.push({ property: 'dtFrom', value: Ext.Date.format(dtFrom, 'd.m.Y H:i') });
+            params.dtfrom = Ext.Date.format(dtFrom, 'd.m.Y H:i');            
         }
 
         if (dtTo) {
             if (timeTo) {
-                dtTo = Ext.Date.add(dtFrom, Ext.Date.HOUR, timeTo.getHours());
-                dtTo = Ext.Date.add(dtFrom, Ext.Date.MINUTE, timeTo.getMinutes());
+                dtTo = Ext.Date.add(dtTo, Ext.Date.HOUR, timeTo.getHours());
+                dtTo = Ext.Date.add(dtTo, Ext.Date.MINUTE, timeTo.getMinutes());
             }
 
-            filters.push({ property: 'dtTo', value: Ext.Date.format(dtTo, 'd.m.Y H:i') });
+            params.dtto = Ext.Date.format(dtTo, 'd.m.Y H:i');            
         }
 
-        query && filters.push({ id: 'query', property: 'query', value: query });
+        query && (params.query = query);
 
-        store.filter(filters);        
+        store.proxy.extraParams = params;
+        store.loadPage(1);
     },
 
     importUsers: function (btn) {

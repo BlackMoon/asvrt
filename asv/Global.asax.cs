@@ -121,8 +121,9 @@ namespace asv
 
         protected void Application_Start()
         {
-            log4net.Config.XmlConfigurator.Configure();            
-            
+            log4net.Config.XmlConfigurator.Configure();
+            ModelBinders.Binders.Add(typeof(DateTime?), new asv.Binders.DateTimeBinder());
+
             string repPath = Server.MapPath(@"\Reports");
             Directory.CreateDirectory(repPath);
             

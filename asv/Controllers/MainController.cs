@@ -223,11 +223,12 @@ namespace asv.Controllers
             List<dynamic> queries = new List<dynamic>();
             try
             {
-                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q";
-                
+                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q",
+                       where = string.Empty;
+
                 if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
                     sql += " WHERE q.usercreate = @0";
-                
+
                 sql += " ORDER BY q.name";
 
                 queries = db.Fetch<dynamic>(sql, User.Id);
