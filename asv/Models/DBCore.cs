@@ -443,9 +443,17 @@ namespace asv.Models
     #endregion
 
     #region Журнал
-    public class LogModel
+    public class LogModel : Key
     {
-        public string Event { get; set; }
+        [JsonConverter(typeof(asv.Helpers.TimeConverter))]
+        [JsonProperty("dt")]
+        public DateTime DateLog { get; set; }
+
+        [DefaultValue("")]
+        public string Host { get; set; }
+        public string Level { get; set; }
+        public string Message { get; set; }
+        public string User { get; set; }
     }
     #endregion
 }

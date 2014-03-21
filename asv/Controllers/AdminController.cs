@@ -19,21 +19,6 @@ namespace asv.Controllers
     [AdminAuthorize]
     public class AdminController : BaseController
     {   
-        private const string _logfile = "user.log";
-
-        private IEnumerable<string> ReadLines(string path)
-        {
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var sr = new StreamReader(fs, System.Text.Encoding.UTF8))
-            {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    yield return line;
-                }
-            }
-        }
-
         public JsonNetResult DeleteAlias(int id)
         {
             byte result = 1;
@@ -162,9 +147,32 @@ namespace asv.Controllers
         }
 
         public FileResult ExportLogs()
-        {   
-            Response.AddHeader("Content-Disposition", "attachment; filename=\"" + _logfile + "\"");
-            return File(new FileStream(Server.MapPath(@"~\" + _logfile), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), "text/plain");
+        {
+            MemoryStream ms = new MemoryStream();
+            try
+            {
+                StreamWriter sw = new StreamWriter(ms, System.Text.Encoding.UTF8);
+                
+                string line = null;
+                foreach (LogModel lm in db.Query<LogModel>("SELECT l.id, l.datelog, l.level, l.user, (CASE WHEN l.host <> '(null)' THEN l.host END) host, l.message FROM qb_logs l ORDER BY l.datelog DESC"))
+                {
+                    line = lm.DateLog + "\t" + lm.Level + "\t" + lm.User;
+                    if (!string.IsNullOrEmpty(lm.Host))
+                        line += "\t" + lm.Host;
+                    line += "\t" + lm.Message;
+                    
+                    sw.WriteLine(line);
+                }
+                sw.Flush();
+
+                ms.Seek(0, 0);
+            }
+            catch
+            {
+            }
+
+            Response.AddHeader("Content-Disposition", "attachment; filename=\"user.log\"");           
+            return File(ms, "text/plain");
         }
 
         [OutputCache(Duration = 120, VaryByParam = "id")]
@@ -432,14 +440,12 @@ namespace asv.Controllers
             IList<LogModel> logs = new List<LogModel>();
             try
             {
-                // read from tail                
-                IEnumerable<string> lines = ReadLines(Server.MapPath(@"~\" + _logfile)).Reverse();
-                total = lines.Count();
+                string sql = "SELECT l.id, l.datelog, l.level, l.user, (CASE WHEN l.host <> '(null)' THEN l.host END) host, l.message FROM qb_logs l";
+                sql += " ORDER BY l.datelog DESC";
 
-                foreach (string line in lines.Skip((page - 1) * limit).Take(limit))
-                {
-                    logs.Add(new LogModel { Event = line });
-                }
+                Page<LogModel> p = db.Page<LogModel>(page, limit, sql);
+                total = p.TotalItems;
+                logs = p.Items;
             }
             catch (Exception e)
             {

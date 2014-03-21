@@ -1,5 +1,5 @@
 ﻿Ext.define('QB.store.Logs', {
     extend: 'QB.store.Lstore',
-    fields: ['event'],
+    model: 'QB.model.Log',
     proxy: { url: '/admin/getlogs' }
 });

@@ -115,8 +115,7 @@ namespace asv.Controllers
                 if (id != null)
                     query = " №" + id + query;
 
-                ThreadContext.Properties["user"] = User.Identity.Name;
-                ThreadContext.Properties["host"] = string.Empty;
+                ThreadContext.Properties["user"] = User.Identity.Name;                
                 log.Info("Выполнение запроса -" + query + ".");
 
                 rows = dm.GetQData(name, drv, sql, args, page, page, limit).ToList();
@@ -491,8 +490,7 @@ namespace asv.Controllers
 
                 Response.RemoveOutputCacheItem("/Main/GetQueries");
 
-                ThreadContext.Properties["user"] = User.Identity.Name;
-                ThreadContext.Properties["host"] = string.Empty;
+                ThreadContext.Properties["user"] = User.Identity.Name;                
                 log.Info("Сохранение запроса -" + query + ".");
             }
             catch (Exception e)

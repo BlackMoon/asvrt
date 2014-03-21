@@ -56,8 +56,7 @@ namespace asv.Controllers
                 if (id != null)
                     query = " №" + id + query;
 
-                ThreadContext.Properties["user"] = User.Identity.Name;
-                ThreadContext.Properties["host"] = string.Empty;
+                ThreadContext.Properties["user"] = User.Identity.Name;                
                 log.Info("Экспорт запроса -" + query + ".");
 
                 ReportManager rm = new ReportManager(System.Web.HttpContext.Current.Server.MapPath(@"\" + REPORTSPATH));
@@ -97,8 +96,7 @@ namespace asv.Controllers
                 if (id != null)
                     query = " №" + id + query;
 
-                ThreadContext.Properties["user"] = User.Identity.Name;
-                ThreadContext.Properties["host"] = string.Empty;
+                ThreadContext.Properties["user"] = User.Identity.Name;                
                 log.Info("Экспорт запроса -" + query + ".");
 
                 ReportManager rm = new ReportManager(System.Web.HttpContext.Current.Server.MapPath(@"\" + REPORTSPATH));

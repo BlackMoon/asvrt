@@ -2468,6 +2468,7 @@
     <Content Include="Scripts\app\controller\Template.js" />
     <Content Include="Scripts\app\model\Alias.js" />
     <Content Include="Scripts\app\model\Fparam.js" />
+    <Content Include="Scripts\app\model\Log.js" />
     <Content Include="Scripts\app\model\Rel.js" />
     <Content Include="Scripts\app\model\Catalog.js" />
     <Content Include="Scripts\app\model\Func.js" />
