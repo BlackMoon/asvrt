@@ -91,6 +91,13 @@
     },      
 
     toggleFilter: function (field, newv) {
-        this.down('toolbar > container').setVisible(newv);
+        var me = this;
+
+        me.down('toolbar > container').setVisible(newv);
+
+        if (!newv) {
+            delete me.store.proxy.extraParams;
+            me.store.loadPage(1);
+        }
     }
 })
