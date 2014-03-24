@@ -440,10 +440,41 @@ namespace asv.Controllers
             IList<LogModel> logs = new List<LogModel>();
             try
             {
-                string sql = "SELECT l.id, l.datelog, l.level, l.user, (CASE WHEN l.host <> '(null)' THEN l.host END) host, l.message FROM qb_logs l";
+                string sql = "SELECT l.id, l.datelog, l.level, l.user, (CASE WHEN l.host <> '(null)' THEN l.host END) host, l.message FROM qb_logs l",
+                       where = string.Empty;
+
+                int ix = 0;
+                List<object> pars = new List<object>();
+
+                if (dtFrom != null)
+                {
+                    where += " l.datelog >= @" + ix++;
+                    pars.Add(dtFrom);
+                }
+
+                if (dtTo != null)
+                {
+                    if (where.Length > 0)
+                        where += " AND";
+
+                    where += " l.datelog <= @" + ix;
+                    pars.Add(dtTo);
+                }
+
+                if (!string.IsNullOrEmpty(query))
+                {
+                    if (where.Length > 0)
+                        where += " AND";
+
+                    where += " (" + Misc.FilterField1("l.user", query) + " OR " + Misc.FilterField1("l.message", query) + ")";
+                }
+
+                if (where.Length > 0)
+                    sql += " WHERE " + where;
+
                 sql += " ORDER BY l.datelog DESC";
 
-                Page<LogModel> p = db.Page<LogModel>(page, limit, sql);
+                Page<LogModel> p = db.Page<LogModel>(page, limit, sql, pars.ToArray());
                 total = p.TotalItems;
                 logs = p.Items;
             }

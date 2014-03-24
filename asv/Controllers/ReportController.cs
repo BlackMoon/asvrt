@@ -155,13 +155,18 @@ namespace asv.Controllers
             try
             {
                 string sql = "SELECT t.id, t.name, t.fname, t.usercreate authorid, CEILING(t.sz / 1024.0) sz FROM qb_templates t",
-                       where = "";
+                       where = string.Empty;
 
                 if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
                     where += " t.usercreate = @0";
 
                 if (!string.IsNullOrEmpty(query))
-                    where += " AND (" + Misc.FilterField1("t.name", query) + " OR " + Misc.FilterField1("t.fname", query) + ")";
+                {
+                    if (where.Length > 0)
+                        where += " AND";
+
+                    where += " (" + Misc.FilterField1("t.name", query) + " OR " + Misc.FilterField1("t.fname", query) + ")";
+                }
 
                 if (where.Length > 0)
                     sql += " WHERE " + where;
