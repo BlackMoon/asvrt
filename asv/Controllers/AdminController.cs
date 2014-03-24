@@ -679,7 +679,7 @@ namespace asv.Controllers
 
                 AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
                 XDocument xd = XDocument.Load(file.InputStream);
-                
+
                 foreach (var u in xd.Descendants("Users"))
                 {
                     p = new Person();
@@ -697,7 +697,7 @@ namespace asv.Controllers
                         {
                             p.LastName = fio.Substring(0, pos++);
 
-                            string[] arr = fio.Substring(pos).Split(new char [] {'.', ' '}, StringSplitOptions.RemoveEmptyEntries);
+                            string[] arr = fio.Substring(pos).Split(new char[] { '.', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                             if (arr.Length > 0)
                             {
                                 p.FirstName = arr[0];
@@ -706,8 +706,8 @@ namespace asv.Controllers
                                     p.MiddleName = arr[1];
                             }
                         }
-                        else 
-                            p.LastName = p.FirstName = fio;                        
+                        else
+                            p.LastName = p.FirstName = fio;
                     }
 
                     if (serverlogin == 1)
@@ -727,13 +727,16 @@ namespace asv.Controllers
 
                     n++;
                     System.Diagnostics.Debug.WriteLine(n);
-
-                    break;
                 }
                 msg = n.ToString();
 
                 Response.RemoveOutputCacheItem("/Admin/GetUser");
-                Response.RemoveOutputCacheItem("/Admin/GetUsers"); 
+                Response.RemoveOutputCacheItem("/Admin/GetUsers");
+            }
+            catch (MembershipCreateUserException e)
+            {
+                msg = p.Login + ". " + e.Message;
+                result = 0;
             }
             catch (Exception e)
             {
