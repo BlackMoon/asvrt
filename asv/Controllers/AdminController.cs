@@ -13,6 +13,7 @@ using asv.Models;
 using PetaPoco;
 using System.Collections.Specialized;
 using System.IO;
+using log4net;
 
 namespace asv.Controllers
 {
@@ -672,6 +673,7 @@ namespace asv.Controllers
                 udb.Conn = conn;
             }
 
+            long total = 0;
             try
             {
                 int n = 0;
@@ -679,8 +681,12 @@ namespace asv.Controllers
 
                 AccessMembershipProvider ap = (AccessMembershipProvider)Membership.Provider;
                 XDocument xd = XDocument.Load(file.InputStream);
+                IEnumerable<XElement> elements = xd.Descendants("Users");
+                total = elements.Count();
 
-                foreach (var u in xd.Descendants("Users"))
+                ThreadContext.Properties["user"] = User.Identity.Name;   
+
+                foreach (var u in elements)
                 {
                     p = new Person();
                     p.Bases = new List<Userdb>();
@@ -721,31 +727,35 @@ namespace asv.Controllers
 
                     p.Id = db.SingleOrDefault<int>("SELECT u.id FROM qb_users u WHERE u.login = @0", p.Login);
 
-                    if (p.Id != 0)
-                        Membership.Provider.UpdateUser(p.Id, p);
-                    else
-                        Membership.Provider.CreateUserAndAccount(p);
+                    try
+                    {
+                        if (p.Id != 0)
+                            Membership.Provider.UpdateUser(p.Id, p);
+                        else
+                            Membership.Provider.CreateUserAndAccount(p);
 
-                    n++;
-                    System.Diagnostics.Debug.WriteLine(n);
+                        n++;
+                        System.Diagnostics.Debug.WriteLine(n);
+
+                        if (n == 2) break;   
+                    }
+                    catch (MembershipCreateUserException e)
+                    {   
+                        log.Info("Импорт " + p.Login + ". " + e.Message);
+                    }                    
                 }
                 msg = n.ToString();
-            }
-            catch (MembershipCreateUserException e)
-            {
-                msg = p.Login + ". " + e.Message;
-                result = 0;
-            }
+
+                Response.RemoveOutputCacheItem("/Admin/GetUser");
+                Response.RemoveOutputCacheItem("/Admin/GetUsers");
+            }            
             catch (Exception e)
             {
                 msg = e.Message;
                 result = 0;
-            }
+            }            
 
-            Response.RemoveOutputCacheItem("/Admin/GetUser");
-            Response.RemoveOutputCacheItem("/Admin/GetUsers");
-
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(new { success = result, message = msg });
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(new { success = result, message = msg, total = total });
             return Content(json);       
         }
 

@@ -17,8 +17,7 @@ namespace asv.Controllers
 {   
     public class ReportController : BaseController
     {
-        private const string REPORTSPATH = "Reports";
-        private static readonly ILog log = MvcApplication.log; 
+        private const string REPORTSPATH = "Reports";        
 
         [GrantAttribute(Roles = "ERASER")]
         public JsonNetResult DeleteTpl(int id)

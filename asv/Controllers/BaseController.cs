@@ -1,12 +1,14 @@
 ﻿using System.Web.Mvc;
 using asv.Security;
+using log4net;
 using PetaPoco;
 
 namespace asv.Controllers
 {
     public class BaseController : Controller
     {
-        protected Database db;        
+        protected static readonly ILog log = MvcApplication.log; 
+        protected Database db;
 
         public BaseController()
         {

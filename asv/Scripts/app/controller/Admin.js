@@ -429,12 +429,17 @@ Ext.define('QB.controller.Admin', {
                     });
                 },
                 success: function (f, a) {
+                    var obj = a.result,
+                        msg = 'Импортировано ' + obj.message + ' из ' + obj.total + ' пользователей.';
+
+                    (obj.message < obj.total) && (msg += '<br>См. также журнал событий'); 
+
                     wnd.el.unmask();
                     me.getUsersStore().loadPage(1);
 
                     Ext.MessageBox.show({
                         title: 'Информация',
-                        msg: 'Импортировано ' + a.result.message + ' пользователей',
+                        msg: msg,
                         buttons: Ext.MessageBox.OK,
                         icon: Ext.MessageBox.INFO
                     });

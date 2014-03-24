@@ -15,8 +15,7 @@ using Newtonsoft.Json;
 namespace asv.Controllers
 {    
     public class MainController : BaseController
-    {
-        private static readonly ILog log = MvcApplication.log; 
+    {   
         private DataManager dm = new DataManager();        
 
         protected override void Initialize(RequestContext requestContext)
