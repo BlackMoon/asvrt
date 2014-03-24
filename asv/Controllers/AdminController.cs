@@ -684,6 +684,7 @@ namespace asv.Controllers
                 {
                     p = new Person();
                     p.Bases = new List<Userdb>();
+                    p.Roles = new List<string>() { "READER" };
                     p.IsApproved = 1;
 
                     p.Login = u.Element("Name").Value;
@@ -729,9 +730,6 @@ namespace asv.Controllers
                     System.Diagnostics.Debug.WriteLine(n);
                 }
                 msg = n.ToString();
-
-                Response.RemoveOutputCacheItem("/Admin/GetUser");
-                Response.RemoveOutputCacheItem("/Admin/GetUsers");
             }
             catch (MembershipCreateUserException e)
             {
@@ -743,6 +741,9 @@ namespace asv.Controllers
                 msg = e.Message;
                 result = 0;
             }
+
+            Response.RemoveOutputCacheItem("/Admin/GetUser");
+            Response.RemoveOutputCacheItem("/Admin/GetUsers");
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(new { success = result, message = msg });
             return Content(json);       
