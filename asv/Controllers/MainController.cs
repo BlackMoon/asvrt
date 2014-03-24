@@ -69,7 +69,9 @@ namespace asv.Controllers
             string msg = null;
 
             try
-            {               
+            {
+                string qname = db.SingleOrDefault<string>("SELECT q.name FROM qb_queries q WHERE q.id = @0", id);
+
                 db.Delete<Query>("WHERE id = @0", id);
                 db.Delete<Param>("WHERE queryid = @0", id);
                 db.Delete<Relation>("WHERE queryid = @0", id);
@@ -79,6 +81,9 @@ namespace asv.Controllers
                 
                 Response.RemoveOutputCacheItem("/Main/GetQuery");
                 Response.RemoveOutputCacheItem("/Main/GetQueries");
+
+                ThreadContext.Properties["user"] = User.Identity.Name;                
+                log.Info("Удаление запроса - №" + id + " (" + qname + ")");
             }
             catch (Exception e)
             {
