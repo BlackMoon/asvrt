@@ -46,6 +46,9 @@ Ext.define('QB.controller.Admin', {
                 edititem: me.editFunc,
                 removeitem: me.deleteFunc
             },
+            'eventlog toolbar button[action=clearlog]': {
+                click: me.clearEventLog
+            },
             'eventlog toolbar button[action=export]': {
                 click: function () { window.open('/admin/exportlogs', '_self'); }
             },
@@ -118,6 +121,22 @@ Ext.define('QB.controller.Admin', {
             rec = view.getRecord(rowNode);
 
         rec.commit();
+    },
+
+    clearEventLog: function (view) {        
+        var me = this;
+        Ext.Msg.confirm('Внимание', 'Очистить журнал?', function (btn) {
+            if (btn == 'yes') {
+                Ext.Ajax.request({
+                    url: '/admin/deletelogs',
+                    method: 'get',                    
+                    success: function (response) {
+                        var obj = Ext.decode(response.responseText);
+                        (obj.success) ? me.getLogsStore().removeAll() : showStatus(obj.message);
+                    }
+                });
+            }
+        })
     },
 
     createAlias: function(){

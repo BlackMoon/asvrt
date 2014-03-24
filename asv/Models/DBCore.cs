@@ -443,6 +443,8 @@ namespace asv.Models
     #endregion
 
     #region Журнал
+    [TableName("qb_logs")]
+    [PrimaryKey("id")]
     public class LogModel : Key
     {
         [JsonConverter(typeof(asv.Helpers.TimeConverter))]

@@ -11,17 +11,21 @@
                { dataIndex: 'user', text: 'Пользователь', width: 200 },
                { dataIndex: 'host', text: 'Хост' },
                { dataIndex: 'message', text: 'Событие', flex: 1 }],    
-    store: 'Logs',    
-    
+    store: 'Logs',        
 
     initComponent: function () {
         var me = this;
         
         me.tbarConfig =  {
             enable: true,
-            kind: 'custom',
+            kind: 'default',
             enableSearch: false,
-            items: [{                
+            items: [{
+                text: 'Очистить журнал',
+                iconCls: 'icon-delete',
+                action: 'clearlog'
+            },
+            {
                 text: 'Экспорт',
                 iconCls: 'icon-txt',
                 action: 'export'
@@ -86,7 +90,7 @@
             }]
         }
 
-        me.callParent(arguments);
+        me.callParent(arguments);        
 
         delete me.store.proxy.extraParams;
         me.store.load();

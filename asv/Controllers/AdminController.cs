@@ -99,6 +99,26 @@ namespace asv.Controllers
             return jr;
         }
 
+        public JsonNetResult DeleteLogs()
+        {
+            byte result = 1;
+            string msg = null;
+
+            try
+            {
+                db.Delete<LogModel>("");
+            }
+            catch (Exception e)
+            {
+                msg = e.Message;
+                result = 0;
+            }
+
+            JsonNetResult jr = new JsonNetResult();
+            jr.Data = new { success = result, message = msg };
+            return jr;        
+        }
+
         public JsonNetResult DeleteFunc(int id)
         {
             byte result = 1;
