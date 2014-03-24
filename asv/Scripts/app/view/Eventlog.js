@@ -87,6 +87,8 @@
         }
 
         me.callParent(arguments);
+
+        delete me.store.proxy.extraParams;
         me.store.load();
     },      
 
