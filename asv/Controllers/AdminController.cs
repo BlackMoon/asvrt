@@ -757,7 +757,9 @@ namespace asv.Controllers
                         n++;
                         System.Diagnostics.Debug.WriteLine(n);
 
+                        #if DEBUG
                         if (n == 2) break;   
+                        #endif
                     }
                     catch (MembershipCreateUserException e)
                     {   
