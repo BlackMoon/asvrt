@@ -23,7 +23,7 @@
                 tbar: [{
                     xtype: 'filefield',
                     buttonOnly: true,
-                    buttonConfig: { iconCls: 'icon-xls' },
+                    buttonConfig: { iconCls: 'icon-html' },
                     buttonText: 'Импорт',
                     name: 'file',
                     listeners: { change: me.doUpload, scope: me }

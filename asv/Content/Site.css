@@ -98,12 +98,12 @@
     background-image: url("/Content/users16.png");
 }
 
-.icon-txt {
-    background-image: url("/Content/bullet_txt.png") !important;
+.icon-html {
+    background-image: url("/Content/bullet_html.png") !important;
 }
 
-.icon-xls {
-    background-image: url("/Content/bullet_xls.png") !important;
+.icon-txt {
+    background-image: url("/Content/bullet_txt.png") !important;
 }
 
 .icon-xml {
