@@ -198,7 +198,7 @@ namespace asv.Managers
             reader.Close();
         }
 
-        private IEnumerable<dynamic> GetIndexes(OdbcConnection con, string table, string schema, eDriverType drv)
+        private IEnumerable<Field> GetIndexes(OdbcConnection con, string table, string schema, eDriverType drv)
         {
             OdbcCommand com = new OdbcCommand();            
             com.Connection = con;
@@ -228,7 +228,10 @@ namespace asv.Managers
             OdbcDataReader reader = com.ExecuteReader();
             while (reader.Read())
             {
-                yield return new { name = reader["name"], nt = reader["pk"].Equals(1) ? eNodeType.NodePrimaryKey : eNodeType.NodeField, leaf = 1 };
+                Field f = new Field(reader["name"], reader["pk"].Equals(1) ? eNodeType.NodePrimaryKey : eNodeType.NodeField);
+                f.Leaf = 1;
+
+                yield return f;
             }
 
             reader.Close();
@@ -529,7 +532,7 @@ namespace asv.Managers
                 nodes.Add(new { name = "Индексы", nt = eNodeType.NodeFolder, data = GetIndexes(con, table, schema, drv).ToList() });
 
                 // внешние ключи                
-                IList<ForeignKey> fkeys = new List<ForeignKey>();
+                IList<Field> fkeys = new List<Field>();
                 foreach (ForeignKey f in GetFKeys(con, table, schema, drv))
                 {
                     f.Leaf = 1;

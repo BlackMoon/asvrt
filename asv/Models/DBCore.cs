@@ -97,13 +97,14 @@ namespace asv.Models
     {
         public string Name { get; set; }
     }
-    #endregion
+    #endregion 
 
-    #region Абстрактное поле
-    public abstract class Field : Base
+    #region Поле
+    public class Field : Base
     {        
         public int Leaf { get; set; }
         public eNodeType Nt { get; set; }
+        public string Qtip { get; set; }
 
         public Field(object name, eNodeType nt)
         {
