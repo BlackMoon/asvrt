@@ -806,7 +806,7 @@ Ext.define('QB.controller.Query', {
                                 for (p in item) 
                                 {   
                                     fields.push(p);
-                                    (p != 'rn') && cols.push({ text: p, dataIndex: p });                                    
+                                    (p != 'rn') && cols.push({ text: p.replace(new RegExp('&#pt;', 'g'), '.'), dataIndex: p });
                                 }
                                 data.metaData = { fields: fields };
                             }

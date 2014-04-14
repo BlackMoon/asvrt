@@ -15,7 +15,7 @@ namespace asv.Helpers
     {
         protected override string ResolvePropertyName(string propertyName)
         {   
-            return propertyName.ToLower().Replace('.', ' ');
+            return propertyName.ToLower().Replace(".", "&#pt;");
         }
     }
 
@@ -26,7 +26,6 @@ namespace asv.Helpers
             DateTimeFormat = "dd.MM.yyyy HH:mm";
         }
     }
-
 
     /// <summary>
     /// JsonResult Serialization and Deserialization Assistant Class, using custom DateTime Format

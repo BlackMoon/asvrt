@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System;
 
 namespace asv.Models
-{
+{   
     // Тип поля БД
     public enum eFieldType
     {
