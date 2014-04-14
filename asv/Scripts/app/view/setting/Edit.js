@@ -7,6 +7,7 @@
 
 Ext.define('QB.view.setting.Edit', {
     extend: 'Ext.container.Container',
+    requires: ['QB.common.Xform'],
     alias: 'widget.setedit',
     cls: 'x-panel-body-default-framed',
     layout: { type: 'hbox', align: 'stretch' },
@@ -14,7 +15,7 @@ Ext.define('QB.view.setting.Edit', {
     initComponent: function () {
         var me = this;
 
-        me.items = [me.form = Ext.widget('form', {
+        me.items = [me.form = Ext.widget('xform', {
             width: 440,
             defaults: { xtype: 'fieldset', margin: '5' },
             items: [{

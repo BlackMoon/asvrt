@@ -158,8 +158,8 @@
     <Content Include="Content\2leftarrow.png" />
     <Content Include="Content\admin16.png" />
     <Content Include="Content\alphabet16.png" />
+    <Content Include="Content\bullet_html.png" />
     <Content Include="Content\bullet_txt.png" />
-    <Content Include="Content\bullet_xls.png" />
     <Content Include="Content\bullet_xml.png" />
     <Content Include="Content\cancel.png" />
     <Content Include="Content\chain.png" />
@@ -2455,6 +2455,7 @@
     <Content Include="roles.xml" />
     <Content Include="Scripts\app\common\Bargrid.js" />
     <Content Include="Scripts\app\common\Bartree.js" />
+    <Content Include="Scripts\app\common\Xform.js" />
     <Content Include="Scripts\app\common\Generalset.js" />
     <Content Include="Scripts\app\common\Imagecolumn.js" />
     <Content Include="Scripts\app\common\Labelcolumn.js" />
@@ -2474,7 +2475,6 @@
     <Content Include="Scripts\app\model\Catalog.js" />
     <Content Include="Scripts\app\model\Func.js" />
     <Content Include="Scripts\app\model\Role.js" />
-    <Content Include="Scripts\app\model\Section.js" />
     <Content Include="Scripts\app\model\Table.js" />
     <Content Include="Scripts\app\model\Udb.js" />
     <Content Include="Scripts\app\model\Param.js" />
@@ -2500,19 +2500,14 @@
     <Content Include="Scripts\app\store\Qdbs.js" />
     <Content Include="Scripts\app\store\Queries.js" />
     <Content Include="Scripts\app\store\Roles.js" />
-    <Content Include="Scripts\app\store\Sections.js" />
     <Content Include="Scripts\app\store\Tables.js" />
     <Content Include="Scripts\app\store\Templates.js" />
     <Content Include="Scripts\app\store\Uconns.js" />
     <Content Include="Scripts\app\store\Users.js" />
-    <Content Include="Scripts\app\view\base\Add.js" />
     <Content Include="Scripts\app\view\catalog\Edit.js" />
     <Content Include="Scripts\app\view\catalog\List.js" />
     <Content Include="Scripts\app\view\catalog\Tlist.js" />
     <Content Include="Scripts\app\view\Eventlog.js" />
-    <Content Include="Scripts\app\view\section\Edit.js" />
-    <Content Include="Scripts\app\view\section\List.js" />
-    <Content Include="Scripts\app\view\section\Tlist.js" />
     <Content Include="Scripts\app\view\setting\Edit.js" />
     <Content Include="Scripts\ux\grid\FiltersFeature.js" />
     <Content Include="Scripts\ux\grid\filter\BooleanFilter.js" />

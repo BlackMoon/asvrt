@@ -95,6 +95,9 @@
             })
         }
         catch (e) {
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },

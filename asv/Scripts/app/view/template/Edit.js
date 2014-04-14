@@ -9,7 +9,7 @@
 
 Ext.define('QB.view.template.Edit', {
     extend: 'QB.common.Updwnd',
-    requires: ['QB.common.Updwnd'],
+    requires: ['QB.common.Updwnd', 'QB.common.Xform'],
     alias: 'widget.templateedit',
     readOnly: false,
     title: 'Шаблон',
@@ -20,7 +20,7 @@ Ext.define('QB.view.template.Edit', {
         var me = this;
 
         me.ffield = Ext.widget('filefield', { name: 'file', fieldLabel: 'Файл', labelWidth: 150, margin: '5', allowBlank: false, disabled: me.readOnly, vtype: 'xlsfile' });
-        me.form = Ext.widget('form',
+        me.form = Ext.widget('xform',
         {
             defaults: { anchor: '100%' },
             items: [{

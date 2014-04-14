@@ -20,7 +20,7 @@ Ext.apply(Ext.form.field.VTypes, {
 
 Ext.define('QB.view.user.Edit', {
     extend: 'QB.common.Updwnd',
-    requires: [ 'QB.common.Generalset', 'QB.common.Updwnd' ],
+    requires: ['QB.common.Generalset', 'QB.common.Updwnd', 'QB.common.Xform'],
     alias: 'widget.useredit',
     title: 'Пользователь',
     height: 460,
@@ -238,7 +238,7 @@ Ext.define('QB.view.user.Edit', {
             }]
         });
 
-        me.items = [me.form = Ext.widget('form', { layout: 'fit', border: 0, frame: false, items: [usrtabs] })];
+        me.items = [me.form = Ext.widget('xform', { layout: 'fit', border: 0, frame: false, items: [usrtabs] })];
         me.callParent(arguments);        
         me.rolesstore.load();        
     },
