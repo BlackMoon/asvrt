@@ -486,6 +486,7 @@ namespace asv.Managers
             return path;
         }
 
+        /*
         public IEnumerable<Alias> ImportAliases(Stream stream)
         {
             //FileStream fs = new FileStream(System.Web.HttpContext.Current.Server.MapPath(@"~\scheme0.xls"), FileMode.Open, FileAccess.Read);
@@ -551,7 +552,7 @@ namespace asv.Managers
                 }
                 yield return alias;
             }            
-        }
+        }*/
 
         private void InsertParam(ICell cell, IDictionary<string, object> repParams = null)
         {

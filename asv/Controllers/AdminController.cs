@@ -14,6 +14,9 @@ using PetaPoco;
 using System.Collections.Specialized;
 using System.IO;
 using log4net;
+using Sgml;
+using System.Xml;
+using System.Xml.XPath;
 
 namespace asv.Controllers
 {
@@ -646,26 +649,96 @@ namespace asv.Controllers
             
             try
             {
-                asv.Managers.ReportManager rm = new asv.Managers.ReportManager(null);                
+                // setup SgmlReader
+                SgmlReader sgmlReader = new Sgml.SgmlReader();
+                sgmlReader.DocType = "HTML";
+                sgmlReader.WhitespaceHandling = WhitespaceHandling.All;
+                sgmlReader.CaseFolding = Sgml.CaseFolding.ToLower;
+                sgmlReader.IgnoreDtd = true;
+                sgmlReader.InputStream = new StreamReader(file.InputStream);
 
-                int id, n = 0;
-                foreach (Alias a in rm.ImportAliases(file.InputStream))
+                // create document
+                XmlDocument xdoc = new XmlDocument();                
+                xdoc.PreserveWhitespace = true;                
+                xdoc.Load(sgmlReader);
+
+                int id, n = 0;             
+
+                XPathNavigator xnav = xdoc.CreateNavigator();
+                XPathNodeIterator it_p = xnav.Select("html//body//p");
+                while (it_p.MoveNext())
                 {
-                    System.Diagnostics.Debug.WriteLine(a.Name);
-                    if (db.Exists<Alias>("name = @0 AND parentid IS NULL", a.Name))
-                        id = db.ExecuteScalar<int>("SELECT IFNULL(a.id, 0) FROM qb_aliases a WHERE a.name = @0 AND a.parentid IS NULL", a.Name);                    
-                    else
-                        id = db.ExecuteScalar<int>("INSERT INTO qb_aliases(name, remark) VALUES(@0, @1);\nSELECT last_insert_rowid();", a.Name, a.Remark);
-
-                    foreach (Alias f in a.Fields)
+                    // if exists 
+                    XPathNavigator nav_h1 = it_p.Current.SelectSingleNode("a//h1");                    
+                    if (nav_h1 != null)
                     {
-                        db.Execute("INSERT OR REPLACE INTO qb_aliases(name, remark, parentid) VALUES(@0, @1, @2)", f.Name, f.Remark, id);
-                    }
+                        XPathNavigator nav_b = it_p.Current.SelectSingleNode("b");
 
-                    n++;
-                    System.Diagnostics.Debug.WriteLine(n);
+                        Alias alias = new Alias();
+                        alias.Name = nav_h1.Value;
+                        alias.Remark = nav_b.Value;
+
+                        System.Diagnostics.Debug.WriteLine(alias.Name);
+                        if (db.Exists<Alias>("name = @0 AND parentid IS NULL", alias.Name))
+                        {
+                            id = db.ExecuteScalar<int>("SELECT IFNULL(a.id, 0) FROM qb_aliases a WHERE a.name = @0 AND a.parentid IS NULL", alias.Name);
+                            db.Delete<Alias>("WHERE parentid = @0", id);
+                        }
+                        else
+                            id = db.ExecuteScalar<int>("INSERT INTO qb_aliases(name, remark) VALUES(@0, @1);\nSELECT last_insert_rowid();", alias.Name, alias.Remark);
+                        
+                        
+                        XPathNodeIterator it_tr = it_p.Current.Select("table//tr");
+                        if (it_tr.Count != 0)
+                        {
+                            IList<Alias> fields = new List<Alias>();
+                            // skip 1st tr - headers
+                            it_tr.MoveNext();
+
+                            while (it_tr.MoveNext())
+                            {
+                                Alias alias1 = new Alias();
+
+                                XPathNavigator nav_td1 = it_tr.Current.SelectSingleNode("td[1]");
+                                if (nav_td1 != null)
+                                    alias1.Name = nav_td1.Value;
+
+                                XPathNavigator nav_td2 = it_tr.Current.SelectSingleNode("td[2]");
+                                if (nav_td2 != null)
+                                    alias1.Remark = nav_td2.Value;
+
+                                fields.Add(alias1);
+                            }
+
+                            if (fields.Count > 0)
+                            {
+                                int ix = 0;
+                                List<string> keys = new List<string>();
+                                List<object> vals = new List<object>();
+
+                                foreach (Alias a in fields)
+                                {
+                                    keys.Add("@" + string.Join(", @", new int[] { ix, ix + 1, ix + 2 }));
+                                    vals.AddRange(new object[] { a.Name, a.Remark, id });
+                                    ix += 3;
+                                }
+
+                                string sql = "INSERT OR REPLACE INTO qb_aliases(name, remark, parentid) VALUES (" + string.Join("), (", keys) + ")";
+                                db.Execute(sql, vals.ToArray());
+
+                                System.Diagnostics.Debug.WriteLine(db.LastSQL);
+                            }
+                        }
+                      
+                        n++;
+                        System.Diagnostics.Debug.WriteLine(n);
+                    }
                 }
+                
                 msg = n.ToString();
+
+                Response.RemoveOutputCacheItem("/Admin/GetAlias");
+                Response.RemoveOutputCacheItem("/Admin/GetAliases");
             }
             catch (Exception e)
             {

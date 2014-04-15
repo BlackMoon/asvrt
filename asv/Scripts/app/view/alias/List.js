@@ -74,6 +74,8 @@ Ext.define('QB.view.alias.List', {
                         buttons: Ext.MessageBox.OK,
                         icon: Ext.MessageBox.INFO
                     });
+
+                    me.store.loadPage(1);
                 }
             });
         }
