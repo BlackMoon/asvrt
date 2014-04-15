@@ -9,7 +9,7 @@
 
 Ext.define('QB.view.user.Import', {
     extend: 'QB.common.Updwnd',
-    requires: ['QB.common.Updwnd'],
+    requires: ['QB.common.Updwnd', 'QB.common.Xform'],
     alias: 'widget.userimport',
     btnSave: false,
     title: 'Импорт пользователей',  
@@ -20,7 +20,7 @@ Ext.define('QB.view.user.Import', {
 
         me.ffield = Ext.widget('filefield', { name: 'file', fieldLabel: 'Файл', labelWidth: 150, margin: '5', allowBlank: false, vtype: 'xmlfile' });
 
-        me.form = Ext.widget('form', {
+        me.form = Ext.widget('xform', {
             defaults: { anchor: '100%', labelWidth: 150, margin: 5 },
             items: [ me.ffield,
             {
