@@ -408,7 +408,7 @@ namespace asv.Managers
                 }
 
                 // запрос
-                complexParams = dm.GetQData(name, drv, sql, args).ToList();
+                complexParams = dm.GetQData(name, drv, sql, args, -1).ToList();
                 len = complexParams.Count() - 1;
                 total = cr.R2 - cr.R1 - 1;
 

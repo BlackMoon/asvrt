@@ -537,7 +537,7 @@ namespace asv.Controllers
                 // reports                
                 foreach (Template r in q.Reports)
                 {
-                    db.Execute("INSERT INTO qb_reports(queryid, tplid) qS(@0, @1)", q.Id, r.Id);
+                    db.Execute("INSERT INTO qb_reports(queryid, tplid) VALUES(@0, @1)", q.Id, r.Id);
                 }                
 
                 // user functions                
