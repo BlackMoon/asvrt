@@ -17,8 +17,7 @@ namespace asv.Managers
 {
     public class DataManager
     {
-        public int ConnTimeout = 300;               // 5 мин      
-        public int ItemsPerPage = 50;        
+        public int ConnTimeout = 300;               // 5 мин              
         public long TotalItems;
 
         public MemberPrincipal Person;
@@ -30,11 +29,7 @@ namespace asv.Managers
 
             string key = "ConnTimeout";
             if (ass.Settings[key] != null)
-                ConnTimeout = Misc.GetConfigValue(ass.Settings[key].Value, 50);
-
-            key = "ItemsPerPage";
-            if (ass.Settings[key] != null)
-                ItemsPerPage = Misc.GetConfigValue(ass.Settings[key].Value, 50);
+                ConnTimeout = Misc.GetConfigValue(ass.Settings[key].Value, 50);           
         }
          
         private IDictionary<string, object> DataToExpando(OdbcDataReader reader)
@@ -245,7 +240,7 @@ namespace asv.Managers
         /// <param name="toPage">Страница по</param>
         /// <param name="limit">Записей на странице</param>
         /// <returns>IEnumerable</returns>
-        public IEnumerable<dynamic> GetQData(string name, eDriverType drv, string sql, object [] args, int limit = 50)
+        public IEnumerable<dynamic> GetQData(string name, eDriverType drv, string sql, object [] args, int limit = -1)
         {   
             ConnectionStringSettings css = ConfigurationManager.ConnectionStrings[name];
             
@@ -273,10 +268,10 @@ namespace asv.Managers
                     switch (drv)
                     {
                         case eDriverType.DriverCaché:
-                            sql = sql.Insert(6, " TOP " + ItemsPerPage);
+                            sql = sql.Insert(6, " TOP " + limit);
                             break;
                         case eDriverType.DriverDB2:
-                            sql = sql.TrimEnd(';') + " FETCH FIRST " + ItemsPerPage + " ROWS ONLY;";
+                            sql = sql.TrimEnd(';') + " FETCH FIRST " + limit + " ROWS ONLY;";
                             break;
                     }
                 }

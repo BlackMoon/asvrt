@@ -18,6 +18,7 @@ namespace asv.Controllers
 {    
     public class MainController : BaseController
     {
+        private int itemsPerPage;
         private DataManager dm = new DataManager();        
 
         protected override void Initialize(RequestContext requestContext)
@@ -27,6 +28,16 @@ namespace asv.Controllers
             if (Request.IsAuthenticated)
                 dm.Person = User;            
         }
+
+        public MainController()
+        {
+            Configuration cfg = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+            AppSettingsSection ass = cfg.AppSettings;
+
+            string key = "ItemsPerPage";
+            if (ass.Settings[key] != null)
+                itemsPerPage = Misc.GetConfigValue(ass.Settings[key].Value, 50);
+        }
         
         public ActionResult Index()
         {
@@ -34,7 +45,7 @@ namespace asv.Controllers
             AssemblyName an = assembly.GetName();
 
             ViewBag.ConnTimeout = dm.ConnTimeout;
-            ViewBag.ItemsPerPage = dm.ItemsPerPage;
+            ViewBag.ItemsPerPage = itemsPerPage;
 
             ViewData["minRequiredPasswordLength"] = Membership.MinRequiredPasswordLength;
             ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
@@ -128,7 +139,7 @@ namespace asv.Controllers
                 ThreadContext.Properties["user"] = User.Identity.Name;                
                 log.Info("Выполнение запроса -" + query + ".");
 
-                rows = dm.GetQData(name, drv, sql, args, 50).ToList();
+                rows = dm.GetQData(name, drv, sql, args, itemsPerPage).ToList();
                 total = rows.Count();
             }
             catch (Exception e)

@@ -21,7 +21,7 @@ namespace asv.Managers
         OfficeXml
     }
     
-    // контейнер координат - (P1 - 1я стр., P2 - последняя стр., S - лист, R1 - 1й ряд, R2 - посл. ряд)
+    // контейнер координат - (P1 - 1я запись, P2 - последняя запись, S - лист, R1 - 1й ряд, R2 - посл. ряд)
     class ComplexRows
     {        
         public int P1 { get; set; }
@@ -391,7 +391,7 @@ namespace asv.Managers
             DataManager dm = new DataManager();
             dm.Person = person;
 
-            List<dynamic> complexParams;
+            List<dynamic> complexParams = dm.GetQData(name, drv, sql, args, -1).ToList();
                         
             dynamic data;
             int i, len, offset = 0, rn, total;
@@ -408,7 +408,7 @@ namespace asv.Managers
                 }
 
                 // запрос
-                complexParams = dm.GetQData(name, drv, sql, args, -1).ToList();
+                //complexParams = dm.GetQData(name, drv, sql, args, -1).ToList();
                 len = complexParams.Count() - 1;
                 total = cr.R2 - cr.R1 - 1;
 
@@ -501,74 +501,6 @@ namespace asv.Managers
 
             return path;
         }
-
-        /*
-        public IEnumerable<Alias> ImportAliases(Stream stream)
-        {
-            //FileStream fs = new FileStream(System.Web.HttpContext.Current.Server.MapPath(@"~\scheme0.xls"), FileMode.Open, FileAccess.Read);
-            IWorkbook wb = new HSSFWorkbook(stream);
-            //fs.Close();
-
-            ICell cell, cell1;
-            IRow row;
-            ISheet sheet;
-
-            IEnumerator rows, sheets = wb.GetEnumerator();
-
-            string cv, cv1;
-            Alias alias = null, alias1;
-            while (sheets.MoveNext())
-            {
-                sheet = (ISheet)sheets.Current;
-
-                rows = sheet.GetEnumerator();
-                while (rows.MoveNext())
-                {
-                    row = (IRow)rows.Current;
-
-                    cell = row.GetCell(0);
-                    cv = cell.StringCellValue;
-
-                    if (!string.IsNullOrEmpty(cv))
-                    {
-                        if (cv.StartsWith("ASV_"))
-                        {
-                            if (alias != null)
-                                yield return alias;
-
-                            alias = new Alias();
-                            alias.Name = cv;
-                            alias.Fields = new List<Alias>();
-
-                            row = sheet.GetRow(row.RowNum + 2);
-                            if (row != null)
-                            {
-                                cell = row.GetCell(0);
-
-                                if (cell != null)
-                                    alias.Remark = cell.StringCellValue;
-                            }
-
-                        }
-                        else if (!cv.StartsWith("^") && !cv.StartsWith("Наименование"))
-                        {
-                            cell1 = row.GetCell(1);
-                            if (cell1 != null)
-                            {
-                                cv1 = cell1.StringCellValue;
-
-                                alias1 = new Alias();
-                                alias1.Name = cv;
-                                alias1.Remark = cv1;
-
-                                alias.Fields.Add(alias1);
-                            }
-                        }
-                    }
-                }
-                yield return alias;
-            }            
-        }*/
 
         private void InsertParam(ICell cell, IDictionary<string, object> repParams = null)
         {

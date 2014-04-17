@@ -566,7 +566,7 @@ namespace asv.Controllers
                 // поиск по имени таблицы
                 asv.Managers.DataManager dm = new asv.Managers.DataManager();
                 tables = dm.GetSData(name, drv, page, limit, query, tnames).ToList();
-                total = dm.TotalItems;
+                total = tables.Count();
 
                 tnames = tables.ConvertAll<string>(new Converter<dynamic, string>(t => { return t["name"]; }));
 
