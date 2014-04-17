@@ -42,6 +42,14 @@ namespace asv.Controllers
             {
                 try
                 {
+                    // xor decode
+                    char[] buff = model.Password.ToCharArray();
+                    for (int i = 0; i < model.Password.Length; ++i)
+                    {
+                        buff[i] = (char)(model.Password[i] ^ 128);
+                    }
+                    model.Password = new string(buff);
+
                     if (Membership.ValidateUser(model.Login, model.Password))
                     {
                         MembershipPerson mp = (MembershipPerson)Membership.GetUser(model.Login);

@@ -17,9 +17,6 @@ namespace asv.Controllers
 {    
     public class MainController : BaseController
     {
-        private const string aliaskey = "_aliases";
-        private const string remkey = "_remarks";
-
         private DataManager dm = new DataManager();        
 
         protected override void Initialize(RequestContext requestContext)
@@ -161,11 +158,11 @@ namespace asv.Controllers
                             nodes = dm.GetSData(name, drv.Value).ToList();
 
                             // алиасы                                            
-                            IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[aliaskey];
+                            IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[Misc.aliaskey];
                             if (aliases == null)
                             {
                                 aliases = db.Fetch<Pair<string, string>>("SELECT a.name key, a.remark value FROM qb_aliases a WHERE a.parentid IS NULL").ToDictionary(o => o.Key, o => o.Value);
-                                HttpContext.Cache.Add(aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                                HttpContext.Cache.Add(Misc.aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                             }
 
                             foreach (IDictionary<string, object> nd in nodes)
@@ -182,11 +179,11 @@ namespace asv.Controllers
 
                             // алиасы-поля 
                             string arg = name.ToUpper();               
-                            IDictionary<string, string> rems = (IDictionary<string, string>)HttpContext.Cache[remkey + arg];
+                            IDictionary<string, string> rems = (IDictionary<string, string>)HttpContext.Cache[Misc.remkey + arg];
                             if (rems == null)
                             {
                                 rems = db.Fetch<Pair<string, string>>("SELECT UPPER(f.name) key, f.remark value FROM qb_aliases a JOIN qb_aliases f ON f.parentid = a.id WHERE UPPER(a.name) = @0", arg).ToDictionary(o => o.Key, o => o.Value);
-                                HttpContext.Cache.Add(remkey + arg, rems, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                                HttpContext.Cache.Add(Misc.remkey + arg, rems, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                             }
 
                             foreach (dynamic nd in nodes)
@@ -327,11 +324,11 @@ namespace asv.Controllers
                         
                         // алиасы-поля 
                         string arg = table.ToUpper(), key;
-                        IDictionary<string, string> rems = (IDictionary<string, string>)HttpContext.Cache[remkey + arg];
+                        IDictionary<string, string> rems = (IDictionary<string, string>)HttpContext.Cache[Misc.remkey + arg];
                         if (rems == null)
                         {
                             rems = db.Fetch<Pair<string, string>>("SELECT UPPER(f.name) key, f.remark value FROM qb_aliases a JOIN qb_aliases f ON f.parentid = a.id WHERE UPPER(a.name) = @0", arg).ToDictionary(o => o.Key, o => o.Value);
-                            HttpContext.Cache.Add(remkey + arg, rems, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                            HttpContext.Cache.Add(Misc.remkey + arg, rems, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                         }
 
                         List<Field> fields = new List<Field>();
@@ -436,11 +433,11 @@ namespace asv.Controllers
                 {
                     // алиасы
                     sql = "SELECT a.name key, a.remark value FROM qb_aliases a WHERE a.parentid IS NULL";                                          
-                    IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[aliaskey];
+                    IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[Misc.aliaskey];
                     if (aliases == null)
                     {
                         aliases = db.Fetch<Pair<string, string>>(sql).ToDictionary(o => o.Key, o => o.Value);
-                        HttpContext.Cache.Add(aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                        HttpContext.Cache.Add(Misc.aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
                     }
                 
                     foreach (IDictionary<string, object> tb in tables)
@@ -508,8 +505,8 @@ namespace asv.Controllers
                     query = " №" + q.Id + query;
                 }
                 else
-                    id = q.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6);\nSELECT last_insert_rowid();",
-                        q.Name, q.Conn, q.Group, q.Subgroup, q.Sql, q.UseLeftJoin, User.Id);
+                    id = q.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, userdefined, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6, @7);\nSELECT last_insert_rowid();",
+                        q.Name, q.Conn, q.Group, q.Subgroup, q.Sql, q.UseLeftJoin, q.UserDefined, User.Id);
 
                 // tables insert first                
                 foreach (Table t in q.Tables)

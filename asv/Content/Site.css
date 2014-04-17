@@ -106,6 +106,10 @@
     background-image: url("/Content/bullet_txt.png") !important;
 }
 
+.icon-xls {
+    background-image: url("/Content/bullet_xls.png") !important;
+}
+
 .icon-xml {
     background-image: url("/Content/bullet_xml.png") !important;
 }

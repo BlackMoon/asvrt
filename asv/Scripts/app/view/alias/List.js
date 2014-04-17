@@ -53,7 +53,7 @@ Ext.define('QB.view.alias.List', {
         {
             if (!fb.isValid()) throw fb.getErrors();
 
-            me.setLoading(true);
+            me.setLoading('Импорт');
             form.getForm().submit({
                 url: 'admin/importaliases',
                 failure: function (f, a) {

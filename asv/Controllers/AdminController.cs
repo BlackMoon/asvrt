@@ -906,7 +906,10 @@ namespace asv.Controllers
                 foreach (Alias f in a.Fields)
                 {                    
                     db.Execute("INSERT INTO qb_aliases(name, remark, parentid) VALUES(@0, @1, @2)", f.Name, f.Remark, a.Id);                    
-                }   
+                }
+
+                HttpContext.Cache.Remove(Misc.aliaskey);
+                HttpContext.Cache.Remove(Misc.remkey + a.Name);
 
                 Response.RemoveOutputCacheItem("/Admin/GetAliases");
                 Response.RemoveOutputCacheItem("/Main/GetTables");
@@ -1011,7 +1014,7 @@ namespace asv.Controllers
 
                 Configuration cfg = WebConfigurationManager.OpenWebConfiguration("~");
                 ConnectionStringsSection css = (ConnectionStringsSection)cfg.GetSection("connectionStrings");
-
+                
                 ConnectionStringSettings cs = css.ConnectionStrings[conn.Name];
                 if (cs != null)                
                     cs.ConnectionString = conStr;

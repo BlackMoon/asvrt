@@ -825,7 +825,7 @@ Ext.define('QB.controller.Admin', {
                     return (b.get('auth') && b.get('conn'));
                 })
                 if (ix == -1) throw 'Выберите базу для авторизации!';
-            }            
+            }               
 
             usr.isadmin = usr.isadmin || 0;
             usr.isapproved = usr.isapproved || 0;
