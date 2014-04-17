@@ -22,7 +22,7 @@
             enableSearch: false,
             items: [{
                 text: 'Очистить журнал',
-                iconCls: 'icon-delete',
+                iconCls: 'icon-deletelist',
                 action: 'clearlog'
             },
             {

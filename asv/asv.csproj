@@ -170,6 +170,7 @@
     <Content Include="Content\db.png" />
     <Content Include="Content\dbs.png" />
     <Content Include="Content\delete.png" />
+    <Content Include="Content\delete_list.png" />
     <Content Include="Content\disk.png" />
     <Content Include="Content\ext-theme-access\ext-theme-access-all-debug.css" />
     <Content Include="Content\ext-theme-access\ext-theme-access-all-rtl-debug.css" />
