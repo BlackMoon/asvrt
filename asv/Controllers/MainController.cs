@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -29,11 +30,15 @@ namespace asv.Controllers
         
         public ActionResult Index()
         {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            AssemblyName an = assembly.GetName();
+
             ViewBag.ConnTimeout = dm.ConnTimeout;
             ViewBag.ItemsPerPage = dm.ItemsPerPage;
 
             ViewData["minRequiredPasswordLength"] = Membership.MinRequiredPasswordLength;
             ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
+            ViewData["version"] = an.Version;
             
             IDictionary<string, object> obj = new Dictionary<string, object>();
             obj["singleton"] = true;

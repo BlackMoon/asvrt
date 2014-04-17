@@ -2508,6 +2508,7 @@
     <Content Include="Scripts\app\store\Templates.js" />
     <Content Include="Scripts\app\store\Uconns.js" />
     <Content Include="Scripts\app\store\Users.js" />
+    <Content Include="Scripts\app\view\About.js" />
     <Content Include="Scripts\app\view\catalog\Edit.js" />
     <Content Include="Scripts\app\view\catalog\List.js" />
     <Content Include="Scripts\app\view\catalog\Tlist.js" />
@@ -2555,10 +2556,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\site.css" />
-    <Content Include="Views\Account\ChangePassword.cshtml" />
-    <Content Include="Views\Account\ChangePasswordSuccess.cshtml" />
-    <Content Include="Views\Account\LogOn.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Main\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
