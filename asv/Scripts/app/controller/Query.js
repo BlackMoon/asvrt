@@ -851,10 +851,15 @@ Ext.define('QB.controller.Query', {
 
                         panel.add({
                             title: 'Данные',
-                            xtype: 'bargrid',
-                            store: store,
-                            tbarConfig: { enable: false },
-                            columns: [{ xtype: 'rownumberer', resizable: true, width: 28 }].concat(cols)
+                            xtype: 'grid',
+                            store: store,                            
+                            columns: [{ xtype: 'rownumberer', resizable: true, width: 28 }].concat(cols),
+                            bbar: Ext.create('Ext.PagingToolbar', {
+                                store: store,
+                                displayInfo: true,
+                                displayMsg: 'Выбраны первые {1} записей',
+                                emptyMsg: 'Нет записей'
+                            })
                         }).show();
                     }
                 }

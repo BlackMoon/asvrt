@@ -73,7 +73,7 @@ namespace asv.Managers
             #region header cell style
             IFont hf = wb.CreateFont();
             hf.FontHeightInPoints = 18;
-            hf.Boldweight = (short)FontBoldWeight.BOLD;
+            hf.Boldweight = (short)FontBoldWeight.Bold;
 
             ICellStyle hs = wb.CreateCellStyle();
             hs.SetFont(hf);
@@ -81,18 +81,18 @@ namespace asv.Managers
 
             #region border cell style
             ICellStyle bs = wb.CreateCellStyle();
-            bs.BorderLeft = bs.BorderRight = bs.BorderTop = bs.BorderBottom = BorderStyle.THIN;
+            bs.BorderLeft = bs.BorderRight = bs.BorderTop = bs.BorderBottom = BorderStyle.Thin;
             #endregion
 
             #region table header cell style
             IFont tf = wb.CreateFont();
-            tf.Boldweight = (short)FontBoldWeight.BOLD;
+            tf.Boldweight = (short)FontBoldWeight.Bold;
 
             ICellStyle ts = wb.CreateCellStyle();
             ts.CloneStyleFrom(bs);
-            ts.Alignment = HorizontalAlignment.CENTER;
-            ts.FillPattern = FillPatternType.SOLID_FOREGROUND;
-            ts.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.PALE_BLUE.index;
+            ts.Alignment = HorizontalAlignment.Center;
+            ts.FillPattern = FillPattern.SolidForeground;
+            ts.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.PaleBlue.Index;
             ts.SetFont(tf);           
             #endregion
 
@@ -100,6 +100,15 @@ namespace asv.Managers
             ICellStyle cs = wb.CreateCellStyle();
             cs.CloneStyleFrom(bs);
             cs.WrapText = true;
+            #endregion
+
+            #region date cell style
+            ICellStyle ds1 = wb.CreateCellStyle();
+            ds1.DataFormat = wb.CreateDataFormat().GetFormat("d.mm.yyyy hh:mm");
+
+            ICellStyle ds2 = wb.CreateCellStyle();
+            ds2.CloneStyleFrom(cs);
+            ds2.DataFormat = (short)BuiltinFormats.GetBuiltinFormat("m/d/yy");
             #endregion
 
             ICell cell = sheet.CreateRow(0).CreateCell(0);
@@ -112,7 +121,10 @@ namespace asv.Managers
 
             row = sheet.CreateRow(3);
             row.CreateCell(0).SetCellValue("Дата:");
-            row.CreateCell(1).SetCellValue(DateTime.Now.ToString("dd.MM.yyyy HH:mm"));
+            
+            cell = row.CreateCell(1);
+            cell.CellStyle = ds1;
+            cell.SetCellValue(DateTime.Now);
 
             string v = null;
             foreach (UParam p in userParams)
@@ -131,12 +143,11 @@ namespace asv.Managers
             dm.Person = person;
 
             dynamic q;
-            List<dynamic> data = dm.GetQData(name, drv, sql, args).ToList();
-            int total = (int)dm.TotalItems;
+            List<dynamic> data = dm.GetQData(name, drv, sql, args, -1).ToList();
+            int total = data.Count();
 
             if (total > 0)
             {
-
                 int i, j,
                     sheets = total / XLSMAXROWS,
                     rem = total % XLSMAXROWS;
@@ -170,7 +181,10 @@ namespace asv.Managers
                             cell.CellStyle = cs;
 
                             if (val is DateTime)
-                                cell.SetCellValue(((DateTime)val).ToShortDateString());
+                            {                                
+                                cell.CellStyle = ds2;
+                                cell.SetCellValue((DateTime)val);
+                            }
                             else if (val is Double)
                                 cell.SetCellValue((Double)val);
                             else if (val is Int16)
@@ -187,7 +201,6 @@ namespace asv.Managers
                     }
 
                     sheet = wb.CreateSheet("Лист" + sn++);
-
                     rn = 0;
                 }
 
@@ -220,7 +233,10 @@ namespace asv.Managers
                         cell.CellStyle = cs;
 
                         if (val is DateTime)
-                            cell.SetCellValue(((DateTime)val).ToShortDateString());
+                        {
+                            cell.CellStyle = ds2;
+                            cell.SetCellValue((DateTime)val);
+                        }
                         else if (val is Double)
                             cell.SetCellValue((Double)val);
                         else if (val is Int16)
@@ -392,7 +408,7 @@ namespace asv.Managers
                 }
 
                 // запрос
-                complexParams = dm.GetQData(name, drv, sql, args, cr.P1, Math.Max(cr.P1, cr.P2), dm.ItemsPerPage).ToList();
+                complexParams = dm.GetQData(name, drv, sql, args).ToList();
                 len = complexParams.Count() - 1;
                 total = cr.R2 - cr.R1 - 1;
 

@@ -112,13 +112,13 @@ namespace asv.Controllers
         /// <returns>JSON</returns>
         //[OutputCache(Duration = 120, VaryByParam = "name;drv;sql;args;page;limit")]
         [Authorize]
-        public JsonNetResult Execute(string name, eDriverType drv, string sql, int? id, string qname, object [] args, int page, int limit)
+        public JsonNetResult Execute(string name, eDriverType drv, string sql, int? id, string qname, object [] args)
         {
             byte result = 1;
             string msg = null;
 
             long total = 0;
-            List<dynamic> rows = new List<dynamic>();
+            IEnumerable<dynamic> rows = new List<dynamic>();
             try
             {
                 string query = " (" + qname + ")";
@@ -128,8 +128,8 @@ namespace asv.Controllers
                 ThreadContext.Properties["user"] = User.Identity.Name;                
                 log.Info("Выполнение запроса -" + query + ".");
 
-                rows = dm.GetQData(name, drv, sql, args, page, page, limit).ToList();
-                total = dm.TotalItems;
+                rows = dm.GetQData(name, drv, sql, args, 50).ToList();
+                total = rows.Count();
             }
             catch (Exception e)
             {

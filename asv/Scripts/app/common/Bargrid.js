@@ -77,7 +77,8 @@ Ext.define('QB.common.Bargrid', {
 
         me.bbarConfig.enable && (me.bbar = new Ext.toolbar.Paging({
             itemId: 'bbar',
-            store: me.store, displayInfo: true,
+            store: me.store,
+            displayInfo: true,
             emptyMsg: 'Нет записей',
             displayMsg: 'Выбрано {0} - ' + ((me.bbarConfig.kind == 'default') ? '{1}' : '{2}') + ' из {2}',
             kind: me.bbarConfig.kind,

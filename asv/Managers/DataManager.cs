@@ -29,12 +29,10 @@ namespace asv.Managers
             AppSettingsSection ass = cfg.AppSettings;
 
             string key = "ConnTimeout";
-
             if (ass.Settings[key] != null)
                 ConnTimeout = Misc.GetConfigValue(ass.Settings[key].Value, 50);
 
             key = "ItemsPerPage";
-
             if (ass.Settings[key] != null)
                 ItemsPerPage = Misc.GetConfigValue(ass.Settings[key].Value, 50);
         }
@@ -247,17 +245,12 @@ namespace asv.Managers
         /// <param name="toPage">Страница по</param>
         /// <param name="limit">Записей на странице</param>
         /// <returns>IEnumerable</returns>
-        public IEnumerable<dynamic> GetQData(string name, eDriverType drv, string sql, object [] args, int fromPage = -1, int toPage = -1, int limit = 0)
+        public IEnumerable<dynamic> GetQData(string name, eDriverType drv, string sql, object [] args, int limit = 50)
         {   
             ConnectionStringSettings css = ConfigurationManager.ConnectionStrings[name];
             
             if (css != null)
-            {                  
-                // Split the SQL
-                PagingHelper.SQLParts parts;
-                if (!PagingHelper.SplitSQL(sql, out parts))
-                    throw new Exception("Unable to parse SQL statement for paged query");
-
+            {   
                 string conStr = css.ConnectionString;
                 
                 // авторизация на сервере
@@ -275,33 +268,22 @@ namespace asv.Managers
                 OdbcConnection con = new OdbcConnection(conStr);                
                 con.Open();
 
-                bool hasOrder = true;
-                parts.sqlCount = "SELECT COUNT(*) FROM (" + sql.TrimEnd(';') + ")"; 
-                switch (drv)
+                if (limit != -1)
                 {
-                    case eDriverType.DriverCaché:
-                        int ix = sql.LastIndexOf("order by", StringComparison.CurrentCultureIgnoreCase);
+                    switch (drv)
+                    {
+                        case eDriverType.DriverCaché:
+                            sql = sql.Insert(6, " TOP " + ItemsPerPage);
+                            break;
+                        case eDriverType.DriverDB2:
+                            sql = sql.TrimEnd(';') + " FETCH FIRST " + ItemsPerPage + " ROWS ONLY;";
+                            break;
+                    }
+                }
 
-                        if (ix != -1)
-                        {
-                            parts.sqlOrderBy = sql.Substring(ix);
-
-                            if (sql.Last() == ')')
-                                parts.sqlOrderBy = parts.sqlOrderBy.Substring(0, parts.sqlOrderBy.Length - 1);
-
-                            parts.sqlCount = parts.sqlCount.Replace(parts.sqlOrderBy, string.Empty);
-                        }
-                        else
-                            hasOrder = false;                        
-
-                        break;
-                    case eDriverType.DriverDB2:
-                        parts.sqlCount += ";";  
-                        break;
-                }                
-                
-                OdbcCommand com = new OdbcCommand(parts.sqlCount, con);
+                OdbcCommand com = new OdbcCommand(sql, con);
                 com.CommandTimeout = ConnTimeout;
+                
                 if (args != null)
                 {
                     for (int i = 0; i < args.Length; ++i)
@@ -310,53 +292,14 @@ namespace asv.Managers
                     }
                 }
 
-                TotalItems = Convert.ToInt64(com.ExecuteScalar());
-
-                if (TotalItems > 0)
+                OdbcDataReader reader = com.ExecuteReader();
+                while (reader.Read())
                 {
-                    // build page query
-                    if (fromPage != -1)
-                    {
-                        string sqlPage = null;
-                        int skip = (fromPage - 1) * limit,
-                            take = skip + (toPage - fromPage + 1) * limit;
-
-                        switch (drv)
-                        {
-                            case eDriverType.DriverCaché:
-
-                                if (!string.IsNullOrEmpty(parts.sqlOrderBy))
-                                {
-                                    if (hasOrder)
-                                        parts.sqlSelectRemoved = parts.sqlSelectRemoved.Replace(parts.sqlOrderBy, string.Empty);
-
-                                    //re = new Regex(@"(\w+\.)");
-                                    //parts.sqlOrderBy = re.Replace(parts.sqlOrderBy, string.Empty);
-                                }
-
-                                sqlPage = "SELECT TOP " + (toPage - fromPage + 1) * limit + " *, %vid rn FROM (SELECT " + parts.sqlSelectRemoved + ") WHERE %vid > " + skip + " AND %vid <= " + take;
-                                break;
-                            case eDriverType.DriverDB2:
-                                
-                                parts.sqlSelectRemoved = parts.sqlSelectRemoved.TrimEnd(';');
-
-                                sqlPage = "SELECT * FROM (SELECT ROW_NUMBER() OVER (" + (parts.sqlOrderBy == null ? "ORDER BY 1" : parts.sqlOrderBy) + ") rn, " + parts.sqlSelectRemoved + ") WHERE rn > " + skip + " AND rn <= " + take + ";";
-                                break;
-                        }
-                        com.CommandText = sqlPage;
-                    }
-                    else
-                        com.CommandText = sql;
-
-                    OdbcDataReader reader = com.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        yield return DataToExpando(reader);
-                    }
-                    reader.Close();
-
-                    con.Close();
+                    yield return DataToExpando(reader);
                 }
+                reader.Close();
+
+                con.Close();                
             }
         }
         

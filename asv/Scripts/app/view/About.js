@@ -11,7 +11,7 @@
 
         me.items = [{
             xtype: 'container',            
-            margin: '5',
+            margin: '10',
             items: [{
                 xtype: 'label',
                 text: 'Конструктор запросов'
