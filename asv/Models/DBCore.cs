@@ -140,7 +140,7 @@ namespace asv.Models
         [JsonProperty("refcols")]
         public List<string> RefColumns { get; set; }                    // столбцы первичного ключа
 
-        public ForeignKey(object name, object refTable, object columns, object refColumns) : base(name, eNodeType.NodeKey)
+        public ForeignKey(object name, object refTable, object columns, object refColumns) : base(name, eNodeType.NodeForeignKey)
         {            
             RefTable = refTable.ToString();
 

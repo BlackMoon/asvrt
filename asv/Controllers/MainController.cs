@@ -166,20 +166,20 @@ namespace asv.Controllers
                 if (nt != null)
                 {
                     // TODO перевести в статические типы
-                    string key;
 
+                    // алиасы                                            
+                    IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[Misc.aliaskey];
+                    if (aliases == null)
+                    {
+                        aliases = db.Fetch<Pair<string, string>>("SELECT a.name key, a.remark value FROM qb_aliases a WHERE a.parentid IS NULL").ToDictionary(o => o.Key, o => o.Value);
+                        HttpContext.Cache.Add(Misc.aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                    }
+
+                    string key;
                     switch (nt.Value)
                     {
                         case eNodeType.NodeScheme:
                             nodes = dm.GetSData(name, drv.Value).ToList();
-
-                            // алиасы                                            
-                            IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[Misc.aliaskey];
-                            if (aliases == null)
-                            {
-                                aliases = db.Fetch<Pair<string, string>>("SELECT a.name key, a.remark value FROM qb_aliases a WHERE a.parentid IS NULL").ToDictionary(o => o.Key, o => o.Value);
-                                HttpContext.Cache.Add(Misc.aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
-                            }
 
                             foreach (IDictionary<string, object> nd in nodes)
                             {
@@ -209,10 +209,21 @@ namespace asv.Controllers
 
                                     foreach (Field fd in fields)
                                     {
-                                        key = fd.Name.ToUpper();
+                                        // внешние ключи --> 
+                                        if (fd.Nt == eNodeType.NodeForeignKey)
+                                        {
+                                            key = (fd as ForeignKey).RefTable;
 
-                                        if (rems.ContainsKey(key))
-                                            fd.Qtip = rems[key];
+                                            if (aliases.ContainsKey(key))
+                                                fd.Qtip = aliases[key];
+                                        }
+                                        else
+                                        {
+                                            key = fd.Name.ToUpper();
+
+                                            if (rems.ContainsKey(key))
+                                                fd.Qtip = rems[key];
+                                        }
                                     }
                                 }
                             }

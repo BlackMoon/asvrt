@@ -16,6 +16,7 @@
                         return 'icon-field';
                         break;                    
                     case 4:
+                    case 6:
                         return 'icon-key';
                         break;
                     case 5:
@@ -28,7 +29,17 @@
             name: 'loaded',
             type: 'boolean',
             convert: function (v, r) {
-                    return (r.get('nt') == 3);
+                return (r.get('nt') == 3);
             }            
+        },
+        {
+            name: 'qtip',
+            type: 'string',
+            convert: function (v, r) {                
+                if (r.get('nt') == 6)
+                    v = r.get('cols') + ' -> ' + r.get('reftable') + ' (' + v + ') : ' + r.get('refcols');
+
+                return v;
+            }
         }]
 });
