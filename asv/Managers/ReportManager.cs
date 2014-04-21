@@ -432,7 +432,7 @@ namespace asv.Managers
                 if (cr.P2 == -1)
                     cr.P2 = len;
                 
-                for (i = cr.P1; i < cr.P2; ++i)
+                for (i = cr.P1; i < cr.P2 - 1; ++i)
                 {
                     data = complexParams[i];
                     for (rn = 0; rn < total; ++rn)
@@ -449,6 +449,17 @@ namespace asv.Managers
 
                         cr.R1++;
                     }                    
+                }
+
+                // последний ряд
+                data = complexParams[i];
+                row = sheet.GetRow(cr.R1);
+
+                cells = row.GetEnumerator();
+                while (cells.MoveNext())
+                {
+                    cell = (ICell)cells.Current;
+                    InsertParam(cell, data);
                 }  
                 
                 //TODO

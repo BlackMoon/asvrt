@@ -92,7 +92,9 @@ namespace asv.Controllers
         [Authorize]
         public JsonNetResult LogOff()
         {
+            Response.RemoveOutputCacheItem("/Main/GetQueries"); 
             Response.RemoveOutputCacheItem("/Main/GetTables"); 
+
             FormsAuthentication.SignOut();
 
             string key = User.Identity.Name;

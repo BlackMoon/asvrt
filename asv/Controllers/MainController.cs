@@ -299,11 +299,16 @@ namespace asv.Controllers
             List<dynamic> queries = new List<dynamic>();
             try
             {
-                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q",
-                       where = string.Empty;
+                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q";
 
-                if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
-                    sql += " WHERE q.usercreate = @0";
+                if (User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER"))
+                {   
+                    MembershipPerson mp = (MembershipPerson)HttpContext.Cache[User.Identity.Name];
+                    if (mp != null)                    
+                        sql += " WHERE q.conn IN ('" + string.Join("', '", mp.Bases.Select(b => b.Conn)) + "')";                    
+                }
+                else
+                    sql += " WHERE q.usercreate = @0";                
 
                 sql += " ORDER BY q.name";
 
