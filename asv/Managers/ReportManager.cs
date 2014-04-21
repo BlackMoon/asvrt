@@ -347,8 +347,8 @@ namespace asv.Managers
             Regex rx = new Regex(@"#Запрос,?\s?(\d+)*-?\s?(\d+)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);            
             Match m;
 
+            int limit = -1;
             IEnumerator cells, rows, sheets = wb.GetEnumerator();
-
             while (sheets.MoveNext())
             {
                 sheet = (ISheet)sheets.Current;
@@ -374,6 +374,12 @@ namespace asv.Managers
 
                                 compl.P1 = Misc.GetConfigValue(m.Groups[1].Value, -1);
                                 compl.P2 = Misc.GetConfigValue(m.Groups[2].Value, -1);
+
+                                if (compl.P1 != -1)
+                                    compl.P1--;
+
+                                if (compl.P2 != -1)
+                                    compl.P2--;
 
                                 break;
                             }
@@ -416,19 +422,19 @@ namespace asv.Managers
                 }
                 
                 total = cr.TotalRows;
-                                
+
                 if (cr.R2 == sheet.LastRowNum)
                     sheet.CreateRow(cr.R2 + 1);
 
                 // удалить ряд 'Запрос' --> смещение -1   
                 sheet.RemoveRow(sheet.GetRow(cr.R1));
-                sheet.ShiftRows(cr.R1, sheet.LastRowNum, -1);
+                sheet.ShiftRows(cr.R1 + 1, sheet.LastRowNum, -1);
                 
                 // удалить ряд 'Конец_Запрос' --> смещение -1
                 cr.R2--;
                 sheet.RemoveRow(sheet.GetRow(cr.R2));
-                sheet.ShiftRows(cr.R2, sheet.LastRowNum, -1);
-
+                sheet.ShiftRows(cr.R2 + 1, sheet.LastRowNum, -1);
+                
                 if (cr.P2 == -1)
                     cr.P2 = len;
                 
@@ -460,10 +466,7 @@ namespace asv.Managers
                 {
                     cell = (ICell)cells.Current;
                     InsertParam(cell, data);
-                }  
-                
-                //TODO
-                break;
+                }
             }
             
             switch (repFormat){
