@@ -28,7 +28,15 @@ namespace asv.Managers
         public int P2 { get; set; }        
         public int R1 { get; set; }        
         public int R2 { get; set; }
-        public string S { get; private set; }        
+        public string S { get; private set; }
+
+        public int TotalRows
+        {
+            get
+            {
+                return R2 - R1 - 1;
+            }
+        }
 
         public ComplexRows(string s)
         {
@@ -386,15 +394,17 @@ namespace asv.Managers
                     }
                 }
             }
-            
-            // комплексные параметры
+
+            #region запрос
             DataManager dm = new DataManager();
             dm.Person = person;
 
             List<dynamic> complexParams = dm.GetQData(name, drv, sql, args, -1).ToList();
+            #endregion
                         
             dynamic data;
-            int i, len, offset = 0, rn, total;
+            int i, len = complexParams.Count() - 1, 
+                rn, total;
 
             string sn = string.Empty;
             foreach (ComplexRows cr in complrows)
@@ -402,28 +412,27 @@ namespace asv.Managers
                 if (!sn.Equals(cr.S))
                 {                    
                     sheet = wb.GetSheet(cr.S);                    
-                    sn = cr.S;
-
-                    offset = 0;
+                    sn = cr.S;                    
                 }
-
-                // запрос
-                //complexParams = dm.GetQData(name, drv, sql, args, -1).ToList();
-                len = complexParams.Count() - 1;
-                total = cr.R2 - cr.R1 - 1;
-
-                cr.R1 += offset;                            
+                
+                total = cr.TotalRows;
                                 
                 if (cr.R2 == sheet.LastRowNum)
                     sheet.CreateRow(cr.R2 + 1);
 
                 // удалить ряд 'Запрос' --> смещение -1   
-                sheet.ShiftRows(cr.R1 + 1, sheet.LastRowNum, -1);
+                sheet.RemoveRow(sheet.GetRow(cr.R1));
+                sheet.ShiftRows(cr.R1, sheet.LastRowNum, -1);
                 
-                // удалить ряд 'Конец_Запрос' --> смещение -1   
-                sheet.ShiftRows(cr.R2, sheet.LastRowNum, -1);                   
+                // удалить ряд 'Конец_Запрос' --> смещение -1
+                cr.R2--;
+                sheet.RemoveRow(sheet.GetRow(cr.R2));
+                sheet.ShiftRows(cr.R2, sheet.LastRowNum, -1);
+
+                if (cr.P2 == -1)
+                    cr.P2 = len;
                 
-                for (i = 0; i < len; ++i)
+                for (i = cr.P1; i < cr.P2; ++i)
                 {
                     data = complexParams[i];
                     for (rn = 0; rn < total; ++rn)
@@ -440,27 +449,10 @@ namespace asv.Managers
 
                         cr.R1++;
                     }                    
-                }
+                }  
                 
-                // последние ряд(ы), если есть
-                if (len > -1)
-                {
-                    data = complexParams[i];
-                    for (rn = 0; rn < total; ++rn)
-                    {
-                        row = sheet.GetRow(cr.R1);
-                        cells = row.GetEnumerator();
-                        while (cells.MoveNext())
-                        {
-                            cell = (ICell)cells.Current;
-                            InsertParam(cell, data);
-                        }
-
-                        cr.R1++;
-                    }
-                }
-
-                offset += len * total - 2;
+                //TODO
+                break;
             }
             
             switch (repFormat){
