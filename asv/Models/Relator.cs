@@ -131,7 +131,7 @@ namespace asv.Models
             {
                 if (prev != null && prev.Id.Equals(p.Id))
                 {
-                    if (p.Id != 0)
+                    if (!string.IsNullOrEmpty(b.Conn))
                         prev.Bases.Add(b);
 
                     return null;
@@ -141,7 +141,8 @@ namespace asv.Models
                 if (p.Id != 0)
                 {
                     prev.Bases = new List<Userdb>();
-                    prev.Bases.Add(b);
+                    if (!string.IsNullOrEmpty(b.Conn))
+                        prev.Bases.Add(b);
                 }
             }
             return p;
