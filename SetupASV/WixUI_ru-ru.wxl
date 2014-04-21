@@ -107,6 +107,7 @@
   <String Id="InstallIIsDlgBannerBitmap" Overridable="yes">WixUI_Bmp_Banner</String>
   <String Id="InstallIIsDlgSiteLabel" Overridable="yes">Имя сайта:</String>
   <String Id="InstallIIsDlgPortLabel" Overridable="yes">Порт:</String>
+  <String Id="InstallIIsDlgProtectconfigLabel" Overridable="yes">Защитить файл конфигурации</String>
   
     <String Id="InstallScopeDlg_Title" Overridable="yes">Программа установки [ProductName]</String>
     <String Id="InstallScopeDlgBannerBitmap" Overridable="yes">WixUI_Bmp_Banner</String>
