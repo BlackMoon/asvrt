@@ -346,8 +346,7 @@ namespace asv.Managers
 
             Regex rx = new Regex(@"#Запрос,?\s?(\d+)*-?\s?(\d+)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);            
             Match m;
-
-            int limit = -1;
+            
             IEnumerator cells, rows, sheets = wb.GetEnumerator();
             while (sheets.MoveNext())
             {

@@ -32,7 +32,7 @@ Ext.define('QB.view.setting.Edit', {
                 defaults: { xtype: 'numberfield', allowDecimals: false, hideTrigger: true, vtype: 'number', anchor: '100%', labelWidth: 300, allowBlank: false },
                 items: [{                    
                     name: 'itemsperpage',
-                    fieldLabel: 'Записей на странице',                                        
+                    fieldLabel: 'Показывать первые N-записей',                                        
                     value: 50                    
                 }]
             },
