@@ -859,7 +859,10 @@ Ext.define('QB.controller.Query', {
                                 displayInfo: true,
                                 displayMsg: 'Выбраны первые {1} записей',
                                 emptyMsg: 'Нет записей'
-                            })
+                            }),
+                            viewConfig: {
+                                enableTextSelection: true
+                            }
                         }).show();
                     }
                 }

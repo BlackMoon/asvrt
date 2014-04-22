@@ -29,7 +29,8 @@
     </Feature>
 
     <InstallExecuteSequence>
-      <Custom Action='LaunchRegiis' After='InstallFiles'>INSTALLPROTECTCONFIG</Custom>
+      <Custom Action="VBScriptCommand" After="CostFinalize">NOT REMOVE</Custom>
+      <Custom Action="LaunchRegiis" After="InstallFiles">INSTALLPROTECTCONFIG</Custom>
     </InstallExecuteSequence>
 
     <UIRef Id="WixUI_SkipLicenseAgreement"/>
@@ -38,7 +39,7 @@
     <Property Id="INSTALLSITE">$(var.ProductName)</Property>
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />    
-    <PropertyRef Id="NETFRAMEWORK40FULL"/>
+    <PropertyRef Id="NETFRAMEWORK40FULL"/>    
     
   </Product>
 </Wix>

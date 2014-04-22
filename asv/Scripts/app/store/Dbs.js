@@ -21,7 +21,12 @@
                 me.proxy.extraParams.drv = drv;
                 me.proxy.extraParams.name = (nt == 1 && drv == 0) ? nd.get('od') : nd.get('name');
 
-                (nt == 1) ? (me.proxy.extraParams.schema = nd.parentNode.get('name')) : delete me.proxy.extraParams['schema'];
+                if (nt == 1) {
+                    me.proxy.extraParams.schema = nd.parentNode.get('name');
+                    (drv == 0) ? (me.proxy.extraParams.viewname = nd.get('name')) : delete me.proxy.extraParams['viewname'];
+                }
+                else
+                    delete me.proxy.extraParams['schema'];
             }
             delete nd.data.iconCls;
         },        

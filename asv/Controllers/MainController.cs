@@ -154,7 +154,7 @@ namespace asv.Controllers
         }           
 
         [Authorize]
-        public JsonNetResult GetObjs(eNodeType? nt, eDriverType? drv, string name, string schema)
+        public JsonNetResult GetObjs(eNodeType? nt, eDriverType? drv, string name, string schema, string viewname)
         {
             byte result = 1;
             string msg = null;
@@ -194,7 +194,7 @@ namespace asv.Controllers
                             nodes = dm.GetTData(schema, name, drv.Value).ToList();
 
                             // алиасы-поля 
-                            string arg = name.ToUpper();               
+                            string arg = viewname.ToUpper();               
                             IDictionary<string, string> rems = (IDictionary<string, string>)HttpContext.Cache[Misc.remkey + arg];
                             if (rems == null)
                             {
@@ -313,6 +313,7 @@ namespace asv.Controllers
                 sql += " ORDER BY q.name";
 
                 queries = db.Fetch<dynamic>(sql, User.Id);
+                System.Diagnostics.Debug.WriteLine(db.LastSQL);
             }
             catch (Exception e)
             {
