@@ -723,7 +723,7 @@ namespace asv.Controllers
                                     ix += 3;
                                 }
 
-                                string sql = "INSERT OR REPLACE INTO qb_aliases(name, remark, parentid) VALUES (" + string.Join("), (", keys) + ")";
+                                string sql = "INSERT INTO qb_aliases(name, remark, parentid) VALUES (" + string.Join("), (", keys) + ")";
                                 db.Execute(sql, vals.ToArray());
 
                                 System.Diagnostics.Debug.WriteLine(db.LastSQL);
