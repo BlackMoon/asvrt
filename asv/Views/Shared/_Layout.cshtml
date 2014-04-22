@@ -122,8 +122,7 @@
                         defaults: { arrowCls: '' },
                         items: [{ 
                             text: 'Запросы', 
-                            menu: {
-                                xtype: 'menu',
+                            menu: {                                
                                 items: [{ 
                                     text: 'Новый запрос',                                     
                                     itemId: 'mnuquery',
@@ -149,8 +148,7 @@
                             {
                                 <text>hidden: true,</text>
                             }
-                            menu: {
-                                xtype: 'menu',
+                            menu: {                                
                                 items: [{ 
                                     text: 'Соединения', 
                                     action: 'conns',
@@ -191,7 +189,13 @@
                         },                            
                         { 
                             text: 'Справка',
-                            hidden: true
+                            menu: {                                
+                                items: [{ 
+                                    text: 'О программе', 
+                                    action: 'about',
+                                    iconCls: 'icon-help'
+                                }]
+                            }
                         },
                         '->',
                         {
@@ -287,12 +291,6 @@
                             {
                                 <text>, hidden: true</text>
                             }
-                        },                        
-                        {
-                            iconCls: 'icon-help',                            
-                            action: 'help',
-                            tooltip: 'Справка',
-                            hidden: true
                         }]                                                    
                     },
                     {

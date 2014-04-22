@@ -5,7 +5,10 @@ using System.Collections.Generic;
 namespace asv.Helpers
 {
     public static class Misc
-    {   
+    {
+        public const string aliaskey = "_aliases";
+        public const string remkey = "_remarks";
+
         public static bool GetConfigValue(string value, bool defaultValue)
         {
             return (string.IsNullOrEmpty(value)) ? defaultValue : Convert.ToBoolean(value);

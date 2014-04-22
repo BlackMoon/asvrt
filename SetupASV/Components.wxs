@@ -5,9 +5,6 @@
             <Component Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" Guid="*">
                 <File Id="fil00A150C9AD477E1EE4E8CA4503876DA9" KeyPath="yes" Source="$(var.HarvestDir)\Global.asax" />
             </Component>
-            <Component Id="cmpFED9CE4C040C6D017106CB6B92C2F157" Guid="*">
-                <File Id="fil43F031812C2D8647225696DDDF358FCA" KeyPath="yes" Source="$(var.HarvestDir)\packages.config" />
-            </Component>
             <Component Id="cmpDEFB34D73AFBF2C0C55A6186FA567DAE" Guid="*">
                 <File Id="fil87CF725B62ECDC0307F46C9965287D37" KeyPath="yes" Source="$(var.HarvestDir)\roles.xml" />
             </Component>
@@ -7411,6 +7408,9 @@
                         <Component Id="cmp82D9483EBB851D91AD31880BC6355070" Guid="*">
                             <File Id="fil514D1528AEF8C484105A45FAA13BD4DD" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\model\Func.js" />
                         </Component>
+                        <Component Id="cmp6148C5E1A8292E44529EAD07B1CC5E8D" Guid="*">
+                            <File Id="fil4023F68A08453FD921865265BF8F3DE2" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\model\Log.js" />
+                        </Component>
                         <Component Id="cmpCCF046AFA985B8E001387640B26A5B2D" Guid="*">
                             <File Id="fil751EE8B60775E49757A6252B9127A1EF" KeyPath="yes" Source="$(var.HarvestDir)\Scripts\app\model\Param.js" />
                         </Component>
@@ -7712,7 +7712,6 @@
     <Fragment>
         <ComponentGroup Id="ProductComponent">
             <ComponentRef Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" />
-            <ComponentRef Id="cmpFED9CE4C040C6D017106CB6B92C2F157" />
             <ComponentRef Id="cmpDEFB34D73AFBF2C0C55A6186FA567DAE" />
             <ComponentRef Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" />
             <ComponentRef Id="cmp1D3E84918B30A5D48EC3A610A3BADBA4" />
@@ -10071,6 +10070,7 @@
             <ComponentRef Id="cmp0F1BE6B083D6323296AB2615D91AE75E" />
             <ComponentRef Id="cmpE44B9969755244DC3CB9BD6FEF3B27B8" />
             <ComponentRef Id="cmp82D9483EBB851D91AD31880BC6355070" />
+            <ComponentRef Id="cmp6148C5E1A8292E44529EAD07B1CC5E8D" />
             <ComponentRef Id="cmpCCF046AFA985B8E001387640B26A5B2D" />
             <ComponentRef Id="cmpA5B3C2135A55CD2974381621B3CB96EC" />
             <ComponentRef Id="cmp2BB2897C634482433B1C62A38605E01B" />

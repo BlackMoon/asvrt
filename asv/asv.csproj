@@ -39,13 +39,14 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>NPOI\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NPOI.2.0.6\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
@@ -58,18 +59,24 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI, Version=1.2.5.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+    <Reference Include="NPOI, Version=2.0.6.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>NPOI\NPOI.dll</HintPath>
+      <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OOXML">
-      <HintPath>NPOI\NPOI.OOXML.dll</HintPath>
+    <Reference Include="NPOI.OOXML, Version=2.0.6.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.OOXML.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OpenXml4Net">
-      <HintPath>NPOI\NPOI.OpenXml4Net.dll</HintPath>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.0.6.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OpenXmlFormats">
-      <HintPath>NPOI\NPOI.OpenXmlFormats.dll</HintPath>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.0.6.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="SgmlReaderDll">
+      <HintPath>..\packages\SgmlReader.1.8.11\lib\4.0\SgmlReaderDll.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SQLite, Version=1.0.88.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -158,8 +165,8 @@
     <Content Include="Content\2leftarrow.png" />
     <Content Include="Content\admin16.png" />
     <Content Include="Content\alphabet16.png" />
+    <Content Include="Content\bullet_html.png" />
     <Content Include="Content\bullet_txt.png" />
-    <Content Include="Content\bullet_xls.png" />
     <Content Include="Content\bullet_xml.png" />
     <Content Include="Content\cancel.png" />
     <Content Include="Content\chain.png" />
@@ -167,6 +174,7 @@
     <Content Include="Content\db.png" />
     <Content Include="Content\dbs.png" />
     <Content Include="Content\delete.png" />
+    <Content Include="Content\delete_list.png" />
     <Content Include="Content\disk.png" />
     <Content Include="Content\ext-theme-access\ext-theme-access-all-debug.css" />
     <Content Include="Content\ext-theme-access\ext-theme-access-all-rtl-debug.css" />
@@ -2455,6 +2463,7 @@
     <Content Include="roles.xml" />
     <Content Include="Scripts\app\common\Bargrid.js" />
     <Content Include="Scripts\app\common\Bartree.js" />
+    <Content Include="Scripts\app\common\Xform.js" />
     <Content Include="Scripts\app\common\Generalset.js" />
     <Content Include="Scripts\app\common\Imagecolumn.js" />
     <Content Include="Scripts\app\common\Labelcolumn.js" />
@@ -2474,7 +2483,6 @@
     <Content Include="Scripts\app\model\Catalog.js" />
     <Content Include="Scripts\app\model\Func.js" />
     <Content Include="Scripts\app\model\Role.js" />
-    <Content Include="Scripts\app\model\Section.js" />
     <Content Include="Scripts\app\model\Table.js" />
     <Content Include="Scripts\app\model\Udb.js" />
     <Content Include="Scripts\app\model\Param.js" />
@@ -2500,19 +2508,15 @@
     <Content Include="Scripts\app\store\Qdbs.js" />
     <Content Include="Scripts\app\store\Queries.js" />
     <Content Include="Scripts\app\store\Roles.js" />
-    <Content Include="Scripts\app\store\Sections.js" />
     <Content Include="Scripts\app\store\Tables.js" />
     <Content Include="Scripts\app\store\Templates.js" />
     <Content Include="Scripts\app\store\Uconns.js" />
     <Content Include="Scripts\app\store\Users.js" />
-    <Content Include="Scripts\app\view\base\Add.js" />
+    <Content Include="Scripts\app\view\About.js" />
     <Content Include="Scripts\app\view\catalog\Edit.js" />
     <Content Include="Scripts\app\view\catalog\List.js" />
     <Content Include="Scripts\app\view\catalog\Tlist.js" />
     <Content Include="Scripts\app\view\Eventlog.js" />
-    <Content Include="Scripts\app\view\section\Edit.js" />
-    <Content Include="Scripts\app\view\section\List.js" />
-    <Content Include="Scripts\app\view\section\Tlist.js" />
     <Content Include="Scripts\app\view\setting\Edit.js" />
     <Content Include="Scripts\ux\grid\FiltersFeature.js" />
     <Content Include="Scripts\ux\grid\filter\BooleanFilter.js" />
@@ -2556,10 +2560,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\site.css" />
-    <Content Include="Views\Account\ChangePassword.cshtml" />
-    <Content Include="Views\Account\ChangePasswordSuccess.cshtml" />
-    <Content Include="Views\Account\LogOn.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Main\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />

@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.conn.Edit', {
     extend: 'QB.common.Updwnd',
-    requires: ['QB.common.Labelcombo', 'QB.common.Updwnd'],
+    requires: ['QB.common.Labelcombo', 'QB.common.Updwnd', 'QB.common.Xform'],
     alias: 'widget.connedit',
 
     title: 'Соединение',
@@ -11,7 +11,7 @@
         var me = this;
 
         me.constring = Ext.widget('displayfield', { height: 76, fieldLabel: 'Источник данных', labelWidth: 150, fieldStyle: 'color: blue', labelStyle: 'color: blue', value: 'DRIVER={InterSystems ODBC};' });
-        me.form = Ext.widget('form',
+        me.form = Ext.widget('xform',
         {
             defaults: { anchor: '100%', labelWidth: 150, margin: '5', listeners: { change: me.updateConString } },
             items: [{

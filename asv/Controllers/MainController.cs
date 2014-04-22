@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
+using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
@@ -15,7 +17,8 @@ using Newtonsoft.Json;
 namespace asv.Controllers
 {    
     public class MainController : BaseController
-    {   
+    {
+        private int itemsPerPage;
         private DataManager dm = new DataManager();        
 
         protected override void Initialize(RequestContext requestContext)
@@ -25,14 +28,28 @@ namespace asv.Controllers
             if (Request.IsAuthenticated)
                 dm.Person = User;            
         }
+
+        public MainController()
+        {
+            Configuration cfg = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+            AppSettingsSection ass = cfg.AppSettings;
+
+            string key = "ItemsPerPage";
+            if (ass.Settings[key] != null)
+                itemsPerPage = Misc.GetConfigValue(ass.Settings[key].Value, 50);
+        }
         
         public ActionResult Index()
         {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            AssemblyName an = assembly.GetName();
+
             ViewBag.ConnTimeout = dm.ConnTimeout;
-            ViewBag.ItemsPerPage = dm.ItemsPerPage;
+            ViewBag.ItemsPerPage = itemsPerPage;
 
             ViewData["minRequiredPasswordLength"] = Membership.MinRequiredPasswordLength;
             ViewData["minRequiredUsernameLength"] = (Membership.Provider as asv.Security.AccessMembershipProvider).MinRequiredUsernameLength;
+            ViewData["version"] = an.Version;
             
             IDictionary<string, object> obj = new Dictionary<string, object>();
             obj["singleton"] = true;
@@ -106,13 +123,13 @@ namespace asv.Controllers
         /// <returns>JSON</returns>
         //[OutputCache(Duration = 120, VaryByParam = "name;drv;sql;args;page;limit")]
         [Authorize]
-        public JsonNetResult Execute(string name, eDriverType drv, string sql, int? id, string qname, object [] args, int page, int limit)
+        public JsonNetResult Execute(string name, eDriverType drv, string sql, int? id, string qname, object [] args)
         {
             byte result = 1;
             string msg = null;
 
             long total = 0;
-            List<dynamic> rows = new List<dynamic>();
+            IEnumerable<dynamic> rows = new List<dynamic>();
             try
             {
                 string query = " (" + qname + ")";
@@ -122,8 +139,8 @@ namespace asv.Controllers
                 ThreadContext.Properties["user"] = User.Identity.Name;                
                 log.Info("Выполнение запроса -" + query + ".");
 
-                rows = dm.GetQData(name, drv, sql, args, page, page, limit).ToList();
-                total = dm.TotalItems;
+                rows = dm.GetQData(name, drv, sql, args, itemsPerPage).ToList();
+                total = rows.Count();
             }
             catch (Exception e)
             {
@@ -148,13 +165,68 @@ namespace asv.Controllers
                 // table
                 if (nt != null)
                 {
+                    // TODO перевести в статические типы
+
+                    // алиасы                                            
+                    IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[Misc.aliaskey];
+                    if (aliases == null)
+                    {
+                        aliases = db.Fetch<Pair<string, string>>("SELECT a.name key, a.remark value FROM qb_aliases a WHERE a.parentid IS NULL").ToDictionary(o => o.Key, o => o.Value);
+                        HttpContext.Cache.Add(Misc.aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                    }
+
+                    string key;
                     switch (nt.Value)
                     {
                         case eNodeType.NodeScheme:
-                            nodes = dm.GetSData(name, drv.Value).ToList();                            
+                            nodes = dm.GetSData(name, drv.Value).ToList();
+
+                            foreach (IDictionary<string, object> nd in nodes)
+                            {
+                                key = nd["name"].ToString();
+
+                                if (aliases.ContainsKey(key))
+                                    nd["qtip"] = aliases[key];
+                            }
+
                             break;
                         case eNodeType.NodeTable:
                             nodes = dm.GetTData(schema, name, drv.Value).ToList();
+
+                            // алиасы-поля 
+                            string arg = name.ToUpper();               
+                            IDictionary<string, string> rems = (IDictionary<string, string>)HttpContext.Cache[Misc.remkey + arg];
+                            if (rems == null)
+                            {
+                                rems = db.Fetch<Pair<string, string>>("SELECT UPPER(f.name) key, f.remark value FROM qb_aliases a JOIN qb_aliases f ON f.parentid = a.id WHERE UPPER(a.name) = @0", arg).ToDictionary(o => o.Key, o => o.Value);
+                                HttpContext.Cache.Add(Misc.remkey + arg, rems, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                            }
+
+                            foreach (dynamic nd in nodes)
+                            {   
+                                IList<Field> fields = (IList<Field>)nd.data;
+                                if (fields != null) {
+
+                                    foreach (Field fd in fields)
+                                    {
+                                        // внешние ключи --> 
+                                        if (fd.Nt == eNodeType.NodeForeignKey)
+                                        {
+                                            key = (fd as ForeignKey).RefTable;
+
+                                            if (aliases.ContainsKey(key))
+                                                fd.Qtip = aliases[key];
+                                        }
+                                        else
+                                        {
+                                            key = fd.Name.ToUpper();
+
+                                            if (rems.ContainsKey(key))
+                                                fd.Qtip = rems[key];
+                                        }
+                                    }
+                                }
+                            }
                             break;
                     }
                 }
@@ -227,11 +299,16 @@ namespace asv.Controllers
             List<dynamic> queries = new List<dynamic>();
             try
             {
-                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q",
-                       where = string.Empty;
+                string sql = "SELECT q.id, q.name, q.conn, q.grp, q.drv, q.usercreate authorid FROM qb_vqueries q";
 
-                if (!(User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER")))
-                    sql += " WHERE q.usercreate = @0";
+                if (User.IsInRole("READER") || User.IsInRole("EDITOR") || User.IsInRole("ERASER"))
+                {   
+                    MembershipPerson mp = (MembershipPerson)HttpContext.Cache[User.Identity.Name];
+                    if (mp != null)                    
+                        sql += " WHERE q.conn IN ('" + string.Join("', '", mp.Bases.Select(b => b.Conn)) + "')";                    
+                }
+                else
+                    sql += " WHERE q.usercreate = @0";                
 
                 sql += " ORDER BY q.name";
 
@@ -275,23 +352,28 @@ namespace asv.Controllers
                 {
                     try
                     {
-                        con.Open();
+                        con.Open();                        
+                        
+                        // алиасы-поля 
+                        string arg = table.ToUpper(), key;
+                        IDictionary<string, string> rems = (IDictionary<string, string>)HttpContext.Cache[Misc.remkey + arg];
+                        if (rems == null)
+                        {
+                            rems = db.Fetch<Pair<string, string>>("SELECT UPPER(f.name) key, f.remark value FROM qb_aliases a JOIN qb_aliases f ON f.parentid = a.id WHERE UPPER(a.name) = @0", arg).ToDictionary(o => o.Key, o => o.Value);
+                            HttpContext.Cache.Add(Misc.remkey + arg, rems, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                        }
 
-                        Field field;
-                        List<Field> fields = new List<Field>();                        
+                        List<Field> fields = new List<Field>();
                         foreach (TableField f in dm.GetFields(con, od, schema, drv))
                         {   
-                            try
-                            {                               
-                                f.Remark = db.ExecuteScalar<string>("SELECT f.remark FROM qb_aliases a JOIN qb_aliases f ON f.parentid = a.id " + 
-                                    "WHERE UPPER(a.name) = @0 AND UPPER(f.name) = @1", table.ToUpper(), f.Name.ToUpper());
-                            }
-                            catch
-                            {
-                            }
+                            key = f.Name.ToUpper();
+                            if (rems.ContainsKey(key))
+                                f.Remark = rems[key];
+                            
                             fields.Add(f);
                         }
-                        
+
+                        Field field;
                         IList<ForeignKey> fkeys = new List<ForeignKey>();
                         foreach (ForeignKey k in dm.GetFKeys(con, od, schema, drv))
                         {
@@ -382,8 +464,13 @@ namespace asv.Controllers
                 if (hidesys == 0 || User.IsAdmin == 1)
                 {
                     // алиасы
-                    sql = "SELECT a.name key, a.remark value FROM qb_aliases a WHERE a.parentid IS NULL";
-                    IDictionary<string, string> aliases = db.Fetch<Pair<string, string>>(sql).ToDictionary(o => o.Key, o => o.Value);
+                    sql = "SELECT a.name key, a.remark value FROM qb_aliases a WHERE a.parentid IS NULL";                                          
+                    IDictionary<string, string> aliases = (IDictionary<string, string>)HttpContext.Cache[Misc.aliaskey];
+                    if (aliases == null)
+                    {
+                        aliases = db.Fetch<Pair<string, string>>(sql).ToDictionary(o => o.Key, o => o.Value);
+                        HttpContext.Cache.Add(Misc.aliaskey, aliases, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), CacheItemPriority.Normal, null);
+                    }
                 
                     foreach (IDictionary<string, object> tb in tables)
                     {
@@ -450,8 +537,8 @@ namespace asv.Controllers
                     query = " №" + q.Id + query;
                 }
                 else
-                    id = q.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6);\nSELECT last_insert_rowid();",
-                        q.Name, q.Conn, q.Group, q.Subgroup, q.Sql, q.UseLeftJoin, User.Id);
+                    id = q.Id = db.ExecuteScalar<int>("INSERT INTO qb_queries(name, conn, grp, subgrp, sql, useleftjoin, userdefined, usercreate) VALUES(@0, @1, @2, @3, @4, @5, @6, @7);\nSELECT last_insert_rowid();",
+                        q.Name, q.Conn, q.Group, q.Subgroup, q.Sql, q.UseLeftJoin, q.UserDefined, User.Id);
 
                 // tables insert first                
                 foreach (Table t in q.Tables)
@@ -477,7 +564,7 @@ namespace asv.Controllers
                 // reports                
                 foreach (Template r in q.Reports)
                 {
-                    db.Execute("INSERT INTO qb_reports(queryid, tplid) qS(@0, @1)", q.Id, r.Id);
+                    db.Execute("INSERT INTO qb_reports(queryid, tplid) VALUES(@0, @1)", q.Id, r.Id);
                 }                
 
                 // user functions                

@@ -3,7 +3,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension">
   
-  <Fragment>  
+  <Fragment>
     <DirectoryRef Id="INSTALLLOCATION">    
       
       <Component Id="AppPool" Guid="" KeyPath="yes">
@@ -18,7 +18,9 @@
         </iis:WebSite>      
       </Component>
       
-    </DirectoryRef>
+    </DirectoryRef>    
+    
+    <CustomAction Id="LaunchRegiis" Directory="INSTALLLOCATION" ExeCommand="aspnet_regiis.exe -pef" Execute="commit" Return="ignore"/>
   </Fragment>
 
   <Fragment>
@@ -26,6 +28,6 @@
       <ComponentRef Id="AppPool" />
       <ComponentRef Id="WebSite" />
     </ComponentGroup>
-
   </Fragment>
+  
 </Wix>

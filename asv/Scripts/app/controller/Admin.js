@@ -467,6 +467,9 @@ Ext.define('QB.controller.Admin', {
             })
         }
         catch (e) {
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },
@@ -570,7 +573,6 @@ Ext.define('QB.controller.Admin', {
             if (failed) throw 'Ошибка заполнения';                
 
             wnd.el.mask('Сохранение', 'x-mask-loading');
-
             Ext.Ajax.request({
                 url: '/admin/updatealias',
                 params: { json: Ext.encode(alias) },
@@ -602,6 +604,9 @@ Ext.define('QB.controller.Admin', {
 
         }
         catch (e) {
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },
@@ -655,6 +660,9 @@ Ext.define('QB.controller.Admin', {
             })
         }
         catch (e) {
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },
@@ -695,6 +703,9 @@ Ext.define('QB.controller.Admin', {
             })
         }
         catch (e) {
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },
@@ -744,6 +755,9 @@ Ext.define('QB.controller.Admin', {
             })
         }
         catch (e) {
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },    
@@ -791,6 +805,9 @@ Ext.define('QB.controller.Admin', {
             })
         }        
         catch (e) {
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
             Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
         }
     },
@@ -808,7 +825,7 @@ Ext.define('QB.controller.Admin', {
                     return (b.get('auth') && b.get('conn'));
                 })
                 if (ix == -1) throw 'Выберите базу для авторизации!';
-            }            
+            }               
 
             usr.isadmin = usr.isadmin || 0;
             usr.isapproved = usr.isapproved || 0;
@@ -855,7 +872,10 @@ Ext.define('QB.controller.Admin', {
             })
         }
         catch (e) {
-            Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });
+            var invalid = form.findInvalidL();
+            invalid & (e += '<br><b>Поля</b>: ' + invalid.join(', '));
+
+            Ext.MessageBox.show({ title: 'Внимание', msg: e, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.WARNING });            
         }
     }
     

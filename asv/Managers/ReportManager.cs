@@ -21,14 +21,22 @@ namespace asv.Managers
         OfficeXml
     }
     
-    // контейнер координат - (P1 - 1я стр., P2 - последняя стр., S - лист, R1 - 1й ряд, R2 - посл. ряд)
+    // контейнер координат - (P1 - 1я запись, P2 - последняя запись, S - лист, R1 - 1й ряд, R2 - посл. ряд)
     class ComplexRows
     {        
         public int P1 { get; set; }
         public int P2 { get; set; }        
         public int R1 { get; set; }        
         public int R2 { get; set; }
-        public string S { get; private set; }        
+        public string S { get; private set; }
+
+        public int TotalRows
+        {
+            get
+            {
+                return R2 - R1 - 1;
+            }
+        }
 
         public ComplexRows(string s)
         {
@@ -73,7 +81,7 @@ namespace asv.Managers
             #region header cell style
             IFont hf = wb.CreateFont();
             hf.FontHeightInPoints = 18;
-            hf.Boldweight = (short)FontBoldWeight.BOLD;
+            hf.Boldweight = (short)FontBoldWeight.Bold;
 
             ICellStyle hs = wb.CreateCellStyle();
             hs.SetFont(hf);
@@ -81,18 +89,18 @@ namespace asv.Managers
 
             #region border cell style
             ICellStyle bs = wb.CreateCellStyle();
-            bs.BorderLeft = bs.BorderRight = bs.BorderTop = bs.BorderBottom = BorderStyle.THIN;
+            bs.BorderLeft = bs.BorderRight = bs.BorderTop = bs.BorderBottom = BorderStyle.Thin;
             #endregion
 
             #region table header cell style
             IFont tf = wb.CreateFont();
-            tf.Boldweight = (short)FontBoldWeight.BOLD;
+            tf.Boldweight = (short)FontBoldWeight.Bold;
 
             ICellStyle ts = wb.CreateCellStyle();
             ts.CloneStyleFrom(bs);
-            ts.Alignment = HorizontalAlignment.CENTER;
-            ts.FillPattern = FillPatternType.SOLID_FOREGROUND;
-            ts.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.PALE_BLUE.index;
+            ts.Alignment = HorizontalAlignment.Center;
+            ts.FillPattern = FillPattern.SolidForeground;
+            ts.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.PaleBlue.Index;
             ts.SetFont(tf);           
             #endregion
 
@@ -100,6 +108,15 @@ namespace asv.Managers
             ICellStyle cs = wb.CreateCellStyle();
             cs.CloneStyleFrom(bs);
             cs.WrapText = true;
+            #endregion
+
+            #region date cell style
+            ICellStyle ds1 = wb.CreateCellStyle();
+            ds1.DataFormat = wb.CreateDataFormat().GetFormat("d.mm.yyyy hh:mm");
+
+            ICellStyle ds2 = wb.CreateCellStyle();
+            ds2.CloneStyleFrom(cs);
+            ds2.DataFormat = (short)BuiltinFormats.GetBuiltinFormat("m/d/yy");
             #endregion
 
             ICell cell = sheet.CreateRow(0).CreateCell(0);
@@ -112,7 +129,10 @@ namespace asv.Managers
 
             row = sheet.CreateRow(3);
             row.CreateCell(0).SetCellValue("Дата:");
-            row.CreateCell(1).SetCellValue(DateTime.Now.ToString("dd.MM.yyyy HH:mm"));
+            
+            cell = row.CreateCell(1);
+            cell.CellStyle = ds1;
+            cell.SetCellValue(DateTime.Now);
 
             string v = null;
             foreach (UParam p in userParams)
@@ -131,12 +151,11 @@ namespace asv.Managers
             dm.Person = person;
 
             dynamic q;
-            List<dynamic> data = dm.GetQData(name, drv, sql, args).ToList();
-            int total = (int)dm.TotalItems;
+            List<dynamic> data = dm.GetQData(name, drv, sql, args, -1).ToList();
+            int total = data.Count();
 
             if (total > 0)
             {
-
                 int i, j,
                     sheets = total / XLSMAXROWS,
                     rem = total % XLSMAXROWS;
@@ -170,7 +189,10 @@ namespace asv.Managers
                             cell.CellStyle = cs;
 
                             if (val is DateTime)
-                                cell.SetCellValue(((DateTime)val).ToShortDateString());
+                            {                                
+                                cell.CellStyle = ds2;
+                                cell.SetCellValue((DateTime)val);
+                            }
                             else if (val is Double)
                                 cell.SetCellValue((Double)val);
                             else if (val is Int16)
@@ -187,7 +209,6 @@ namespace asv.Managers
                     }
 
                     sheet = wb.CreateSheet("Лист" + sn++);
-
                     rn = 0;
                 }
 
@@ -220,7 +241,10 @@ namespace asv.Managers
                         cell.CellStyle = cs;
 
                         if (val is DateTime)
-                            cell.SetCellValue(((DateTime)val).ToShortDateString());
+                        {
+                            cell.CellStyle = ds2;
+                            cell.SetCellValue((DateTime)val);
+                        }
                         else if (val is Double)
                             cell.SetCellValue((Double)val);
                         else if (val is Int16)
@@ -322,9 +346,8 @@ namespace asv.Managers
 
             Regex rx = new Regex(@"#Запрос,?\s?(\d+)*-?\s?(\d+)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);            
             Match m;
-
+            
             IEnumerator cells, rows, sheets = wb.GetEnumerator();
-
             while (sheets.MoveNext())
             {
                 sheet = (ISheet)sheets.Current;
@@ -351,6 +374,12 @@ namespace asv.Managers
                                 compl.P1 = Misc.GetConfigValue(m.Groups[1].Value, -1);
                                 compl.P2 = Misc.GetConfigValue(m.Groups[2].Value, -1);
 
+                                if (compl.P1 != -1)
+                                    compl.P1--;
+
+                                if (compl.P2 != -1)
+                                    compl.P2--;
+
                                 break;
                             }
                             else if (cv.StartsWith("#Конец_Запрос", StringComparison.CurrentCultureIgnoreCase))
@@ -370,15 +399,17 @@ namespace asv.Managers
                     }
                 }
             }
-            
-            // комплексные параметры
+
+            #region запрос
             DataManager dm = new DataManager();
             dm.Person = person;
 
-            List<dynamic> complexParams;
+            List<dynamic> complexParams = dm.GetQData(name, drv, sql, args, -1).ToList();
+            #endregion
                         
             dynamic data;
-            int i, len, offset = 0, rn, total;
+            int i, len = complexParams.Count() - 1, 
+                rn, total;
 
             string sn = string.Empty;
             foreach (ComplexRows cr in complrows)
@@ -386,28 +417,27 @@ namespace asv.Managers
                 if (!sn.Equals(cr.S))
                 {                    
                     sheet = wb.GetSheet(cr.S);                    
-                    sn = cr.S;
-
-                    offset = 0;
+                    sn = cr.S;                    
                 }
+                
+                total = cr.TotalRows;
 
-                // запрос
-                complexParams = dm.GetQData(name, drv, sql, args, cr.P1, Math.Max(cr.P1, cr.P2), dm.ItemsPerPage).ToList();
-                len = complexParams.Count() - 1;
-                total = cr.R2 - cr.R1 - 1;
-
-                cr.R1 += offset;                            
-                                
                 if (cr.R2 == sheet.LastRowNum)
                     sheet.CreateRow(cr.R2 + 1);
 
                 // удалить ряд 'Запрос' --> смещение -1   
+                sheet.RemoveRow(sheet.GetRow(cr.R1));
                 sheet.ShiftRows(cr.R1 + 1, sheet.LastRowNum, -1);
                 
-                // удалить ряд 'Конец_Запрос' --> смещение -1   
-                sheet.ShiftRows(cr.R2, sheet.LastRowNum, -1);                   
+                // удалить ряд 'Конец_Запрос' --> смещение -1
+                cr.R2--;
+                sheet.RemoveRow(sheet.GetRow(cr.R2));
+                sheet.ShiftRows(cr.R2 + 1, sheet.LastRowNum, -1);
                 
-                for (i = 0; i < len; ++i)
+                if (cr.P2 == -1)
+                    cr.P2 = len;
+                
+                for (i = cr.P1; i < cr.P2 - 1; ++i)
                 {
                     data = complexParams[i];
                     for (rn = 0; rn < total; ++rn)
@@ -425,26 +455,17 @@ namespace asv.Managers
                         cr.R1++;
                     }                    
                 }
-                
-                // последние ряд(ы), если есть
-                if (len > -1)
+
+                // последний ряд
+                data = complexParams[i];
+                row = sheet.GetRow(cr.R1);
+
+                cells = row.GetEnumerator();
+                while (cells.MoveNext())
                 {
-                    data = complexParams[i];
-                    for (rn = 0; rn < total; ++rn)
-                    {
-                        row = sheet.GetRow(cr.R1);
-                        cells = row.GetEnumerator();
-                        while (cells.MoveNext())
-                        {
-                            cell = (ICell)cells.Current;
-                            InsertParam(cell, data);
-                        }
-
-                        cr.R1++;
-                    }
+                    cell = (ICell)cells.Current;
+                    InsertParam(cell, data);
                 }
-
-                offset += len * total - 2;
             }
             
             switch (repFormat){
@@ -484,73 +505,6 @@ namespace asv.Managers
             }
 
             return path;
-        }
-
-        public IEnumerable<Alias> ImportAliases(Stream stream)
-        {
-            //FileStream fs = new FileStream(System.Web.HttpContext.Current.Server.MapPath(@"~\scheme0.xls"), FileMode.Open, FileAccess.Read);
-            IWorkbook wb = new HSSFWorkbook(stream);
-            //fs.Close();
-
-            ICell cell, cell1;
-            IRow row;
-            ISheet sheet;
-
-            IEnumerator rows, sheets = wb.GetEnumerator();
-
-            string cv, cv1;
-            Alias alias = null, alias1;
-            while (sheets.MoveNext())
-            {
-                sheet = (ISheet)sheets.Current;
-
-                rows = sheet.GetEnumerator();
-                while (rows.MoveNext())
-                {
-                    row = (IRow)rows.Current;
-
-                    cell = row.GetCell(0);
-                    cv = cell.StringCellValue;
-
-                    if (!string.IsNullOrEmpty(cv))
-                    {
-                        if (cv.StartsWith("ASV_"))
-                        {
-                            if (alias != null)
-                                yield return alias;
-
-                            alias = new Alias();
-                            alias.Name = cv;
-                            alias.Fields = new List<Alias>();
-
-                            row = sheet.GetRow(row.RowNum + 2);
-                            if (row != null)
-                            {
-                                cell = row.GetCell(0);
-
-                                if (cell != null)
-                                    alias.Remark = cell.StringCellValue;
-                            }
-
-                        }
-                        else if (!cv.StartsWith("^") && !cv.StartsWith("Наименование"))
-                        {
-                            cell1 = row.GetCell(1);
-                            if (cell1 != null)
-                            {
-                                cv1 = cell1.StringCellValue;
-
-                                alias1 = new Alias();
-                                alias1.Name = cv;
-                                alias1.Remark = cv1;
-
-                                alias.Fields.Add(alias1);
-                            }
-                        }
-                    }
-                }
-                yield return alias;
-            }            
         }
 
         private void InsertParam(ICell cell, IDictionary<string, object> repParams = null)

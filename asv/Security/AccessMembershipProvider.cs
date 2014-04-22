@@ -130,7 +130,7 @@ namespace asv.Security
             {
                 Person user = null;
                 List<Person> users = db.Fetch<Person, Userdb, Person>(new PersonRelator().Map, @"SELECT u.id, u.lastname, u.firstname, u.middlename, u.isadmin, u.serverlogin, u.theme, b.conn, b.auth FROM qb_users u 
-                                                                                                 LEFT JOIN qb_bases b ON b.usercreate = u.id AND b.auth = 1 WHERE u.login = @0", username);
+                                                                                                 LEFT JOIN qb_bases b ON b.usercreate = u.id WHERE u.login = @0", username);
                 if (users.Count > 0)
                 {
                     user = users[0];

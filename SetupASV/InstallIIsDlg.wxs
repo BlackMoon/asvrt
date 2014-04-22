@@ -18,7 +18,9 @@
         <Control Id="SiteLabel" Type="Text" Height="15" Width="200" X="20" Y="60" Text="!(loc.InstallIIsDlgSiteLabel)" />
         <Control Id="Site" Type="Edit" Height="17" Width="144" X="20" Y="80" Property="INSTALLSITE" />
         <Control Id="PortLabel" Type="Text" Height="15" Width="200" X="20" Y="120" Text="!(loc.InstallIIsDlgPortLabel)" />
-        <Control Id="Port" Type="Edit" Height="17" Width="48" X="20" Y="140" Property="INSTALLPORT" />        
+        <Control Id="Port" Type="Edit" Height="17" Width="48" X="20" Y="140" Property="INSTALLPORT" />
+
+        <Control Id="ProtectConfig" Type="CheckBox" X="20" Y="180" Width="290" Height="17" Property="INSTALLPROTECTCONFIG" Text="!(loc.InstallIIsDlgProtectconfigLabel)" CheckBoxValue="1"/>
       </Dialog>
     </UI>
   </Fragment>

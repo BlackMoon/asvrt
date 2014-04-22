@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.alias.Edit', {
     extend: 'QB.common.Updwnd',
-    requires: ['QB.common.Bargrid', 'QB.common.Updwnd'],
+    requires: ['QB.common.Bargrid', 'QB.common.Updwnd', 'QB.common.Xform'],
     alias: 'widget.aliasedit',    
     layout: { type: 'vbox', align: 'stretch' },
     title: 'Таблица',
@@ -12,7 +12,7 @@
 
         me.store = Ext.create('Ext.data.Store', { model: 'QB.model.Alias' });
 
-        me.form = Ext.widget('form',
+        me.form = Ext.widget('xform',
         {
             defaults: { anchor: '100%', margin: '5' },
             items: [{

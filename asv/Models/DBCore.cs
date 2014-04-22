@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System;
 
 namespace asv.Models
-{
+{   
     // Тип поля БД
     public enum eFieldType
     {
@@ -97,13 +97,14 @@ namespace asv.Models
     {
         public string Name { get; set; }
     }
-    #endregion
+    #endregion 
 
-    #region Абстрактное поле
-    public abstract class Field : Base
+    #region Поле
+    public class Field : Base
     {        
         public int Leaf { get; set; }
         public eNodeType Nt { get; set; }
+        public string Qtip { get; set; }
 
         public Field(object name, eNodeType nt)
         {
@@ -139,7 +140,7 @@ namespace asv.Models
         [JsonProperty("refcols")]
         public List<string> RefColumns { get; set; }                    // столбцы первичного ключа
 
-        public ForeignKey(object name, object refTable, object columns, object refColumns) : base(name, eNodeType.NodeKey)
+        public ForeignKey(object name, object refTable, object columns, object refColumns) : base(name, eNodeType.NodeForeignKey)
         {            
             RefTable = refTable.ToString();
 

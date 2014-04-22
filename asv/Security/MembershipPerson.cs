@@ -24,13 +24,17 @@ namespace asv.Security
             {
                 string schema = null;
                 if (Bases != null && Bases.Count > 0)
-                    schema = Bases[0].Conn;
+                {
+                    Userdb auth = Bases.Find(b => b.Auth == 1);
+                    if (auth != null)
+                        schema = auth.Conn;
+                }
 
                 return schema;
             }
         }
 
-        public IList<Userdb> Bases { get; set; }
+        public List<Userdb> Bases { get; set; }
         public List<string> Roles { get; set; }
         
         public MembershipPerson() { }

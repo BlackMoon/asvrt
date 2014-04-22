@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.func.Edit', {
     extend: 'QB.common.Updwnd',
-    requires: ['QB.common.Bargrid', 'QB.common.Updwnd'],
+    requires: ['QB.common.Bargrid', 'QB.common.Updwnd', 'QB.common.Xform'],
     alias: 'widget.funcedit',    
     title: 'Функция',
     height: 280,
@@ -12,7 +12,7 @@
 
         me.store = Ext.create('Ext.data.Store', { model: 'QB.model.Fparam' });
 
-        me.form = Ext.widget('form',
+        me.form = Ext.widget('xform',
         {
             defaults: { anchor: '100%', labelWidth: 150, margin: '5' },
             items: [{

@@ -1,6 +1,6 @@
 ﻿Ext.define('QB.view.catalog.Edit', {
     extend: 'QB.common.Updwnd',
-    requires: ['QB.common.Bargrid', 'QB.common.Bartree', 'QB.common.Updwnd' ],
+    requires: ['QB.common.Bargrid', 'QB.common.Bartree', 'QB.common.Updwnd', 'QB.common.Xform'],
     layout: { type: 'vbox', align: 'stretch' },
     alias: 'widget.catalogedit',
     btns: ['add', 'addall'],
@@ -41,7 +41,7 @@
             }
         });        
 
-        me.form = Ext.widget('form',
+        me.form = Ext.widget('xform',
         {
             defaults: { anchor: '100%', margin: '5' },
             items: [{

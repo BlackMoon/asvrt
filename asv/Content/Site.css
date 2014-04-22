@@ -26,6 +26,10 @@
     background-image: url("/Content/delete.png");
 }
 
+.icon-deletelist {
+    background-image: url("/Content/delete_list.png");
+}
+
 .icon-db, .x-tree-icon.icon-db {
     background-image: url("/Content/db.png") !important;
 }
@@ -96,6 +100,10 @@
 
 .icon-users {
     background-image: url("/Content/users16.png");
+}
+
+.icon-html {
+    background-image: url("/Content/bullet_html.png") !important;
 }
 
 .icon-txt {

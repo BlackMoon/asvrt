@@ -28,6 +28,10 @@
       <ComponentRef Id="SharedFolder" />      
     </Feature>
 
+    <InstallExecuteSequence>
+      <Custom Action='LaunchRegiis' After='InstallFiles'>INSTALLPROTECTCONFIG</Custom>
+    </InstallExecuteSequence>
+
     <UIRef Id="WixUI_SkipLicenseAgreement"/>
 
     <Property Id="INSTALLPORT">81</Property>
@@ -35,6 +39,6 @@
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />    
     <PropertyRef Id="NETFRAMEWORK40FULL"/>
-
+    
   </Product>
 </Wix>

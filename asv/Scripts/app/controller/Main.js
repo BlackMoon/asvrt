@@ -2,7 +2,7 @@
     extend: 'QB.controller.Base',
     logged: false,
     stores: ['Dbs'],
-    views: ['user.Login'],    
+    views: ['About', 'user.Login'],    
 
     init: function () {
         var me = this;
@@ -17,7 +17,10 @@
             },
             'explorer tool[regionTool]': {
                 click: me.onSetRegion
-            },            
+            },
+            'menuitem[action=about]': {
+                click: me.about
+            },
             'userlogin button[action=login]': {
                 click: me.login
             }
@@ -121,6 +124,10 @@
         regionMenu.showBy(tool.el);
     },   
 
+    about: function (btn) {
+        Ext.widget('about');
+    },
+
     auth: function (btn) {
         Ext.widget('userlogin');
     },    
@@ -128,9 +135,15 @@
     login: function (btn) {
         var me = this, wnd = btn.up('window'), form = wnd.form;
         try {
-            var model = form.getValues();
-            wnd.getEl().mask('Авторизация', 'x-mask-loading');
+            var model = form.getValues(),
+                len = model.password.length, xor = '';
 
+            for (var i = 0; i < len; ++i) {
+                xor += String.fromCharCode(model.password.charCodeAt(i) ^ 128);
+            }            
+            model.password = xor;
+
+            wnd.getEl().mask('Авторизация', 'x-mask-loading');
             Ext.Ajax.request({
                 url: '/account/logon',
                 params: model,
